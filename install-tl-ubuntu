@@ -1,0 +1,528 @@
+#!/usr/bin/env bash
+
+
+# File: install-tl-ubuntu
+
+# Run the following command for usage and description:
+# ./install-tl-ubuntu --help 
+
+
+# Copyright 2013, Scott Kostyshak
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+set -o nounset
+
+if [[ "$-" =~ i ]]; then
+    ECHOPREFIX=
+else
+    ECHOPREFIX="$( basename "$0" ): "
+fi
+
+ERRORPREFIX="${ECHOPREFIX}Error: "
+WARNINGPREFIX="${ECHOPREFIX}Warning: "
+
+ARGS=$( getopt -o "r:mt:u:hvaebo:fgp:" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository" \
+      -n "$( basename "$0" )" -- "$@" )
+# If bad arguments, exit (getopt will have already written the error to STDERR).
+[ "$?" = "0" ] || exit 1 
+
+eval set -- "$ARGS"
+
+MAINDIR=$(pwd)
+
+SMALL=0
+HELP=0
+LINK_UBUNTU=1
+HEBREW=0
+VERSION=0
+TIMESRETRY=5
+EXTRAS=0
+TT_FONTS=
+USR_FONTS_DIR=
+ONLY_APT_DPKG=0
+NO_APT_DPKG=0
+LOG_DIR="${MAINDIR}"
+
+while true
+do
+  case "$1" in
+  -a|--allow-small)  SMALL=1
+      shift 1
+      ;;
+  -b|--no-link-ubuntu)  LINK_UBUNTU=0
+      shift 1
+      ;;
+  -e|--hebrew)  HEBREW=1
+      shift 1
+      ;;
+  -f|--only-apt-and-dpkg)  ONLY_APT_DPKG=1
+      shift 1
+      ;;
+  -g|--no-apt-or-dpkg)  NO_APT_DPKG=1
+      shift 1
+      ;;
+  -h|--help)  HELP=1
+      shift 1
+      ;;
+  -m|--more-tex)  EXTRAS=1
+      shift 1
+      ;;
+  -o|--log-dir)
+      if [ -d "$2" ]; then
+        LOG_DIR="$( readlink -f "$2" )"
+      else
+        echo "${ERRORPREFIX}the argument to $1 must be an existing directory." >&2
+        exit 1
+      fi
+      shift 2
+      ;;
+  -p|--repository)  TLREPO="$2"
+      shift 2
+      ;;
+  -r|--retry)
+      if [[ "$2" =~ ^[0-9]+$ ]]; then
+        TIMESRETRY="$2"
+      else
+        "${ERRORPREFIX}The argument to $1 must be a positive number." >&2
+        exit 1
+      fi
+      shift 2
+      ;;
+  -t|--truetype-dir)
+      if [ -d "$2" ]; then
+        TT_FONTS="$( readlink -f "$2" )"
+      else
+        "${ERRORPREFIX}The argument to $1 must be an existing directory." >&2
+        exit 1
+      fi
+      shift 2
+      ;;
+  -u|--usr-fonts-dir)
+      if [ -d "$2" ]; then
+        USR_FONTS_DIR="$( readlink -f "$2" )"
+      else
+        echo "${ERRORPREFIX}the argument to $1 must be an existing directory." >&2
+        exit 1
+      fi
+      shift 2
+      ;;
+  -v|--version)  VERSION=1
+      shift 1
+      ;;
+  --)
+      shift 1
+      break;;
+  *)
+      echo -e "${ERRORPREFIX}the getopt command must be out of sync. Please report this."\\n\
+          "The following flag is not recognized: $1" >&2
+      exit 1
+      ;;
+  esac
+done
+
+if [ "$#" != "0" ]; then
+  echo "${ERRORPREFIX}the following arguments are not recognized: $@" >&2
+  exit 1
+fi
+
+if [ "${HELP}" = "1" ]; then
+  echo -e "
+  USAGE
+  sudo ./install-tl-ubuntu [OPTIONS]
+
+  DESCRIPTION
+  Warning: this script has barely been tested except by the author.
+
+  This script uses the TeX Live 2013 installer to install TeX Live so that LaTeX
+  packages can be updated through CTAN with tlmgr. To do this, the official TeX
+  Live 2013 installer is downloaded and used and apt is informed that TeX
+  dependencies are satisfied. Thus, when you want to install a program with
+  apt-get that depends on TeX Live, apt will not try to install the TeX Live
+  packages from the Ubuntu repositories.
+
+  This script must be run with sudo. Many recommend not installing TeX Live with
+  sudo, in which case this script must be altered (please send a patch or post
+  an enhancement request).
+
+  This script automates many of the instructions that were posted in the
+  25 Jan 2013 answer by Silex:
+  http://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
+  TeX Live installation documentation can be found in the following two links:
+  http://www.tug.org/texlive/quickinstall.html
+  http://www.tug.org/texlive/doc/texlive-en/texlive-en.html#installation
+  Information on TeX Live's install script arguments is here:
+  http://www.tug.org/texlive/doc/install-tl.html The Net::LWP Perl module
+  (libwww-perl) is recommended, but not necessary. See the
+  \"persistent-downloads\" section of the install-tl documenation.
+
+  Progress and profiling are logged to STDOUT. Important errors are logged to
+  STDERR. Annoying STDOUT and STDERR messages are redirected to a file
+  descriptor (which is connected to the file install-tl-ubuntu_EXTRAS.log by
+  default) in case they are useful for debugging.
+
+  OPTIONS
+  -a, --allow-small          \e[00;36m Do not exit with error if install-tl-ubuntu detects less than 4GB of free space \e[00m
+  -b, --no-link-ubuntu       \e[00;36m By default, install-tl-ubuntu links to the directory where Ubuntu installs
+                                TeX packages (this allows for the TeX Live installation to, e.g.,
+                                use FoilTeX and Noweb when installed with the command
+                                'sudo apt-get install foiltex noweb').
+                                Use this option to prevent this linking.                                \e[00m
+  -e, --hebrew               \e[00;36m Install IvriTeX Hebrew fonts.                                    \e[00m
+  -f, --only-apt-and-dpkg    \e[00;36m Run the apt and dpkg commands in this script and then exit.
+                                This is useful when this script is forked from a master install script
+                                that uses apt and dpkg so that there are no conflicts. This way,
+                                install-tl-ubuntu can be run serially with the --only-apt-and-dpkg
+                                option and then the master script can fork install-tl-ubuntu with
+                                the --no-apt-or-dpkg option.                                            \e[00m
+  -g, --no-apt-or-dpkg       \e[00;36m Skip the apt and dpkg commands in this script. Only makes sense     
+                                when install-tl-ubuntu was run previously with --only-apt-and-dpkg.     \e[00m
+  -h, --help                 \e[00;36m Display this help output and exit.                               \e[00m
+  -m, --more-tex             \e[00;36m Install tex files in addition to TeX Live
+                                (e.g. style files needed by many of LyX's templates and examples).      \e[00m
+  -p, --repository REPO      \e[00;36m Use the specified repository to download and run installer. 
+                                This can be used to determine which version of TeX Live is installed
+                                (e.g. 2012, 2013, pretest).                                             \e[00m
+  -o DIR, --log-dir DIR      \e[00;36m Directory in which to store logs. Defaults to current directory. \e[00m
+  -r, --retry                \e[00;36m Number of times to retry if install-tl fails to install
+                                and for wget (used to download install-tl and if --hebrew or --more-tex
+                                is specified). The default is 5.                                        \e[00m
+  -t DIR, --truetype-dir DIR \e[00;36m Directory containing TrueType fonts to be installed
+                                (e.g. to be used by pdfTeX).                                            \e[00m
+  -u DIR, --usr-fonts-dir DIR\e[00;36m Directory containing fonts to be installed in /usr/share/fonts/
+                                (e.g. to be used by XeTeX).                                             \e[00m
+  -v, --version              \e[00;36m Display version and contact info.                                \e[00m
+
+  AUTHOR
+  Please send bug reports and suggestions to Scott Kostyshak at
+  skostysh@princeton.edu.
+"
+  exit 0
+fi
+
+if [ "${VERSION}" = "1" ]; then
+  echo -e "\\ninstall-tl-ubuntu\\nVersion 0.2dev\\nAuthor: Scott Kostyshak\\nContact: skostysh@princeton.edu"
+  exit 0
+fi
+
+[ "$(whoami)" = "root" ] \
+    || { echo "${ERRORPREFIX}this script must be run with 'sudo'." >&2 ; exit 1; }
+
+if (( $(stat -f --format="%a*%S" .) < 4000000000 )); then
+    if [ "${SMALL}" = "0" ]; then
+        echo -e "${ERRORPREFIX}you are running this script with less than 4G." \
+                "\nUse the --allow-small option to ignore this error."
+        exit
+    fi
+fi
+
+if [ -z "${TLREPO:-}" ]; then
+    TLREPO='http://mirror.utexas.edu/ctan/systems/texlive/tlnet'
+    echo -e "${ECHOPREFIX}no repository was specified so using the following:\n" \
+      "${TLREPO}"
+fi
+
+TLINSTALLER="${TLREPO}/install-tl-unx.tar.gz"
+
+# default of wget is --tries=20. Can take an hour. This makes the default --tries=5.
+WGET_CMD="wget --tries=${TIMESRETRY}"
+
+exec 3>> "${LOG_DIR}/install-tl-ubuntu_EXTRAS.log"
+
+VER_UBUNTU=$( lsb_release -rs )
+[[ "${VER_UBUNTU}" = "12.04" || "${VER_UBUNTU}" = "12.10" || "${VER_UBUNTU}" = "13.04" ]] \
+    || echo -e "${ERRORPREFIX}this script only currently supports Ubuntu 12.04, 12.10, and 13.04."\
+               "\nFor other versions, one would probably want to use a different"\
+               "\ndebian-control-texlive-in.txt file." >&2
+
+# For some errors, we exit. For others (non-fatal) we continue but at the end
+# report that something went wrong (i.e. MAINRET != 1).
+# For some, we just report to STDERR (warnings).
+MAINRET=0
+
+# TODO
+## ALTERNATIVE if this is the only file dependency, we could dl it or put inside this script.
+requiredFiles=(
+    debian-control-texlive-in.txt
+)
+for file in "${requiredFiles[@]}"; do
+        [ -e "${file}" ] \
+    || { echo "${ERRORPREFIX}required file, ${file}, does not exist." >&2; exit 1; }
+done
+
+if [ "${NO_APT_DPKG}" != "1" ]; then
+    echo "${ECHOPREFIX}running apt and dpkg commands..."
+    # libfile-fcntllock-perl because otherwise equivs gives:
+    #     "File::FcntlLock not available; using flock which is not NFS-safejo"
+    # gcc because otherwise:
+    #     "Couldn't determine gcc system type, falling back to default (native compilation)"
+    # If change here, change in lyx-tester
+    PREREQS='libfile-fcntllock-perl gcc equivs libwww-perl fontconfig unzip'
+    apt-get -y install --no-install-recommends ${PREREQS} >&3 2>&1 \
+        || { echo "${ERRORPREFIX}apt-get failed to install ${PREREQS} in $0" >&2; exit 1; }
+    # TODO put the -out.txt in a temp dir, or in the log file.
+    # newline in a Debian control file is OK right?
+
+    # equivs-build has a bug where it cannot be run from a dir with a space.
+    # see: https://bugs.launchpad.net/ubuntu/+source/equivs/+bug/881153
+    CONTROL_OUTD=$( mktemp -d )
+    if [ "${VER_UBUNTU}" != "12.04" ]; then
+        sed -r 's/latex-cjk-xcjk,? ?//g' "debian-control-texlive-in.txt" |
+            sed -r 's/texlive-lang-ukenglish,? ?//g' > "${CONTROL_OUTD}/debian-control-texlive-out.txt"
+    else
+            cp "debian-control-texlive-in.txt" "${CONTROL_OUTD}/debian-control-texlive-out.txt"
+    fi
+    ( cd "${CONTROL_OUTD}" && equivs-build "debian-control-texlive-out.txt" ) >&3 2>&1 \
+        || echo "${WARNINGPREFIX}equivs-build failed for TeX Live" >&2
+    dpkg -i "${CONTROL_OUTD}/texlive-local_2013-1~9_all.deb" >&3 2>&1 || \
+        echo "${WARNINGPREFIX}dpkg could not install dummy TeX Live package" >&2
+    if [ "${ONLY_APT_DPKG}" = 1 ]; then
+        exit 0
+    fi
+fi
+
+(
+    timesToTry=$(( TIMESRETRY + 1 ))
+    timesTried=0
+    fail=0
+    success=0
+    while (( timesTried != timesToTry )); do
+        timesTried=$(( timesTried + 1 ))
+        echo "${ECHOPREFIX}downloading and extracting install-tl for time number ${timesTried}..."
+        ${WGET_CMD} "${TLINSTALLER}" \
+            -O install-tl-unx.tar.gz >&3 2>&1
+        if [ "$?" != "0" ]; then
+            fail=1
+            echo "${WARNINGPREFIX}wget failed" >&2
+        fi
+        tar -xf "install-tl-unx.tar.gz"
+        if [ "$?" != "0" ]; then
+            fail=1
+            echo "${WARNINGPREFIX}tar failed" >&2
+        fi
+        if [ "${fail}" = 0 ]; then
+            success=1
+            break
+        else
+            (( timesTried != timesToTry )) && echo "${ECHOPREFIX}we will try to restart the download/extract." >&2
+        fi
+    done
+    if [ "${success}" = "1" ]; then
+        echo "${ECHOPREFIX}install-tl downloaded and extracted successfully."
+    else
+        echo "${ERRORPREFIX}install-tl failed to download/extract ${timesToTry} times. Aborting." >&2
+        exit 1
+    fi
+)
+
+cd install-tl-* || { echo "${ERRORPREFIX}cannot cd into dir." >&2; exit 1; }
+
+timesToTry=$(( TIMESRETRY + 1 ))
+timesTried=0
+success=0
+while (( timesTried != timesToTry )); do
+    timesTried=$(( timesTried + 1 ))
+    echo "${ECHOPREFIX}Starting install-tl for time number $timesTried..."
+    TLlog="${LOG_DIR}/install-tl-${timesTried}.log"
+    # ALTERNATIVE for installing non-interactively is to use a profile.
+    # -scheme full is default.
+    if [ -f "./installation.profile" ]; then
+        # ALTERNATIVE start with -profile installation.profile.
+        # If continuing, the question will be:
+        # "ABORTED INSTALLATION FOUND: installation.profile
+        #  Do you want to continue with the exact same settings as before (y/N)":
+        option="y"
+    else
+        option="i"
+    fi
+
+    # Redirect to /dev/null because it is mostly a copy of what's logged to
+    # install-tl.log
+    if echo "${option}" | ./install-tl -v -repository "${TLREPO}" \
+        -logfile "${TLlog}" -scheme full > /dev/null 2>&1; then
+        success=1
+        break
+    else
+        echo "${WARNINGPREFIX}./install-tl failed." >&2
+        if ( grep -i "are not compatible" "${TLlog}" &&
+             grep -i "Perhaps you need to use a different CTAN mirror?" "${TLlog}" ) > /dev/null 2>&1; then
+               echo -e ${ECHOPREFIX}the installer and repo are mismatched.\
+                       \\nFor example, the installer could be for TeX Live 2013 and the repo for 2012. >&2
+               exit 1
+        fi
+        (( timesTried != timesToTry )) && echo "${ECHOPREFIX}we will try to restart the install." >&2
+    fi
+done
+if [ "${success}" = "1" ]; then
+    echo "${ECHOPREFIX}install-tl finished successfully."
+else
+    echo "${ERRORPREFIX}./install-tl failed ${timesToTry} times. Aborting." >&2
+    exit 1
+fi
+
+MAINTEXDIR=$(grep "TEXDIR:" "${TLlog}" | awk -F'"' '{ print $2 }')
+
+echo "${ECHOPREFIX}Linking..."
+[ -d "${MAINTEXDIR}/bin" ] && ln -s "${MAINTEXDIR}/bin"/* "/opt/texbin" \
+  || { echo "${ERRORPREFIX}could not link." >&2; exit 1; }
+sed -i 's/^PATH="/PATH="\/opt\/texbin:/' /etc/environment || { echo "${ERRORPREFIX}could not sed." >&2; exit 1; }
+source /etc/environment
+
+dTEXMFLOCAL="$(kpsewhich -var-value TEXMFLOCAL)"
+
+# see "System font configuration for XeTEX and LuaTEX"
+# http://www.tug.org/texlive/doc/texlive-en/texlive-en.html#x1-350003.4.4
+
+if [ -n "${TT_FONTS}" ]; then
+    dTT="${dTEXMFLOCAL}/fonts/truetype/$(basename "$0")"
+    [ ! -d "${dTT}" ] &&
+      mkdir -p "${dTT}"
+    cp -r "${TT_FONTS}"/* "${dTT}"
+fi
+
+if [ -n "${USR_FONTS_DIR}" ]; then
+    cp -r "${USR_FONTS_DIR}"/* "/usr/share/fonts/"
+fi
+
+
+SYSFONT='/etc/fonts/conf.d/09-texlive.conf'
+cp "$(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf" "${SYSFONT}"  \
+    || { echo "${WARNINGPREFIX}cp back failed" >&2; MAINRET=1; }
+if [ "$( grep -c 'type1' "${SYSFONT}" )" = "1" ]; then
+    sed -i '/type1/d' "${SYSFONT}"
+else
+    echo "${WARNINGPREFIX}only one line should match the pattern 'type1'" >&2 
+    MAINRET=1
+fi
+
+fc-cache -fsv >&3 2>&3 || { echo "${WARNINGPREFIX}fc-cache failed" >&2; MAINRET=1; }
+
+if [ "${EXTRAS}" = "1" ]; then
+    echo "${ECHOPREFIX}installing LaTeX files that are not in TeX Live..."
+    cd "${dTEXMFLOCAL}/tex/latex"
+    
+    ${WGET_CMD} "ftp://ftp.springer.de/pub/tex/latex/svjour3/global.zip" \
+      "ftp://ftp.springer.de/pub/tex/latex/svmonot1.zip" \
+      "ftp://ftp.springer.de/pub/tex/latex/svmultt1.zip" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download Springer files." >&2; MAINRET=1; }
+    
+    ( mkdir ACM && cd ACM \
+    && ${WGET_CMD} "http://www.acm.org/sigs/publications/acm_proc_article-sp.cls" ) >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download ACM files." >&2; MAINRET=1; }
+
+    (mkdir RJournal && cd RJournal && ${WGET_CMD} "https://github.com/rjournal/share/raw/master/RJournal.sty" >&3 2>&1) \
+      || { echo "${WARNINGPREFIX}failed to download RJournal files." >&2; MAINRET=1; }
+    
+    (
+      mkdir sigplan
+      cd sigplan
+      ${WGET_CMD} "http://drupal.sigplan.org/sites/default/files/sigplanconf.cls" >&3 2>&1 \
+        || { echo "${WARNINGPREFIX}failed to download sigplan files." >&2; MAINRET=1; }
+    )
+    
+    ${WGET_CMD} "http://publications.agu.org/files/2013/03/AGU-LaTeX.zip" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download AGU files." >&2; MAINRET=1; }
+    ${WGET_CMD} "ftp://ftp.aip.org/asa/JasaTeX-0.1tc7.zip" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download JasaTeX files." >&2; MAINRET=1; }
+    ${WGET_CMD} "http://www.e-publications.org/ecta/support/download/ectaart.zip" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download ectaart files." >&2; MAINRET=1; }
+    ${WGET_CMD} "http://www.jstatsoft.org/downloads/JSSstyle.zip" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download JSSstyle files." >&2; MAINRET=1; }
+    ${WGET_CMD} "http://www.worldscientific.com/sda/1037/ijmpc-2e.zip" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download IJMPC files." >&2; MAINRET=1; }
+    ${WGET_CMD} "http://www.worldscientific.com/sda/1037/ijmpd-2e.zip" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download IJMPD files." >&2; MAINRET=1; }
+    ${WGET_CMD} "http://www.siggraph.org/sites/default/files/acmsiggraph.zip" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download siggraph files." >&2; MAINRET=1; }
+    ${WGET_CMD} "http://www.aeaweb.org/templates/latex_templates.zip" -O AEA.zip >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download AEA files." >&2; MAINRET=1; }
+    
+    for zipfile in *.zip; do
+        folder_=$( basename "${zipfile}" .zip ) &&
+        mkdir "${folder_}" &&
+        mv "${zipfile}" "${folder_}" &&
+        cd "${folder_}" &&
+        unzip "${zipfile}" >&3 2>&1 &&
+        rm "${zipfile}" &&
+        cd .. \
+        || { echo "${WARNINGPREFIX}problem while unzipping" >&2; MAINRET=1; }
+    done
+    
+    # removing .sty files so they don't conflict with TeX Live files
+    cd AEA
+    find ./ -iname *.sty -exec rm "{}" \;
+    cd ..
+    
+    # This is part of aa. See "MORE AA" below for more commands regarding the aa-package.
+    ${WGET_CMD} "http://ftp.edpsciences.org/pub/aa/aa-package.tar.gz" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download aa-package." >&2; MAINRET=1; }
+    ${WGET_CMD} "ftp://ftp.iop.org/pub/journals/ioplatexguidelines.tar.gz" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download ioplatex files." >&2; MAINRET=1; }
+    
+    for targz in *tar.gz; do
+        folder_=$( basename "${targz}" .tar.gz ) &&
+        mkdir "${folder_}" &&
+        mv "${targz}" "${folder_}" &&
+        cd "${folder_}" &&
+        tar -xf "${targz}" >&3 2>&1 &&
+        rm "${targz}" &&
+        cd .. \
+        || { echo "${WARNINGPREFIX}problem while untarring" >&2; MAINRET=1; }
+    done
+    
+    # MORE AA
+    # aa-package.tar.gz contains an old version of natbib that will be used if not removed
+    rm "aa-package/bibtex/natbib.sty" ||
+      { echo "${WARNINGPREFIX}aa-package's bundled natbib could not be removed"; MAINRET=1; }
+    # aa.cls is not readable when extracted. Might as well do for all.
+    chmod -R +r * || { echo "${WARNINGPREFIX}chmod failed to set read permission on files." >&2; MAINRET=1; }
+    
+    # AEA files are all executable. That can't lead to any good. Might as well do for all. (but not folders)
+    find ./ -type f -exec chmod -x '{}' \;
+    
+    # Otherwise they're not found.
+    # TODO do a 'find' for all bst and copy?
+    find ./ -iregex ".*\.bst$" -type f -print0 | xargs -0 cp -t "${dTEXMFLOCAL}/bibtex/bst" >&3 2>&1
+fi
+
+if [ "${LINK_UBUNTU}" = 1 ]; then
+    cd "${dTEXMFLOCAL}/tex/"
+    ln -s "/usr/share/texmf/tex/" "UbuntuTexDir"
+fi
+
+if [ "${HEBREW}" = 1 ]; then
+    (
+      mkdir "/tmp/HebrewFonts" &&
+      cd "/tmp/HebrewFonts" &&
+      ${WGET_CMD} "http://ftp.us.debian.org/debian/pool/main/i/ivritex/ivritex_1.1.1-6_all.deb" &&
+      ar x "ivritex_1.1.1-6_all.deb" && tar -xf "data.tar.gz" &&
+      rsync -a "usr/share/texmf/" "${dTEXMFLOCAL}"
+    ) >&3 2>&1 \
+    || { echo "${WARNINGPREFIX}Hebrew font was not installed correctly." >&2; MAINRET=1; }
+fi
+
+echo "${ECHOPREFIX}running texhash..."
+texhash >&3 2>&1 && echo "${ECHOPREFIX}texhash was successful." || { echo "${WARNINGPREFIX}texhash exited with error." >&2; MAINRET=1; }
+
+if [ "${MAINRET}" = "0" ]; then
+    echo "${ECHOPREFIX}`date`: Finished (all successful)."
+else
+    echo -e "${ECHOPREFIX}`date`: Finished (not all successful)." \
+             "\nPlease report all warnings and errors (even if things appear to work)" \
+             "\nby sending the logs found in ${LOG_DIR} to the author." \
+             "\nSee $(basename "$0") --version for contact details." >&2
+fi
+echo -e "${ECHOPREFIX}you might need to restart your computer
+  so that your PATH (in /etc/environment) will be sourced."
