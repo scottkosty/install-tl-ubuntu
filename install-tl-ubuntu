@@ -213,7 +213,7 @@ if [ "${HELP}" = "1" ]; then
 fi
 
 if [ "${VERSION}" = "1" ]; then
-  echo -e "\\ninstall-tl-ubuntu\\nVersion 0.2dev\\nAuthor: Scott Kostyshak\\nContact: skostysh@princeton.edu"
+  echo -e "\\ninstall-tl-ubuntu\\nVersion 0.2\\nAuthor: Scott Kostyshak\\nContact: skostysh@princeton.edu"
   exit 0
 fi
 
