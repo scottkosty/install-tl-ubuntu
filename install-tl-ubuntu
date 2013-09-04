@@ -163,6 +163,8 @@ if [ "${HELP}" = "1" ]; then
   TeX Live installation documentation can be found in the following two links:
   http://www.tug.org/texlive/quickinstall.html
   http://www.tug.org/texlive/doc/texlive-en/texlive-en.html#installation
+  Also see 'TeX Live and Debian/Ubuntu':
+  http://www.tug.org/texlive/debian.html
   Information on TeX Live's install script arguments is here:
   http://www.tug.org/texlive/doc/install-tl.html The Net::LWP Perl module
   (libwww-perl) is recommended, but not necessary. See the
