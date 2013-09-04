@@ -159,14 +159,14 @@ if [ "${HELP}" = "1" ]; then
 
   This script automates many of the instructions that were posted in the
   25 Jan 2013 answer by Silex:
-  http://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
+    http://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
   TeX Live installation documentation can be found in the following two links:
-  http://www.tug.org/texlive/quickinstall.html
-  http://www.tug.org/texlive/doc/texlive-en/texlive-en.html#installation
+    http://www.tug.org/texlive/quickinstall.html
+    http://www.tug.org/texlive/doc/texlive-en/texlive-en.html#installation
   Also see 'TeX Live and Debian/Ubuntu':
-  http://www.tug.org/texlive/debian.html
+    http://www.tug.org/texlive/debian.html
   Information on TeX Live's install script arguments is here:
-  http://www.tug.org/texlive/doc/install-tl.html The Net::LWP Perl module
+    http://www.tug.org/texlive/doc/install-tl.html The Net::LWP Perl module
   (libwww-perl) is recommended, but not necessary. See the
   \"persistent-downloads\" section of the install-tl documenation.
 
