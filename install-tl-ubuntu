@@ -31,8 +31,8 @@ else
     ECHOPREFIX="$( basename "$0" ): "
 fi
 
-ERRORPREFIX="${ECHOPREFIX}Error: "
-WARNINGPREFIX="${ECHOPREFIX}Warning: "
+ERRORPREFIX="${ECHOPREFIX}ERROR: "
+WARNINGPREFIX="${ECHOPREFIX}WARNING: "
 
 ARGS=$( getopt -o "r:mt:u:hvaebo:fgp:" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository" \
       -n "$( basename "$0" )" -- "$@" )
