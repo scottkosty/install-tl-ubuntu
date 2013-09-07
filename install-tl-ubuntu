@@ -420,19 +420,23 @@ if [ "${EXTRAS}" = "1" ]; then
       "ftp://ftp.springer.de/pub/tex/latex/svmultt1.zip" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download Springer files." >&2; MAINRET=1; }
     
-    ( mkdir ACM && cd ACM \
-    && ${WGET_CMD} "http://www.acm.org/sigs/publications/acm_proc_article-sp.cls" ) >&3 2>&1 \
-      || { echo "${WARNINGPREFIX}failed to download ACM files." >&2; MAINRET=1; }
+    (
+      mkdir ACM && cd ACM &&
+      ${WGET_CMD} "http://www.acm.org/sigs/publications/acm_proc_article-sp.cls" \
+    ) >&3 2>&1 \
+    || { echo "${WARNINGPREFIX}failed to download ACM files." >&2; MAINRET=1; }
 
-    (mkdir RJournal && cd RJournal && ${WGET_CMD} "https://github.com/rjournal/share/raw/master/RJournal.sty" >&3 2>&1) \
-      || { echo "${WARNINGPREFIX}failed to download RJournal files." >&2; MAINRET=1; }
+    (
+      mkdir RJournal && cd RJournal &&
+      ${WGET_CMD} "https://github.com/rjournal/share/raw/master/RJournal.sty" \
+    ) >&3 2>&1 \
+    || { echo "${WARNINGPREFIX}failed to download RJournal files." >&2; MAINRET=1; }
     
     (
-      mkdir sigplan
-      cd sigplan
-      ${WGET_CMD} "http://drupal.sigplan.org/sites/default/files/sigplanconf.cls" >&3 2>&1 \
-        || { echo "${WARNINGPREFIX}failed to download sigplan files." >&2; MAINRET=1; }
-    )
+      mkdir sigplan && cd sigplan &&
+      ${WGET_CMD} "http://drupal.sigplan.org/sites/default/files/sigplanconf.cls" \
+    ) >&3 2>&1 \
+    || { echo "${WARNINGPREFIX}failed to download sigplan files." >&2; MAINRET=1; }
 
     ${WGET_CMD} "http://publications.agu.org/files/2013/08/AGU-LaTeX.zip" >&3 2>&1 \
       || { echo -e "${WARNINGPREFIX}failed to download AGU files. Look here for the updated download link:\n" \
