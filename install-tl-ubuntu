@@ -528,9 +528,10 @@ if [ "${MAINRET}" = "0" ]; then
     echo "${ECHOPREFIX}`date`: Finished (all successful)."
 else
     echo -e "${ECHOPREFIX}`date`: Finished (not all successful)." \
-             "\nPlease report all warnings and errors (even if things appear to work)" \
-             "\nby sending the logs found in ${LOG_DIR} to the author." \
-             "\nSee $(basename "$0") --version for contact details." >&2
+             "\n    Please report all warnings and errors (even if things appear to work)" \
+             "\n    by sending the logs found in the following directory to the author:" \
+             "\n      ${LOG_DIR}" \
+             "\n    See $(basename "$0") --version for contact details." >&2
 fi
 echo -e "${ECHOPREFIX}you might need to restart your computer
   so that your PATH (in /etc/environment) will be sourced."
