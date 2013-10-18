@@ -244,8 +244,8 @@ WGET_CMD="wget --tries=${TIMESRETRY}"
 exec 3>> "${LOG_DIR}/install-tl-ubuntu_EXTRAS.log"
 
 VER_UBUNTU=$( lsb_release -rs )
-[[ "${VER_UBUNTU}" = "12.04" || "${VER_UBUNTU}" = "12.10" || "${VER_UBUNTU}" = "13.04" ]] \
-    || echo -e "${ERRORPREFIX}this script only currently supports Ubuntu 12.04, 12.10, and 13.04."\
+[[ "${VER_UBUNTU}" = "12.04" || "${VER_UBUNTU}" = "12.10" || "${VER_UBUNTU}" = "13.04" || "${VER_UBUNTU}" = "13.10" ]] \
+    || echo -e "${ERRORPREFIX}this script only currently supports Ubuntu 12.04, 12.10, 13.04, and 13.10."\
                "\nFor other versions, one would probably want to use a different"\
                "\ndebian-control-texlive-in.txt file." >&2
 
