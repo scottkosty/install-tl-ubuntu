@@ -218,13 +218,14 @@ fi
 
 function checkEnvVars ()
 {
-  logName=$(logname)
+  username=$(grep "/bin/bash" /etc/passwd \
+       | perl -pe 's/.*\/(\w+):\/bin\/bash/$1/g' | grep -v "root")
   envFiles=( '/etc/bashrc' '/etc/profile' '/etc/environment' 'etc/bash.bashrc'
-             "/home/${logName}/.bashrc" "/home/${logName}/.profile" "/home/${logName}/.bash_profile" )
+             "/home/${username}/.bashrc" "/home/${username}/.profile" "/home/${username}/.bash_profile" )
 
-  echo "Checking for TEX environment variables..."
+  echo "${ECHOPREFIX}checking for TEX environment variables..."
 # This list is from the output of 'texconfig conf'
-  BAD_ENVS=$( sudo -u "${logName}" bash --login -i -c env | grep "TEXMFMAIN\|TEXMFDIST\|TEXMFLOCAL\|TEXMFSYSVAR\|TEXMFSYSCONFIG\|TEXMFVAR\|TEXMFCONFIG\|VARTEXFONTS\|TEXMF\|SYSTEXMF\|TEXMFDBS\|WEB2C\|TEXPSHEADERS\|TEXCONFIG\|ENCFONTS\|TEXFONTMAPS" )
+  BAD_ENVS=$( sudo -u "${username}" bash --login -i -c env | grep "TEXMFMAIN\|TEXMFDIST\|TEXMFLOCAL\|TEXMFSYSVAR\|TEXMFSYSCONFIG\|TEXMFVAR\|TEXMFCONFIG\|VARTEXFONTS\|TEXMF\|SYSTEXMF\|TEXMFDBS\|WEB2C\|TEXPSHEADERS\|TEXCONFIG\|ENCFONTS\|TEXFONTMAPS" )
   if [ -n "${BAD_ENVS}" ]; then
     echo "${ERRORPREFIX}the environment variables listed after this error message
   cause TeX Live to look in non-default locations. Because this script will use
