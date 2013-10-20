@@ -230,7 +230,12 @@ function checkEnvVars ()
   # I tried to get the environment variables set using bash -i but this creates problems
   # so I will at least grep .bashrc (although if .bashrc sources another file this will
   # not pick that up)
-  BAD_RC=$( grep "${grepList}" "/home/${username}/.bashrc" )
+  bashRC="/home/${username}/.bashrc"
+  if [ -f "${bashRC}" ]; then
+    BAD_RC=$( grep "${grepList}" "${bashRC}" )
+  else
+    BAD_RC=''
+  fi
   BAD_ENVS=( "${BAD_VARS[@]}" "${BAD_RC[@]}" )
   if [ -n "${BAD_ENVS}" ]; then
     echo "${ERRORPREFIX}the environment variables listed after this error message
