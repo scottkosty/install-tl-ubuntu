@@ -231,7 +231,7 @@ function checkEnvVars ()
   # so I will at least grep .bashrc (although if .bashrc sources another file this will
   # not pick that up)
   BAD_RC=$( grep "${grepList}" "/home/${username}/.bashrc" )
-  BAD_ENVS=( ${BAD_VARS[@]} ${BAD_RC[@]} )
+  BAD_ENVS=( "${BAD_VARS[@]}" "${BAD_RC[@]}" )
   if [ -n "${BAD_ENVS}" ]; then
     echo "${ERRORPREFIX}the environment variables listed after this error message
   cause TeX Live to look in non-default locations. Because this script will use
