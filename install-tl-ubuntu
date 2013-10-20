@@ -214,6 +214,47 @@ if [ "${HELP}" = "1" ]; then
   exit 0
 fi
 
+### /begin function declarations
+
+function checkEnvVars ()
+{
+  logName=$(logname)
+  envFiles=( '/etc/bashrc' '/etc/profile' '/etc/environment' 'etc/bash.bashrc'
+             "/home/${logName}/.bashrc" "/home/${logName}/.profile" "/home/${logName}/.bash_profile" )
+
+  echo "Checking for TEX environment variables..."
+# This list is from the output of 'texconfig conf'
+  BAD_ENVS=$( sudo -u "${logName}" bash --login -i -c env | grep "TEXMFMAIN\|TEXMFDIST\|TEXMFLOCAL\|TEXMFSYSVAR\|TEXMFSYSCONFIG\|TEXMFVAR\|TEXMFCONFIG\|VARTEXFONTS\|TEXMF\|SYSTEXMF\|TEXMFDBS\|WEB2C\|TEXPSHEADERS\|TEXCONFIG\|ENCFONTS\|TEXFONTMAPS" )
+  if [ -n "${BAD_ENVS}" ]; then
+    echo "${ERRORPREFIX}the environment variables listed after this error message
+  cause TeX Live to look in non-default locations. Because this script will use
+  symlinks to provide a correct configuration, these environment variables are
+  not needed and might confuse TeX Live. The variables are probably left over
+  from a previous TeX Live configuration. If you would like to do a custom
+  install, do so with install-tl directly. If you would like to use
+  install-tl-ubuntu, please remove these environment variables.
+  Note that it is OK to have TEXMFHOME set."
+    for i in ${BAD_ENVS[@]}; do
+    found=0
+      benv=${i%%=*}
+      for envFile in ${envFiles[@]}; do
+        if [ -f "${envFile}" ]; then
+          if grep -q ${benv} "${envFile}"; then
+            echo "${benv} is set in the file ${envFile}"
+            found=1
+          fi
+        fi
+      done
+    if [ "${found}" = "0" ]; then
+      echo "I don't know where ${benv} is set."
+    fi
+    done
+    exit 1
+  fi
+}
+
+### /end function declarations
+
 if [ "${VERSION}" = "1" ]; then
   echo -e "\\ninstall-tl-ubuntu\\nVersion 0.3dev\\nAuthor: Scott Kostyshak\\nContact: skostysh@princeton.edu"
   exit 0
@@ -263,6 +304,12 @@ for file in "${requiredFiles[@]}"; do
         [ -e "${file}" ] \
     || { echo "${ERRORPREFIX}required file, ${file}, does not exist." >&2; exit 1; }
 done
+
+# Check to see if TeX Live environment variables are set (which might cause conflicts)
+checkEnvVars
+
+# /end sanity checks
+# /begin main processing
 
 if [ "${NO_APT_DPKG}" != "1" ]; then
     echo "${ECHOPREFIX}running apt and dpkg commands..."
