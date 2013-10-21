@@ -223,7 +223,7 @@ function checkEnvVars ()
   envFiles=( '/etc/bashrc' '/etc/profile' '/etc/environment' 'etc/bash.bashrc'
              "/home/${username}/.bashrc" "/home/${username}/.profile" "/home/${username}/.bash_profile" )
 
-  echo "${ECHOPREFIX}checking for TEX environment variables..."
+  echo "${ECHOPREFIX}checking for TeX Live environment variables..."
   # This list is from the output of 'texconfig conf'
   grepList="TEXMFMAIN\|TEXMFDIST\|TEXMFLOCAL\|TEXMFSYSVAR\|TEXMFSYSCONFIG\|TEXMFVAR\|TEXMFCONFIG\|VARTEXFONTS\|TEXMF\|SYSTEXMF\|TEXMFDBS\|WEB2C\|TEXPSHEADERS\|TEXCONFIG\|ENCFONTS\|TEXFONTMAPS"
   BAD_VARS=$( sudo -u "${username}" bash --login -c env | grep "${grepList}" )
