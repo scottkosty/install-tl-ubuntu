@@ -338,6 +338,8 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
 
     # equivs-build has a bug where it cannot be run from a dir with a space.
     # see: https://bugs.launchpad.net/ubuntu/+source/equivs/+bug/881153
+    #      and upstream bug:
+    #      http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=679101
     CONTROL_OUTD=$( mktemp -d )
     if [ "${VER_UBUNTU}" != "12.04" ]; then
         sed -r 's/latex-cjk-xcjk,? ?//g' "debian-control-texlive-in.txt" |
