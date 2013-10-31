@@ -401,6 +401,7 @@ fi
 timesToTry=$(( TIMESRETRY + 1 ))
 timesTried=0
 success=0
+ceol="$(tput el)"
 while (( timesTried != timesToTry )); do
     timesTried=$(( timesTried + 1 ))
     echo "${ECHOPREFIX}Starting install-tl for time number $timesTried..."
@@ -417,14 +418,44 @@ while (( timesTried != timesToTry )); do
         option="i"
     fi
 
+    # progress update. ALTERNATIVE fork install-tl instead of this.
+    (
+      sleep 10
+      pastStart=0
+      while true; do
+          sleep 3
+          if [ -f "${TLlog}" ]; then
+              # The max # of lines between regex matches was 18 when I checked.
+              progress=$(tail -n 30 "${TLlog}" \
+                | grep -o -P "\[\d+/\d+.*?]" | tail -n 1)
+              if [ -n "${progress}" ]; then
+                  echo -n -e "\r${ceol}"
+                  echo -n -e "\r         progress: ${progress}"
+                  pastStart=1
+              else
+                  # If no progress found from tail-grep, we are at start or end.
+                  if [ "${pastStart}" = "1" ]; then
+                      echo -e "\n                   running config scripts (could take up to 15 mins)..."
+                      exit
+                  fi
+              fi
+          fi
+      done
+    ) &
+    pid_progress=$!
+
     # Redirect to /dev/null because it is mostly a copy of what's logged to
     # install-tl.log
     if echo "${option}" | ./install-tl -v -repository "${TLREPO}" \
         -logfile "${TLlog}" -scheme full > /dev/null 2>&1; then
         success=1
+        kill ${pid_progress} > /dev/null 2>&1
+        wait ${pid_progress} > /dev/null 2>&1 # otherwise the user will see "terminated" output
         break
     else
-        echo "${WARNINGPREFIX}./install-tl failed." >&2
+        kill ${pid_progress} > /dev/null 2>&1
+        wait ${pid_progress} > /dev/null 2>&1
+        echo -e "\n${WARNINGPREFIX}./install-tl failed." >&2
         if ( grep -i "are not compatible" "${TLlog}" &&
              grep -i "Perhaps you need to use a different CTAN mirror?" "${TLlog}" ) > /dev/null 2>&1; then
                echo -e ${ECHOPREFIX}the installer and repo are mismatched.\
@@ -435,9 +466,9 @@ while (( timesTried != timesToTry )); do
     fi
 done
 if [ "${success}" = "1" ]; then
-    echo "${ECHOPREFIX}install-tl finished successfully."
+    echo -e "${ECHOPREFIX}install-tl finished successfully."
 else
-    echo "${ERRORPREFIX}./install-tl failed ${timesToTry} times. Aborting." >&2
+    echo -e "\n${ERRORPREFIX}./install-tl failed ${timesToTry} times. Aborting." >&2
     exit 1
 fi
 
