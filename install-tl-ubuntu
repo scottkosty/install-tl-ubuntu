@@ -34,7 +34,7 @@ fi
 ERRORPREFIX="${ECHOPREFIX}ERROR: "
 WARNINGPREFIX="${ECHOPREFIX}WARNING: "
 
-ARGS=$( getopt -o "r:mt:u:hvaebo:fgp:" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository" \
+ARGS=$( getopt -o "r:mt:u:hvaebo:fgq:p:" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository:,profile:" \
       -n "$( basename "$0" )" -- "$@" )
 # If bad arguments, exit (getopt will have already written the error to STDERR).
 [ "$?" = "0" ] || exit 1
@@ -52,6 +52,7 @@ TIMESRETRY=10
 EXTRAS=0
 TT_FONTS=
 USR_FONTS_DIR=
+TLPROFILE=
 ONLY_APT_DPKG=0
 NO_APT_DPKG=0
 LOG_DIR="${MAINDIR}"
@@ -89,7 +90,16 @@ do
       fi
       shift 2
       ;;
-  -p|--repository)  TLREPO="$2"
+  -p|--profile)
+      if [ -f "$2" ]; then
+        TLPROFILE="-profile $( printf '%q' "$2" )"
+      else
+        echo "${ERRORPREFIX}the argument to $1 must be an existing file." >&2
+        exit 1
+      fi
+      shift 2
+      ;;
+  -q|--repository)  TLREPO="$2"
       shift 2
       ;;
   -r|--retry)
@@ -194,7 +204,13 @@ if [ "${HELP}" = "1" ]; then
   -h, --help                 \e[00;36m Display this help output and exit.                               \e[00m
   -m, --more-tex             \e[00;36m Install tex files in addition to TeX Live
                                 (e.g. style files needed by many of LyX's templates and examples).      \e[00m
-  -p, --repository REPO      \e[00;36m Use the specified repository to download and run installer.
+  -p, --profile    FILE      \e[00;36m Instead of a default installation, use FILE to specify the
+                                configuration (e.g. which packages are installed) of the TeX Live
+                                installation. This can be used if space is a concern, for example. To
+                                see the format that this file should take, see example.profile. Note
+                                that you might need to manually edit the Debian control file so that
+                                apt does not think that you have a full TeX Live installation.          \e[00m
+  -q, --repository REPO      \e[00;36m Use the specified repository to download and run installer.
                                 This can be used to determine which version of TeX Live is installed
                                 (e.g. 2012, 2013, pretest).                                             \e[00m
   -o DIR, --log-dir DIR      \e[00;36m Directory in which to store logs. Defaults to current directory. \e[00m
@@ -446,8 +462,12 @@ while (( timesTried != timesToTry )); do
 
     # Redirect to /dev/null because it is mostly a copy of what's logged to
     # install-tl.log
-    if echo "${option}" | ./install-tl -v -repository "${TLREPO}" \
-        -logfile "${TLlog}" -scheme full > /dev/null 2>&1; then
+    # The eval is used to get around a quoting issue with TLPROFILE and TLlog.
+    # They are quoted in different ways because there is always a logfile but
+    # TLPROFILE contains both --profile and the argument. ALTERNATIVE: could use
+    # two variables for TLPROFILE and have both be empty if no argument.
+    if echo "${option}" | eval ./install-tl -v -repository "${TLREPO}" ${TLPROFILE} \
+        -logfile \"${TLlog}\" > /dev/null 2>&1; then
         success=1
         kill ${pid_progress} > /dev/null 2>&1
         wait ${pid_progress} > /dev/null 2>&1 # otherwise the user will see "terminated" output
@@ -498,13 +518,21 @@ fi
 
 
 SYSFONT='/etc/fonts/conf.d/09-texlive.conf'
-cp "$(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf" "${SYSFONT}"  \
-    || { echo "${WARNINGPREFIX}cp back failed" >&2; MAINRET=1; }
-if [ "$( grep -c 'type1' "${SYSFONT}" )" = "1" ]; then
-    sed -i '/type1/d' "${SYSFONT}"
+if cp "$(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf" "${SYSFONT}" \
+  > /dev/null 2>&1; then
+      if [ "$( grep -c 'type1' "${SYSFONT}" )" = "1" ]; then
+          sed -i '/type1/d' "${SYSFONT}"
+      else
+          echo "${WARNINGPREFIX}only one line should match the pattern 'type1'" >&2
+          MAINRET=1
+      fi
 else
-    echo "${WARNINGPREFIX}only one line should match the pattern 'type1'" >&2
-    MAINRET=1
+    if [ -z "${TLPROFILE}" ]; then
+        echo "${WARNINGPREFIX}cp back of texlive-fontconfig.conf failed" >&2
+        MAINRET=1
+    else
+        echo "${ECHOPREFIX}skipping font configuration because of your profile."
+    fi
 fi
 
 fc-cache -fsv >&3 2>&3 || { echo "${WARNINGPREFIX}fc-cache failed" >&2; MAINRET=1; }
