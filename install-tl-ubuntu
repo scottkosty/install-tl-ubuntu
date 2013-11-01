@@ -390,7 +390,13 @@ fi
     fi
 )
 
-cd install-tl-* || { echo "${ERRORPREFIX}cannot cd into dir." >&2; exit 1; }
+tl_dir=$( ls | grep -P "install-tl-\d{8}$" )
+if [ -d "${tl_dir}" ]; then
+    cd "${tl_dir}"
+else
+    echo "${ERRORPREFIX}cannot find install-tl dir to cd into." >&2
+    exit 1
+fi
 
 timesToTry=$(( TIMESRETRY + 1 ))
 timesTried=0
