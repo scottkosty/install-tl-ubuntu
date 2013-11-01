@@ -4,7 +4,7 @@
 # File: install-tl-ubuntu
 
 # Run the following command for usage and description:
-# ./install-tl-ubuntu --help 
+# ./install-tl-ubuntu --help
 
 
 # Copyright 2013, Scott Kostyshak
@@ -37,7 +37,7 @@ WARNINGPREFIX="${ECHOPREFIX}WARNING: "
 ARGS=$( getopt -o "r:mt:u:hvaebo:fgp:" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository" \
       -n "$( basename "$0" )" -- "$@" )
 # If bad arguments, exit (getopt will have already written the error to STDERR).
-[ "$?" = "0" ] || exit 1 
+[ "$?" = "0" ] || exit 1
 
 eval set -- "$ARGS"
 
@@ -189,12 +189,12 @@ if [ "${HELP}" = "1" ]; then
                                 install-tl-ubuntu can be run serially with the --only-apt-and-dpkg
                                 option and then the master script can fork install-tl-ubuntu with
                                 the --no-apt-or-dpkg option.                                            \e[00m
-  -g, --no-apt-or-dpkg       \e[00;36m Skip the apt and dpkg commands in this script. Only makes sense     
+  -g, --no-apt-or-dpkg       \e[00;36m Skip the apt and dpkg commands in this script. Only makes sense
                                 when install-tl-ubuntu was run previously with --only-apt-and-dpkg.     \e[00m
   -h, --help                 \e[00;36m Display this help output and exit.                               \e[00m
   -m, --more-tex             \e[00;36m Install tex files in addition to TeX Live
                                 (e.g. style files needed by many of LyX's templates and examples).      \e[00m
-  -p, --repository REPO      \e[00;36m Use the specified repository to download and run installer. 
+  -p, --repository REPO      \e[00;36m Use the specified repository to download and run installer.
                                 This can be used to determine which version of TeX Live is installed
                                 (e.g. 2012, 2013, pretest).                                             \e[00m
   -o DIR, --log-dir DIR      \e[00;36m Directory in which to store logs. Defaults to current directory. \e[00m
@@ -503,7 +503,7 @@ cp "$(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf" "${S
 if [ "$( grep -c 'type1' "${SYSFONT}" )" = "1" ]; then
     sed -i '/type1/d' "${SYSFONT}"
 else
-    echo "${WARNINGPREFIX}only one line should match the pattern 'type1'" >&2 
+    echo "${WARNINGPREFIX}only one line should match the pattern 'type1'" >&2
     MAINRET=1
 fi
 
@@ -512,12 +512,12 @@ fc-cache -fsv >&3 2>&3 || { echo "${WARNINGPREFIX}fc-cache failed" >&2; MAINRET=
 if [ "${EXTRAS}" = "1" ]; then
     echo "${ECHOPREFIX}installing LaTeX files that are not in TeX Live..."
     cd "${dTEXMFLOCAL}/tex/latex"
-    
+
     ${WGET_CMD} "ftp://ftp.springer.de/pub/tex/latex/svjour3/global.zip" \
       "ftp://ftp.springer.de/pub/tex/latex/svmonot1.zip" \
       "ftp://ftp.springer.de/pub/tex/latex/svmultt1.zip" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download Springer files." >&2; MAINRET=1; }
-    
+
     (
       mkdir ACM && cd ACM &&
       ${WGET_CMD} "http://www.acm.org/sigs/publications/acm_proc_article-sp.cls" \
@@ -529,7 +529,7 @@ if [ "${EXTRAS}" = "1" ]; then
       ${WGET_CMD} "https://github.com/rjournal/share/raw/master/RJournal.sty" \
     ) >&3 2>&1 \
     || { echo "${WARNINGPREFIX}failed to download RJournal files." >&2; MAINRET=1; }
-    
+
     (
       mkdir sigplan && cd sigplan &&
       ${WGET_CMD} "http://drupal.sigplan.org/sites/default/files/sigplanconf.cls" \
@@ -554,7 +554,7 @@ if [ "${EXTRAS}" = "1" ]; then
       || { echo "${WARNINGPREFIX}failed to download siggraph files." >&2; MAINRET=1; }
     ${WGET_CMD} "http://www.aeaweb.org/templates/latex_templates.zip" -O AEA.zip >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download AEA files." >&2; MAINRET=1; }
-    
+
     for zipfile in *.zip; do
         folder_=$( basename "${zipfile}" .zip ) &&
         mkdir "${folder_}" &&
@@ -565,18 +565,18 @@ if [ "${EXTRAS}" = "1" ]; then
         cd .. \
         || { echo "${WARNINGPREFIX}problem while unzipping" >&2; MAINRET=1; }
     done
-    
+
     # removing .sty files so they don't conflict with TeX Live files
     cd AEA
     find ./ -iname *.sty -exec rm "{}" \;
     cd ..
-    
+
     # This is part of aa. See "MORE AA" below for more commands regarding the aa-package.
     ${WGET_CMD} "http://ftp.edpsciences.org/pub/aa/aa-package.tar.gz" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download aa-package." >&2; MAINRET=1; }
     ${WGET_CMD} "ftp://ftp.iop.org/pub/journals/ioplatexguidelines.tar.gz" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download ioplatex files." >&2; MAINRET=1; }
-    
+
     for targz in *tar.gz; do
         folder_=$( basename "${targz}" .tar.gz ) &&
         mkdir "${folder_}" &&
@@ -587,17 +587,17 @@ if [ "${EXTRAS}" = "1" ]; then
         cd .. \
         || { echo "${WARNINGPREFIX}problem while untarring" >&2; MAINRET=1; }
     done
-    
+
     # MORE AA
     # aa-package.tar.gz contains an old version of natbib that will be used if not removed
     rm "aa-package/bibtex/natbib.sty" ||
       { echo "${WARNINGPREFIX}aa-package's bundled natbib could not be removed"; MAINRET=1; }
     # aa.cls is not readable when extracted. Might as well do for all.
     chmod -R +r * || { echo "${WARNINGPREFIX}chmod failed to set read permission on files." >&2; MAINRET=1; }
-    
+
     # AEA files are all executable. That can't lead to any good. Might as well do for all. (but not folders)
     find ./ -type f -exec chmod -x '{}' \;
-    
+
     # Otherwise they're not found.
     # TODO do a 'find' for all bst and copy?
     find ./ -iregex ".*\.bst$" -type f -print0 | xargs -0 cp -t "${dTEXMFLOCAL}/bibtex/bst" >&3 2>&1
