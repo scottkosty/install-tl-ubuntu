@@ -211,8 +211,9 @@ if [ "${HELP}" = "1" ]; then
                                 that you might need to manually edit the Debian control file so that
                                 apt does not think that you have a full TeX Live installation.          \e[00m
   -q, --repository REPO      \e[00;36m Use the specified repository to download and run installer.
-                                This can be used to determine which version of TeX Live is installed
-                                (e.g. 2012, 2013, pretest).                                             \e[00m
+                                If this option is not specified, the fastest server will be determined
+                                automatically. This option can be used to determine which version of
+                                TeX Live is installed (e.g. 2012, 2013, pretest).                       \e[00m
   -o DIR, --log-dir DIR      \e[00;36m Directory in which to store logs. Defaults to current directory. \e[00m
   -r, --retry                \e[00;36m Number of times to retry if install-tl fails to install
                                 and for wget (used to download install-tl and if --hebrew or --more-tex
@@ -299,24 +300,52 @@ if (( $(stat -f --format="%a*%S" .) < 4000000000 )); then
     fi
 fi
 
-if [ -z "${TLREPO:-}" ]; then
-    TLREPO='http://mirror.utexas.edu/ctan/systems/texlive/tlnet'
-    echo -e "${ECHOPREFIX}no repository was specified so using the following:\n" \
-      "${TLREPO}"
-fi
-
-TLINSTALLER="${TLREPO}/install-tl-unx.tar.gz"
-
-# default of wget is --tries=20. Can take an hour. This makes the default --tries=5.
-WGET_CMD="wget --tries=${TIMESRETRY}"
-
-exec 3>> "${LOG_DIR}/install-tl-ubuntu_EXTRAS.log"
-
 VER_UBUNTU=$( lsb_release -rs )
 [[ "${VER_UBUNTU}" = "12.04" || "${VER_UBUNTU}" = "12.10" || "${VER_UBUNTU}" = "13.04" || "${VER_UBUNTU}" = "13.10" ]] \
     || echo -e "${ERRORPREFIX}this script only currently supports Ubuntu 12.04, 12.10, 13.04, and 13.10."\
                "\nFor other versions, one would probably want to use a different"\
                "\ndebian-control-texlive-in.txt file." >&2
+
+if [ -z "${TLREPO:-}" ]; then
+    echo "${ECHOPREFIX}determining the fastest repository..."
+    CURR_DIR="$( pwd )"
+    cd "$( mktemp -d )"
+    testPath='indexing/forindex.zip'
+
+    # We skip ftp connections.
+    # We only try every third server. The servers are listed in geographic
+    # order so this should pick up a little of everything.
+    wget --quiet -O - "http://ctan.org/mirrors" \
+      | grep -o "http.*>http<" \
+      | sed -n 1~3p \
+      | sed 's/">http<//' > "candidates.txt"
+    
+    # Note that if there is a timeout the repo does not get an entry in mirrorWgets.log.
+    sed 's#$#'${testPath}'#' "candidates.txt" \
+      | parallel --gnu --jobs 3 --timeout 30 '/usr/bin/time -f "%x %e %C" wget --quiet' > "${LOG_DIR}/mirrorWgets.log" 2>&1
+    # TODO could use a checksum to make sure that even though wget exited without error the file is not corrupt.
+    
+    grep "^0" "${LOG_DIR}/mirrorWgets.log" | sort -n -k2 > "${LOG_DIR}/mirrorCandidates.log"
+    TLREPO=$( sed 's/.*wget --quiet //' "${LOG_DIR}/mirrorCandidates.log" | sed 's#'/${testPath}'##' | head -n 1 )
+    if [ -n "${TLREPO}" ]; then
+      echo "${ECHOPREFIX}the fastest repo is: ${TLREPO}"
+    else
+      echo "${WARNINGPREFIX}automatic repo detection failed. We will use the default repo." >&2
+      TLREPO='http://mirror.utexas.edu/ctan/'
+    fi
+    # If there is none that did it under 30 seconds, then increase to 2 minutes. If that fails, default to Texas and give warnings.
+    
+    # only for correlations (figuring out how small of a size will give accurate results).
+    # sed -e 's/^0 //' -e 's/wget --quiet //' -e 's#'/${testPath}'##' candidates_sorted > forR.txt
+    cd "${CURR_DIR}"
+fi
+
+TLINSTALLER="${TLREPO}/systems/texlive/tlnet/install-tl-unx.tar.gz"
+
+# default of wget is --tries=20. Can take an hour. This makes the default --tries=5.
+WGET_CMD="wget --tries=${TIMESRETRY}"
+
+exec 3>> "${LOG_DIR}/install-tl-ubuntu_EXTRAS.log"
 
 # For some errors, we exit. For others (non-fatal) we continue but at the end
 # report that something went wrong (i.e. MAINRET != 1).
@@ -345,8 +374,8 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
     #     "File::FcntlLock not available; using flock which is not NFS-safejo"
     # gcc because otherwise:
     #     "Couldn't determine gcc system type, falling back to default (native compilation)"
-    # If change here, change in lyx-tester
-    PREREQS='libfile-fcntllock-perl gcc equivs libwww-perl fontconfig unzip'
+    # 'parallel' for the automatic repo detection
+    PREREQS='libfile-fcntllock-perl gcc equivs libwww-perl fontconfig unzip parallel'
     apt-get -y install --no-install-recommends ${PREREQS} >&3 2>&1 \
         || { echo "${ERRORPREFIX}apt-get failed to install ${PREREQS} in $0" >&2; exit 1; }
     # TODO put the -out.txt in a temp dir, or in the log file.
