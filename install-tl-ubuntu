@@ -319,12 +319,12 @@ if [ -z "${TLREPO:-}" ]; then
       | grep -o "http.*>http<" \
       | sed -n 1~3p \
       | sed 's/">http<//' > "candidates.txt"
-    
+
     # Note that if there is a timeout the repo does not get an entry in mirrorWgets.log.
     sed 's#$#'${testPath}'#' "candidates.txt" \
       | parallel --gnu --jobs 3 --timeout 30 '/usr/bin/time -f "%x %e %C" wget --quiet' > "${LOG_DIR}/mirrorWgets.log" 2>&1
     # TODO could use a checksum to make sure that even though wget exited without error the file is not corrupt.
-    
+
     grep "^0" "${LOG_DIR}/mirrorWgets.log" | sort -n -k2 > "${LOG_DIR}/mirrorCandidates.log"
     TLREPO=$( sed 's/.*wget --quiet //' "${LOG_DIR}/mirrorCandidates.log" | sed 's#'/${testPath}'##' | head -n 1 )
     if [ -n "${TLREPO}" ]; then
@@ -334,7 +334,7 @@ if [ -z "${TLREPO:-}" ]; then
       TLREPO='http://mirror.utexas.edu/ctan/'
     fi
     # If there is none that did it under 30 seconds, then increase to 2 minutes. If that fails, default to Texas and give warnings.
-    
+
     # only for correlations (figuring out how small of a size will give accurate results).
     # sed -e 's/^0 //' -e 's/wget --quiet //' -e 's#'/${testPath}'##' candidates_sorted > forR.txt
     cd "${CURR_DIR}"
