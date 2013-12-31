@@ -330,10 +330,19 @@ if [ -z "${TLREPO:-}" ]; then
     if [ -n "${TLREPO}" ]; then
       echo "${ECHOPREFIX}the fastest repo is: ${TLREPO}"
     else
-      echo "${WARNINGPREFIX}automatic repo detection failed. We will use the default repo." >&2
-      TLREPO='http://mirror.utexas.edu/ctan/'
+      echo "${ECHOPREFIX}trying automatic detection with a longer timeout and smaller file..."
+      testPath='systems/knuth/local/tex/Makefile'
+      sed 's#$#'${testPath}'#' "candidates.txt" \
+      | parallel --gnu --jobs 3 --timeout 60 '/usr/bin/time -f "%x %e %C" wget --quiet' > "${LOG_DIR}/mirrorWgets.log" 2>&1
+      grep "^0" "${LOG_DIR}/mirrorWgets.log" | sort -n -k2 > "${LOG_DIR}/mirrorCandidates.log"
+      TLREPO=$( sed 's/.*wget --quiet //' "${LOG_DIR}/mirrorCandidates.log" | sed 's#'/${testPath}'##' | head -n 1 )
+      if [ -n "${TLREPO}" ]; then
+        echo "${ECHOPREFIX}the fastest repo is: ${TLREPO}"
+      else
+        TLREPO='http://mirror.utexas.edu/ctan/'
+        echo -e "${WARNINGPREFIX}automatic repo detection failed. We will use the default repo:\n  ${TLREPO}" >&2
+      fi
     fi
-    # If there is none that did it under 30 seconds, then increase to 2 minutes. If that fails, default to Texas and give warnings.
 
     # only for correlations (figuring out how small of a size will give accurate results).
     # sed -e 's/^0 //' -e 's/wget --quiet //' -e 's#'/${testPath}'##' candidates_sorted > forR.txt
