@@ -306,51 +306,6 @@ VER_UBUNTU=$( lsb_release -rs )
                "\nFor other versions, one would probably want to use a different"\
                "\ndebian-control-texlive-in.txt file." >&2
 
-if [ -z "${TLREPO:-}" ]; then
-    echo "${ECHOPREFIX}determining the fastest repository..."
-    CURR_DIR="$( pwd )"
-    cd "$( mktemp -d )"
-    testPath='indexing/forindex.zip'
-
-    # We skip ftp connections.
-    # We only try every third server. The servers are listed in geographic
-    # order so this should pick up a little of everything.
-    wget --quiet -O - "http://ctan.org/mirrors" \
-      | grep -o "http.*>http<" \
-      | sed -n 1~3p \
-      | sed 's/">http<//' > "candidates.txt"
-
-    # Note that if there is a timeout the repo does not get an entry in mirrorWgets.log.
-    sed 's#$#'${testPath}'#' "candidates.txt" \
-      | parallel --gnu --jobs 3 --timeout 30 '/usr/bin/time -f "%x %e %C" wget --quiet' > "${LOG_DIR}/mirrorWgets.log" 2>&1
-    # TODO could use a checksum to make sure that even though wget exited without error the file is not corrupt.
-
-    grep "^0" "${LOG_DIR}/mirrorWgets.log" | sort -n -k2 > "${LOG_DIR}/mirrorCandidates.log"
-    TLREPO=$( sed 's/.*wget --quiet //' "${LOG_DIR}/mirrorCandidates.log" | sed 's#'/${testPath}'##' | head -n 1 )
-    if [ -n "${TLREPO}" ]; then
-      echo "${ECHOPREFIX}the fastest repo is: ${TLREPO}"
-    else
-      echo "${ECHOPREFIX}trying automatic detection with a longer timeout and smaller file..."
-      testPath='systems/knuth/local/tex/Makefile'
-      sed 's#$#'${testPath}'#' "candidates.txt" \
-      | parallel --gnu --jobs 3 --timeout 60 '/usr/bin/time -f "%x %e %C" wget --quiet' > "${LOG_DIR}/mirrorWgets.log" 2>&1
-      grep "^0" "${LOG_DIR}/mirrorWgets.log" | sort -n -k2 > "${LOG_DIR}/mirrorCandidates.log"
-      TLREPO=$( sed 's/.*wget --quiet //' "${LOG_DIR}/mirrorCandidates.log" | sed 's#'/${testPath}'##' | head -n 1 )
-      if [ -n "${TLREPO}" ]; then
-        echo "${ECHOPREFIX}the fastest repo is: ${TLREPO}"
-      else
-        TLREPO='http://mirror.utexas.edu/ctan/'
-        echo -e "${WARNINGPREFIX}automatic repo detection failed. We will use the default repo:\n  ${TLREPO}" >&2
-      fi
-    fi
-
-    # only for correlations (figuring out how small of a size will give accurate results).
-    # sed -e 's/^0 //' -e 's/wget --quiet //' -e 's#'/${testPath}'##' candidates_sorted > forR.txt
-    cd "${CURR_DIR}"
-fi
-
-TLINSTALLER="${TLREPO}/systems/texlive/tlnet/install-tl-unx.tar.gz"
-
 # default of wget is --tries=20. Can take an hour. This makes the default --tries=5.
 WGET_CMD="wget --tries=${TIMESRETRY}"
 
@@ -409,6 +364,50 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
         exit 0
     fi
 fi
+
+if [ -z "${TLREPO:-}" ]; then
+    echo "${ECHOPREFIX}determining the fastest repository..."
+    CURR_DIR="$( pwd )"
+    cd "$( mktemp -d )"
+    testPath='indexing/forindex.zip'
+
+    # We skip ftp connections.
+    # We only try every third server. The servers are listed in geographic
+    # order so this should pick up a little of everything.
+    wget --quiet -O - "http://ctan.org/mirrors" \
+      | grep -o "http.*>http<" \
+      | sed -n 1~3p \
+      | sed 's/">http<//' > "candidates.txt"
+
+    # Note that if there is a timeout the repo does not get an entry in mirrorWgets.log.
+    sed 's#$#'${testPath}'#' "candidates.txt" \
+      | parallel --gnu --jobs 3 --timeout 30 '/usr/bin/time -f "%x %e %C" wget --quiet' > "${LOG_DIR}/mirrorWgets.log" 2>&1
+    # TODO could use a checksum to make sure that even though wget exited without error the file is not corrupt.
+
+    grep "^0" "${LOG_DIR}/mirrorWgets.log" | sort -n -k2 > "${LOG_DIR}/mirrorCandidates.log"
+    TLREPO=$( sed 's/.*wget --quiet //' "${LOG_DIR}/mirrorCandidates.log" | sed 's#'/${testPath}'##' | head -n 1 )
+    if [ -n "${TLREPO}" ]; then
+      echo "${ECHOPREFIX}the fastest repo is: ${TLREPO}"
+    else
+      echo "${ECHOPREFIX}trying automatic detection with a longer timeout and smaller file..."
+      testPath='systems/knuth/local/tex/Makefile'
+      sed 's#$#'${testPath}'#' "candidates.txt" \
+      | parallel --gnu --jobs 3 --timeout 60 '/usr/bin/time -f "%x %e %C" wget --quiet' > "${LOG_DIR}/mirrorWgets.log" 2>&1
+      grep "^0" "${LOG_DIR}/mirrorWgets.log" | sort -n -k2 > "${LOG_DIR}/mirrorCandidates.log"
+      TLREPO=$( sed 's/.*wget --quiet //' "${LOG_DIR}/mirrorCandidates.log" | sed 's#'/${testPath}'##' | head -n 1 )
+      if [ -n "${TLREPO}" ]; then
+        echo "${ECHOPREFIX}the fastest repo is: ${TLREPO}"
+      else
+        TLREPO='http://mirror.utexas.edu/ctan/'
+        echo -e "${WARNINGPREFIX}automatic repo detection failed. We will use the default repo:\n  ${TLREPO}" >&2
+      fi
+    fi
+
+    # only for correlations (figuring out how small of a size will give accurate results).
+    # sed -e 's/^0 //' -e 's/wget --quiet //' -e 's#'/${testPath}'##' candidates_sorted > forR.txt
+    cd "${CURR_DIR}"
+fi
+TLINSTALLER="${TLREPO}/systems/texlive/tlnet/install-tl-unx.tar.gz"
 
 (
     timesToTry=$(( TIMESRETRY + 1 ))
