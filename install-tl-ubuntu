@@ -538,6 +538,7 @@ sed -i 's/^PATH="/PATH="\/opt\/texbin:/' /etc/environment || { echo "${ERRORPREF
 source /etc/environment
 
 dTEXMFLOCAL="$(kpsewhich -var-value TEXMFLOCAL)"
+dTEXMFDIST="$(kpsewhich -var-value TEXMFDIST)"
 
 # see "System font configuration for XeTEX and LuaTEX"
 # http://www.tug.org/texlive/doc/texlive-en/texlive-en.html#x1-350003.4.4
@@ -552,6 +553,12 @@ fi
 if [ -n "${USR_FONTS_DIR}" ]; then
     cp -r "${USR_FONTS_DIR}"/* "/usr/share/fonts/"
 fi
+
+echo "${ECHOPREFIX}Installing Evince AppArmor fix..."
+echo "/usr/bin/evince {
+  ${dTEXMFDIST}/fonts/** r,
+}" >> "/etc/apparmor.d/local/usr.bin.evince"
+# restarting AppArmor is another reason to restart the comp.
 
 
 SYSFONT='/etc/fonts/conf.d/09-texlive.conf'
