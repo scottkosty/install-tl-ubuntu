@@ -302,7 +302,7 @@ fi
 
 VER_UBUNTU=$( lsb_release -rs )
 [[ "${VER_UBUNTU}" = "12.04" || "${VER_UBUNTU}" = "12.10" || "${VER_UBUNTU}" = "13.04" || "${VER_UBUNTU}" = "13.10" || "${VER_UBUNTU}" = "14.04" ]] \
-    || echo -e "${ERRORPREFIX}this script currently supports Ubuntu 12.04, 12.10, 13.04, 13.10, and 14.04."\
+    || echo -e "${WARNINGPREFIX}this script currently supports Ubuntu 12.04, 12.10, 13.04, 13.10, and 14.04."\
                "\nFor other versions, one would probably want to use a different"\
                "\ndebian-control-texlive-in.txt file." >&2
 
