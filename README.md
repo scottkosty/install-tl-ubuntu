@@ -9,11 +9,17 @@ sudo ./install-tl-ubuntu [OPTIONS]
 ## Features
 
 - installs **TeX Live 2013**
+  - automatically finds the fastest repository
+  - gives updated progress of the install
+  - restarts automatically if install fails
 - notifies apt so that apt does not try to install the Ubuntu `texlive-*` packages as dependencies (e.g. if you do `sudo apt-get install lyx`)
-- installs (optionally) additional LaTeX files for common journals that are not included in TeX Live 2013
 - links to the folder where Ubuntu installs TeX files so that when you install Ubuntu packages (e.g. **FoilTeX** and **noweb**) with LaTeX files, they will be available
 - adds TeX Live fonts to be used system-wide
-- tells AppArmor to allow Evince to access the TeX Live fonts
+- other font-related conveniences
+  - tells AppArmor to allow Evince to access the TeX Live fonts
+  - can install TrueType fonts that user provides (--truetype-dir)
+  - can install IvriTeX Hebrew fonts (--hebrew)
+- optionally installs additional LaTeX files for common journals that are not included in TeX Live 2013 (--more-tex)
 
 For more details, see
 ```s
