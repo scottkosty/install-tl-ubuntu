@@ -29,7 +29,3 @@ This script automates many of the instructions that were posted in the 25 Jan 20
 Progress and profiling are logged to `STDOUT`. Important errors are logged to `STDERR`. Annoying `STDOUT` and `STDERR` messages are redirected to a file descriptor (which is connected to the file `install-tl-ubuntu_EXTRAS.log` by default) in case they are useful for debugging.
 
 Ubuntu versions 12.04 and later are supported.
-
-## Author
-
-Please send bug reports and suggestions to Scott Kostyshak at skostysh@princeton.edu.
