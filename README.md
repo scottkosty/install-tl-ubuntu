@@ -20,6 +20,7 @@ sudo ./install-tl-ubuntu [OPTIONS]
   - can install TrueType fonts that user provides (--truetype-dir)
   - can install IvriTeX Hebrew fonts (--hebrew)
 - optionally installs additional LaTeX files for common journals that are not included in TeX Live 2013 (--more-tex)
+- works non-interactively and thus can be added to a batch install script
 
 For more details, see
 ```s
