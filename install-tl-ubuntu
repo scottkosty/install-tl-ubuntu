@@ -202,7 +202,7 @@ if [ "${HELP}" = "1" ]; then
   -g, --no-apt-or-dpkg       \e[00;36m Skip the apt and dpkg commands in this script. Only makes sense
                                 when install-tl-ubuntu was run previously with --only-apt-and-dpkg.     \e[00m
   -h, --help                 \e[00;36m Display this help output and exit.                               \e[00m
-  -m, --more-tex             \e[00;36m Install tex files in addition to TeX Live
+  -m, --more-tex             \e[00;36m Install TeX files not included in TeX Live
                                 (e.g. style files needed by many of LyX's templates and examples).      \e[00m
   -p, --profile    FILE      \e[00;36m Instead of a default installation, use FILE to specify the
                                 configuration (e.g. which packages are installed) of the TeX Live
