@@ -204,6 +204,7 @@ if [ "${HELP}" = "1" ]; then
   -h, --help                 \e[00;36m Display this help output and exit.                               \e[00m
   -m, --more-tex             \e[00;36m Install TeX files not included in TeX Live
                                 (e.g. style files needed by many of LyX's templates and examples).      \e[00m
+  -o DIR, --log-dir DIR      \e[00;36m Directory in which to store logs. Defaults to current directory. \e[00m
   -p, --profile    FILE      \e[00;36m Instead of a default installation, use FILE to specify the
                                 configuration (e.g. which packages are installed) of the TeX Live
                                 installation. This can be used if space is a concern, for example. To
@@ -214,7 +215,6 @@ if [ "${HELP}" = "1" ]; then
                                 If this option is not specified, the fastest server will be determined
                                 automatically. This option can be used to determine which version of
                                 TeX Live is installed (e.g. 2012, 2013, pretest).                       \e[00m
-  -o DIR, --log-dir DIR      \e[00;36m Directory in which to store logs. Defaults to current directory. \e[00m
   -r, --retry                \e[00;36m Number of times to retry if install-tl fails to install
                                 and for wget (used to download install-tl and if --hebrew or --more-tex
                                 is specified). The default is 5.                                        \e[00m
