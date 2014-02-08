@@ -457,7 +457,7 @@ success=0
 ceol="$(tput el)"
 while (( timesTried != timesToTry )); do
     timesTried=$(( timesTried + 1 ))
-    echo "${ECHOPREFIX}Starting install-tl for time number $timesTried..."
+    echo "${ECHOPREFIX}starting install-tl for time number $timesTried..."
     TLlog="${LOG_DIR}/install-tl-${timesTried}.log"
     # ALTERNATIVE for installing non-interactively is to use a profile.
     # -scheme full is default.
@@ -531,7 +531,7 @@ fi
 
 MAINTEXDIR=$(grep "TEXDIR:" "${TLlog}" | awk -F'"' '{ print $2 }')
 
-echo "${ECHOPREFIX}Linking..."
+echo "${ECHOPREFIX}linking..."
 [ -d "${MAINTEXDIR}/bin" ] && ln -s "${MAINTEXDIR}/bin"/* "/opt/texbin" \
   || { echo "${ERRORPREFIX}could not link." >&2; exit 1; }
 sed -i 's/^PATH="/PATH="\/opt\/texbin:/' /etc/environment || { echo "${ERRORPREFIX}could not sed." >&2; exit 1; }
@@ -554,7 +554,7 @@ if [ -n "${USR_FONTS_DIR}" ]; then
     cp -r "${USR_FONTS_DIR}"/* "/usr/share/fonts/"
 fi
 
-echo "${ECHOPREFIX}Installing Evince AppArmor fix..."
+echo "${ECHOPREFIX}installing Evince AppArmor fix for TeX Live fonts..."
 echo "/usr/bin/evince {
   ${dTEXMFDIST}/fonts/** r,
 }" >> "/etc/apparmor.d/local/usr.bin.evince"
