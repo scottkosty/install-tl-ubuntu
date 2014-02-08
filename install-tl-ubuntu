@@ -34,7 +34,7 @@ fi
 ERRORPREFIX="${ECHOPREFIX}ERROR: "
 WARNINGPREFIX="${ECHOPREFIX}WARNING: "
 
-ARGS=$( getopt -o "r:mt:u:hvaebo:fgq:p:" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository:,profile:" \
+ARGS=$( getopt -o "r:mt:u:hvaebo:fgq:p:i:" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository:,profile:,iso:" \
       -n "$( basename "$0" )" -- "$@" )
 # If bad arguments, exit (getopt will have already written the error to STDERR).
 [ "$?" = "0" ] || exit 1
@@ -53,6 +53,7 @@ EXTRAS=0
 TT_FONTS=
 USR_FONTS_DIR=
 TLPROFILE=
+ISO_FILE=
 ONLY_APT_DPKG=0
 NO_APT_DPKG=0
 LOG_DIR="${MAINDIR}"
@@ -77,6 +78,15 @@ do
       ;;
   -h|--help)  HELP=1
       shift 1
+      ;;
+  -i|--iso)
+      if [ -f "$2" ]; then
+        ISO_FILE="$( readlink -f "$2" )"
+      else
+        echo "${ERRORPREFIX}the argument to $1 must be an existing file." >&2
+        exit 1
+      fi
+      shift 2
       ;;
   -m|--more-tex)  EXTRAS=1
       shift 1
@@ -365,7 +375,7 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
     fi
 fi
 
-if [ -z "${TLREPO:-}" ]; then
+if [ -z "${TLREPO:-}" -a -z "${ISO_FILE}" ]; then
     echo "${ECHOPREFIX}determining the fastest repository..."
     CURR_DIR="$( pwd )"
     cd "$( mktemp -d )"
@@ -407,9 +417,18 @@ if [ -z "${TLREPO:-}" ]; then
     # sed -e 's/^0 //' -e 's/wget --quiet //' -e 's#'/${testPath}'##' candidates_sorted > forR.txt
     cd "${CURR_DIR}"
 fi
-TLINSTALLER="${TLREPO}/systems/texlive/tlnet/install-tl-unx.tar.gz"
 
+if [ -n "${ISO_FILE}" ]; then
+    MOUNT_ISO_DIR="$(mktemp -d --tmpdir=/media)"
+    [ -d "${MOUNT_ISO_DIR}" ] || mkdir -p "${MOUNT_ISO_DIR}"
+    mount -t iso9660 -o ro,loop,noauto "${ISO_FILE}" "${MOUNT_ISO_DIR}"
+    if [ "$?" != "0" ]; then
+        echo "${ERRORPREFIX}failed to mount the ISO file." >&2
+        exit 1;
+    fi
+else
 (
+    TLINSTALLER="${TLREPO}/systems/texlive/tlnet/install-tl-unx.tar.gz"
     timesToTry=$(( TIMESRETRY + 1 ))
     timesTried=0
     fail=0
@@ -442,13 +461,16 @@ TLINSTALLER="${TLREPO}/systems/texlive/tlnet/install-tl-unx.tar.gz"
         exit 1
     fi
 )
+fi
 
-tl_dir=$( ls | grep -P "install-tl-\d{8}$" )
-if [ -d "${tl_dir}" ]; then
-    cd "${tl_dir}"
-else
-    echo "${ERRORPREFIX}cannot find install-tl dir to cd into." >&2
-    exit 1
+if [ -z "${ISO_FILE}" ]; then
+    tl_dir=$( ls | grep -P "install-tl-\d{8}$" )
+    if [ -d "${tl_dir}" ]; then
+        cd "${tl_dir}"
+    else
+        echo "${ERRORPREFIX}cannot find install-tl dir to cd into." >&2
+        exit 1
+    fi
 fi
 
 timesToTry=$(( TIMESRETRY + 1 ))
@@ -503,7 +525,12 @@ while (( timesTried != timesToTry )); do
     # They are quoted in different ways because there is always a logfile but
     # TLPROFILE contains both --profile and the argument. ALTERNATIVE: could use
     # two variables for TLPROFILE and have both be empty if no argument.
-    if echo "${option}" | eval ./install-tl -v -repository "${TLREPO}" ${TLPROFILE} \
+    if [ -z "${ISO_FILE}" ]; then
+        INSTALL_ARG="./install-tl -repository \"${TLREPO}\""
+    else
+        INSTALL_ARG="\"${MOUNT_ISO_DIR}/install-tl\""
+    fi
+    if echo "${option}" | eval ${INSTALL_ARG} -v ${TLPROFILE} \
         -logfile \"${TLlog}\" > /dev/null 2>&1; then
         success=1
         kill ${pid_progress} > /dev/null 2>&1
@@ -527,6 +554,11 @@ if [ "${success}" = "1" ]; then
 else
     echo -e "\n${ERRORPREFIX}./install-tl failed ${timesToTry} times. Aborting." >&2
     exit 1
+fi
+
+# TODO this should go in a separate function that is called on exit (e.g. when trapping signals)
+if [ -n "${ISO_FILE}" ]; then
+    umount "${MOUNT_ISO_DIR}"
 fi
 
 MAINTEXDIR=$(grep "TEXDIR:" "${TLlog}" | awk -F'"' '{ print $2 }')
