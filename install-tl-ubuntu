@@ -55,7 +55,7 @@ WARNINGPREFIX="${ECHOPREFIX}WARNING: "
 ARGS=$( getopt -o "r:mt:u:hvaebo:fgq:p:i:" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository:,profile:,iso:" \
       -n "$( basename "$0" )" -- "$@" )
 # If bad arguments, exit (getopt will have already written the error to STDERR).
-[ "$?" = "0" ] || exit 1
+[ "$?" = "0" ] || clean_error
 
 eval set -- "$ARGS"
 
@@ -102,7 +102,7 @@ do
         ISO_FILE="$( readlink -f "$2" )"
       else
         echo "${ERRORPREFIX}the argument to $1 must be an existing file." >&2
-        exit 1
+        clean_error
       fi
       shift 2
       ;;
@@ -114,7 +114,7 @@ do
         LOG_DIR="$( readlink -f "$2" )"
       else
         echo "${ERRORPREFIX}the argument to $1 must be an existing directory." >&2
-        exit 1
+        clean_error
       fi
       shift 2
       ;;
@@ -123,7 +123,7 @@ do
         TLPROFILE="-profile $( printf '%q' "$2" )"
       else
         echo "${ERRORPREFIX}the argument to $1 must be an existing file." >&2
-        exit 1
+        clean_error
       fi
       shift 2
       ;;
@@ -135,7 +135,7 @@ do
         TIMESRETRY="$2"
       else
         "${ERRORPREFIX}The argument to $1 must be a positive number." >&2
-        exit 1
+        clean_error
       fi
       shift 2
       ;;
@@ -144,7 +144,7 @@ do
         TT_FONTS="$( readlink -f "$2" )"
       else
         "${ERRORPREFIX}The argument to $1 must be an existing directory." >&2
-        exit 1
+        clean_error
       fi
       shift 2
       ;;
@@ -153,7 +153,7 @@ do
         USR_FONTS_DIR="$( readlink -f "$2" )"
       else
         echo "${ERRORPREFIX}the argument to $1 must be an existing directory." >&2
-        exit 1
+        clean_error
       fi
       shift 2
       ;;
@@ -166,14 +166,14 @@ do
   *)
       echo -e "${ERRORPREFIX}the getopt command must be out of sync. Please report this."\\n\
           "The following flag is not recognized: $1" >&2
-      exit 1
+      clean_error
       ;;
   esac
 done
 
 if [ "$#" != "0" ]; then
   echo "${ERRORPREFIX}the following arguments are not recognized: $@" >&2
-  exit 1
+  clean_error
 fi
 
 if [ "${HELP}" = "1" ]; then
@@ -306,7 +306,7 @@ function checkEnvVars ()
       echo "I don't know where ${benv} is set."
     fi
     done
-    exit 1
+    clean_error
   fi
 }
 
@@ -318,13 +318,13 @@ if [ "${VERSION}" = "1" ]; then
 fi
 
 [ "$(whoami)" = "root" ] \
-    || { echo "${ERRORPREFIX}this script must be run with 'sudo'." >&2 ; exit 1; }
+    || { echo "${ERRORPREFIX}this script must be run with 'sudo'." >&2 ; clean_error; }
 
 if (( $(stat -f --format="%a*%S" .) < 4000000000 )); then
     if [ "${SMALL}" = "0" ]; then
         echo -e "${ERRORPREFIX}you are running this script with less than 4G." \
                 "\nUse the --allow-small option to ignore this error."
-        exit
+        clean_error
     fi
 fi
 
@@ -351,7 +351,7 @@ requiredFiles=(
 )
 for file in "${requiredFiles[@]}"; do
         [ -e "${file}" ] \
-    || { echo "${ERRORPREFIX}required file, ${file}, does not exist." >&2; exit 1; }
+    || { echo "${ERRORPREFIX}required file, ${file}, does not exist." >&2; clean_error; }
 done
 
 # Check to see if TeX Live environment variables are set (which might cause conflicts)
@@ -369,7 +369,7 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
     # 'parallel' for the automatic repo detection
     PREREQS='libfile-fcntllock-perl gcc equivs libwww-perl fontconfig unzip parallel'
     apt-get -y install --no-install-recommends ${PREREQS} >&3 2>&1 \
-        || { echo "${ERRORPREFIX}apt-get failed to install ${PREREQS} in $0" >&2; exit 1; }
+        || { echo "${ERRORPREFIX}apt-get failed to install ${PREREQS} in $0" >&2; clean_error; }
     # TODO put the -out.txt in a temp dir, or in the log file.
     # newline in a Debian control file is OK right?
 
@@ -389,6 +389,7 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
     dpkg -i "${CONTROL_OUTD}/texlive-local_2013-1~9_all.deb" >&3 2>&1 || \
         echo "${WARNINGPREFIX}dpkg could not install dummy TeX Live package" >&2
     if [ "${ONLY_APT_DPKG}" = 1 ]; then
+        clean_up
         exit 0
     fi
 fi
@@ -442,7 +443,7 @@ if [ -n "${ISO_FILE}" ]; then
     mount -t iso9660 -o ro,loop,noauto "${ISO_FILE}" "${MOUNT_ISO_DIR}"
     if [ "$?" != "0" ]; then
         echo "${ERRORPREFIX}failed to mount the ISO file." >&2
-        exit 1;
+        clean_error;
     fi
 else
 (
@@ -476,7 +477,7 @@ else
         echo "${ECHOPREFIX}install-tl downloaded and extracted successfully."
     else
         echo "${ERRORPREFIX}install-tl failed to download/extract ${timesToTry} times. Aborting." >&2
-        exit 1
+        clean_error
     fi
 )
 fi
@@ -487,7 +488,7 @@ if [ -z "${ISO_FILE}" ]; then
         cd "${tl_dir}"
     else
         echo "${ERRORPREFIX}cannot find install-tl dir to cd into." >&2
-        exit 1
+        clean_error
     fi
 fi
 
@@ -562,7 +563,7 @@ while (( timesTried != timesToTry )); do
              grep -i "Perhaps you need to use a different CTAN mirror?" "${TLlog}" ) > /dev/null 2>&1; then
                echo -e ${ECHOPREFIX}the installer and repo are mismatched.\
                        \\nFor example, the installer could be for TeX Live 2013 and the repo for 2012. >&2
-               exit 1
+               clean_error
         fi
         (( timesTried != timesToTry )) && echo "${ECHOPREFIX}we will try to restart the install." >&2
     fi
@@ -571,15 +572,15 @@ if [ "${success}" = "1" ]; then
     echo -e "${ECHOPREFIX}install-tl finished successfully."
 else
     echo -e "\n${ERRORPREFIX}./install-tl failed ${timesToTry} times. Aborting." >&2
-    exit 1
+    clean_error
 fi
 
 MAINTEXDIR=$(grep "TEXDIR:" "${TLlog}" | awk -F'"' '{ print $2 }')
 
 echo "${ECHOPREFIX}linking..."
 [ -d "${MAINTEXDIR}/bin" ] && ln -s "${MAINTEXDIR}/bin"/* "/opt/texbin" \
-  || { echo "${ERRORPREFIX}could not link." >&2; exit 1; }
-sed -i 's/^PATH="/PATH="\/opt\/texbin:/' /etc/environment || { echo "${ERRORPREFIX}could not sed." >&2; exit 1; }
+  || { echo "${ERRORPREFIX}could not link." >&2; clean_error; }
+sed -i 's/^PATH="/PATH="\/opt\/texbin:/' /etc/environment || { echo "${ERRORPREFIX}could not sed." >&2; clean_error; }
 source /etc/environment
 
 dTEXMFLOCAL="$(kpsewhich -var-value TEXMFLOCAL)"
