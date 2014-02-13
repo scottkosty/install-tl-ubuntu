@@ -25,6 +25,24 @@
 
 set -o nounset
 
+function clean_up ()
+{
+    if [ -n "${pid_progress:-}" ]; then
+        kill ${pid_progress} > /dev/null 2>&1
+    fi
+
+    if [ -n "${MOUNT_ISO_DIR:-}" ]; then
+        umount "${MOUNT_ISO_DIR}" &&
+        rmdir "${MOUNT_ISO_DIR}"
+    fi
+}
+function clean_error ()
+{
+    clean_up
+    exit 1
+}
+trap clean_error SIGHUP SIGINT SIGTERM
+
 if [[ "$-" =~ i ]]; then
     ECHOPREFIX=
 else
@@ -556,11 +574,6 @@ else
     exit 1
 fi
 
-# TODO this should go in a separate function that is called on exit (e.g. when trapping signals)
-if [ -n "${ISO_FILE}" ]; then
-    umount "${MOUNT_ISO_DIR}"
-fi
-
 MAINTEXDIR=$(grep "TEXDIR:" "${TLlog}" | awk -F'"' '{ print $2 }')
 
 echo "${ECHOPREFIX}linking..."
@@ -737,3 +750,6 @@ else
 fi
 echo -e "${ECHOPREFIX}you might need to restart your computer
   so that your PATH (in /etc/environment) will be sourced."
+
+clean_up
+exit 0
