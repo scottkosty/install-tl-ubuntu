@@ -259,6 +259,11 @@ if [ "${HELP}" = "1" ]; then
   exit 0
 fi
 
+if [ "${ISO_FILE}" != "" -a -n "${TLREPO:-}" ]; then
+    echo "${ERRORPREFIX}the options --repository and --iso are incompatible" >&2
+    clean_error
+fi
+
 ### /begin function declarations
 
 function checkEnvVars ()
