@@ -21,6 +21,7 @@ sudo ./install-tl-ubuntu [OPTIONS]
   - can install IvriTeX Hebrew fonts (--hebrew)
 - optionally installs additional LaTeX files for common journals that are not included in TeX Live 2013 (--more-tex)
 - works non-interactively and thus can be added to a batch install script
+- tlmgr can be run from the desktop menu (if 'gksu' package is installed)
 
 For more details, see
 ```s

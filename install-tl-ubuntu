@@ -611,6 +611,17 @@ echo "/usr/bin/evince {
 }" >> "/etc/apparmor.d/local/usr.bin.evince"
 # restarting AppArmor is another reason to restart the comp.
 
+echo "${ECHOPREFIX}installing tlmgr.desktop..."
+echo "[Desktop Entry]
+Name=TeX Live Manager
+Exec=gksudo \"/opt/texbin/tlmgr -gui\"
+Terminal=false
+Type=Application
+Icon=system-software-update
+Categories=System;Settings;
+Keywords=TeXLive;tlmgr;" > "/usr/share/applications/tlmgr.desktop"
+# need to log out and back in for it to take effect.
+
 
 SYSFONT='/etc/fonts/conf.d/09-texlive.conf'
 if cp "$(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf" "${SYSFONT}" \
