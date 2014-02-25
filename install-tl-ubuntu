@@ -221,6 +221,8 @@ if [ "${HELP}" = "1" ]; then
                                 'sudo apt-get install foiltex noweb').
                                 Use this option to prevent this linking.                                \e[00m
   -e, --hebrew               \e[00;36m Install IvriTeX Hebrew fonts.                                    \e[00m
+  -i, --iso FILE             \e[00;36m Install from a TeX Live ISO file. For how to download, see
+                                http://www.tug.org/texlive/acquire-iso.html                             \e[00m
   -f, --only-apt-and-dpkg    \e[00;36m Run the apt and dpkg commands in this script and then exit.
                                 This is useful when this script is forked from a master install script
                                 that uses apt and dpkg so that there are no conflicts. This way,
