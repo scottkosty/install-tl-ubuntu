@@ -270,8 +270,15 @@ fi
 
 function checkEnvVars ()
 {
-  username=$(grep "/bin/bash" /etc/passwd \
-       | perl -pe 's/.*\/(\w+):\/bin\/bash/$1/g' | grep -v "root")
+  users="$(grep "/bin/bash" /etc/passwd \
+       | perl -pe 's/.*\/(\w+):\/bin\/bash/$1/g' | grep -v "root")"
+  nusers="$(echo "${users}" | wc -l)"
+  if [ "${nusers}" = 1 ]; then
+    username="${users}"
+  else
+    username="$(logname)"
+  fi
+
   envFiles=( '/etc/bashrc' '/etc/profile' '/etc/environment' 'etc/bash.bashrc'
              "/home/${username}/.bashrc" "/home/${username}/.profile" "/home/${username}/.bash_profile" )
 
