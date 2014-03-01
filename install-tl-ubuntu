@@ -424,7 +424,7 @@ if [ -z "${TLREPO:-}" -a -z "${ISO_FILE}" ]; then
 
     # Note that if there is a timeout the repo does not get an entry in mirrorWgets.log.
     sed 's#$#'${testPath}'#' "candidates.txt" \
-      | parallel --gnu --jobs 3 --timeout 30 '/usr/bin/time -f "%x %e %C" wget --quiet' > "${LOG_DIR}/mirrorWgets.log" 2>&1
+      | parallel --gnu --jobs 3 --timeout 15 '/usr/bin/time -f "%x %e %C" wget --quiet' > "${LOG_DIR}/mirrorWgets.log" 2>&1
     # TODO could use a checksum to make sure that even though wget exited without error the file is not corrupt.
 
     grep "^0" "${LOG_DIR}/mirrorWgets.log" | sort -n -k2 > "${LOG_DIR}/mirrorCandidates.log"
