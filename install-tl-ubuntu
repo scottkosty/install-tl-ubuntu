@@ -358,15 +358,15 @@ exec 3>> "${LOG_DIR}/install-tl-ubuntu_EXTRAS.log"
 # For some, we just report to STDERR (warnings).
 MAINRET=0
 
-# TODO
-## ALTERNATIVE if this is the only file dependency, we could dl it or put inside this script.
-requiredFiles=(
-    debian-control-texlive-in.txt
-)
-for file in "${requiredFiles[@]}"; do
-        [ -e "${file}" ] \
-    || { echo "${ERRORPREFIX}required file, ${file}, does not exist." >&2; clean_error; }
-done
+## ALTERNATIVE we could embed it.
+if [ ! -e "debian-control-texlive-in.txt" ]; then
+    echo "${ECHOPREFIX}downloading the Debian control file..."
+    ${WGET_CMD} "https://raw.github.com/scottkosty/install-tl-ubuntu/master/debian-control-texlive-in.txt"
+    if [ "$?" != "0" ]; then
+        echo "${ERRORPREFIX}failed to download the necessary file, debian-control-texlive-in.txt." >&2
+        clean_error
+    fi
+fi
 
 # Check to see if TeX Live environment variables are set (which might cause conflicts)
 checkEnvVars

@@ -6,6 +6,15 @@
 sudo ./install-tl-ubuntu [OPTIONS]
 ```
 
+## Quick download
+
+I recommend using `git clone` but I've learned that many Github users don't have
+Git. In these cases, you can download directly as follows:
+
+```s
+wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubuntu && chmod +x ./install-tl-ubuntu
+```
+
 ## Features
 
 - installs **TeX Live 2013**
