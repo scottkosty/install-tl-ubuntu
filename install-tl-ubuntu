@@ -381,7 +381,7 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
     # gcc because otherwise:
     #     "Couldn't determine gcc system type, falling back to default (native compilation)"
     # 'parallel' for the automatic repo detection
-    PREREQS='libfile-fcntllock-perl gcc equivs libwww-perl fontconfig unzip parallel'
+    PREREQS='libfile-fcntllock-perl gcc equivs libwww-perl fontconfig unzip moreutils'
     apt-get -y install --no-install-recommends ${PREREQS} >&3 2>&1 \
         || { echo "${ERRORPREFIX}apt-get failed to install ${PREREQS} in $0" >&2; clean_error; }
     # TODO put the -out.txt in a temp dir, or in the log file.
