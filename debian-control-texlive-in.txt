@@ -5,7 +5,8 @@ Standards-Version: 3.9.2
 Package: texlive-local
 Version: 2013-1~9
 Maintainer: Scott Kostyshak <skostysh@princeton.edu>
-Provides: biblatex, biblatex-dw, cm-super, cm-super-minimal, context, dvipng,
+Provides: asymptote, asymptote-doc,
+ biblatex, biblatex-dw, cm-super, cm-super-minimal, context, dvipng,
  feynmf, fragmaster, lacheck, latex-beamer, latex-cjk-all, latex-cjk-chinese,
  latex-cjk-chinese-arphic-bkai00mp, latex-cjk-chinese-arphic-bsmi00lp,
  latex-cjk-chinese-arphic-gbsn00lp, latex-cjk-chinese-arphic-gkai00mp,
