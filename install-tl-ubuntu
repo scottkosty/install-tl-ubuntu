@@ -52,7 +52,7 @@ fi
 ERRORPREFIX="${ECHOPREFIX}ERROR: "
 WARNINGPREFIX="${ECHOPREFIX}WARNING: "
 
-ARGS=$( getopt -o "r:mt:u:hvaebo:fgq:p:i:" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository:,profile:,iso:" \
+ARGS=$( getopt -o "r:mt:u:hvaebo:fgq:p:i:s" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository:,profile:,iso:,pretest" \
       -n "$( basename "$0" )" -- "$@" )
 # If bad arguments, exit (getopt will have already written the error to STDERR).
 [ "$?" = "0" ] || clean_error
@@ -75,6 +75,7 @@ ISO_FILE=
 ONLY_APT_DPKG=0
 NO_APT_DPKG=0
 LOG_DIR="${MAINDIR}"
+PRETEST=0
 
 while true
 do
@@ -138,6 +139,9 @@ do
         clean_error
       fi
       shift 2
+      ;;
+  -s|--pretest)  PRETEST=1
+      shift 1
       ;;
   -t|--truetype-dir)
       if [ -d "$2" ]; then
@@ -242,12 +246,16 @@ if [ "${HELP}" = "1" ]; then
                                 that you might need to manually edit the Debian control file so that
                                 apt does not think that you have a full TeX Live installation.          \e[00m
   -q, --repository REPO      \e[00;36m Use the specified repository to download and run installer.
-                                If this option is not specified, the fastest server will be determined
+                                If this option is not specified, the fastest repo will be determined
                                 automatically. This option can be used to determine which version of
-                                TeX Live is installed (e.g. 2012, 2013, pretest).                       \e[00m
+                                TeX Live is installed (e.g. 2012, 2013, pretest). If it is a pretest
+	                        repository, please also specify the --pretest option.                   \e[00m
   -r, --retry                \e[00;36m Number of times to retry if install-tl fails to install
                                 and for wget (used to download install-tl and if --hebrew or --more-tex
                                 is specified). The default is 5.                                        \e[00m
+  -s, --pretest              \e[00;36m Install the TeX Live pretest instead of the stable version.
+                                If --repository is not specified, the fastest pretesting repo will
+                                be detected and used.                                                   \e[00m
   -t DIR, --truetype-dir DIR \e[00;36m Directory containing TrueType fonts to be installed
                                 (e.g. to be used by pdfTeX).                                            \e[00m
   -u DIR, --usr-fonts-dir DIR\e[00;36m Directory containing fonts to be installed in /usr/share/fonts/
@@ -327,7 +335,7 @@ function checkEnvVars ()
 ### /end function declarations
 
 if [ "${VERSION}" = "1" ]; then
-  echo -e "\\ninstall-tl-ubuntu\\nVersion 0.4.1\\nAuthor: Scott Kostyshak\\nContact: skostysh@princeton.edu\\n"
+  echo -e "\\ninstall-tl-ubuntu\\nVersion 0.4.2\\nAuthor: Scott Kostyshak\\nContact: skostysh@princeton.edu\\n"
   exit 0
 fi
 
@@ -415,15 +423,25 @@ if [ -z "${TLREPO:-}" -a -z "${ISO_FILE}" ]; then
     echo "${ECHOPREFIX}determining the fastest repository..."
     CURR_DIR="$( pwd )"
     cd "$( mktemp -d )"
-    testPath='indexing/forindex.zip'
+    if [ "${PRETEST}" = "0" ]; then
+        testPath='indexing/forindex.zip'
+    else
+        testPath='install-tl'
+    fi
 
     # We skip ftp connections.
     # We only try every third server. The servers are listed in geographic
     # order so this should pick up a little of everything.
-    wget --quiet -O - "http://ctan.org/mirrors" \
-      | grep -o "http.*>http<" \
-      | sed -n 1~3p \
-      | sed 's/">http<//' > "candidates.txt"
+    if [ "${PRETEST}" = "0" ]; then
+      wget --quiet -O - "http://ctan.org/mirrors" \
+        | grep -o "http.*>http<" \
+        | sed -n 1~3p \
+        | sed 's/">http<//' > "candidates.txt"
+    else
+      wget --quiet -O - "https://www.tug.org/texlive/mirmon/" \
+        | grep -oP "HREF=\"http.*pretest/" \
+        | sed 's/HREF=\"//' > "candidates.txt"
+    fi
 
     # Note that if there is a timeout the repo does not get an entry in mirrorWgets.log.
     sed 's#$#'${testPath}'#' "candidates.txt" \
@@ -436,7 +454,11 @@ if [ -z "${TLREPO:-}" -a -z "${ISO_FILE}" ]; then
       echo "${ECHOPREFIX}the fastest repo is: ${TLREPO}"
     else
       echo "${ECHOPREFIX}trying automatic detection with a longer timeout and smaller file..."
-      testPath='systems/knuth/local/tex/Makefile'
+      if [ "${PRETEST}" = "0" ]; then
+          testPath='systems/knuth/local/tex/Makefile'
+      else
+          testPath='install-tl.zip.sha256'
+      fi
       sed 's#$#'${testPath}'#' "candidates.txt" \
       | parallel --gnu --jobs 3 --timeout 60 '/usr/bin/time -f "%x %e %C" wget --quiet' > "${LOG_DIR}/mirrorWgets.log" 2>&1
       grep "^0" "${LOG_DIR}/mirrorWgets.log" | sort -n -k2 > "${LOG_DIR}/mirrorCandidates.log"
@@ -444,7 +466,11 @@ if [ -z "${TLREPO:-}" -a -z "${ISO_FILE}" ]; then
       if [ -n "${TLREPO}" ]; then
         echo "${ECHOPREFIX}the fastest repo is: ${TLREPO}"
       else
-        TLREPO='http://mirror.utexas.edu/ctan/'
+        if [ "${PRETEST}" = "0" ]; then
+          TLREPO='http://mirror.utexas.edu/ctan/'
+        else
+          TLREPO='http://mirror.hmc.edu/tlpretest/'
+        fi
         echo -e "${WARNINGPREFIX}automatic repo detection failed. We will use the default repo:\n  ${TLREPO}" >&2
       fi
     fi
@@ -464,7 +490,11 @@ if [ -n "${ISO_FILE}" ]; then
     fi
 else
 (
-    TLINSTALLER="${TLREPO}/systems/texlive/tlnet/install-tl-unx.tar.gz"
+    if [ "${PRETEST}" = "0" ]; then
+        TLINSTALLER="${TLREPO}/systems/texlive/tlnet/install-tl-unx.tar.gz"
+    else
+        TLINSTALLER="${TLREPO}/install-tl-unx.tar.gz"
+    fi
     timesToTry=$(( TIMESRETRY + 1 ))
     timesTried=0
     fail=0
