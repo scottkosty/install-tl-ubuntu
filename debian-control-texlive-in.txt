@@ -47,7 +47,9 @@ Provides: biblatex, biblatex-dw, cm-super, cm-super-minimal, context, dvipng,
  ttf-gfs-didot-classic, ttf-gfs-gazis, ttf-gfs-neohellenic, ttf-gfs-olga,
  ttf-gfs-porson, ttf-gfs-solomos, ttf-gfs-theokritos, ttf-sil-gentium, xindy,
  xindy-rules, chktex, texlive-base-bin, thailatex, latex-cjk-xcjk,
- texlive-lang-ukenglish
+ texlive-lang-ukenglish, texlive-lang-cjk, asymptote, biber, jadetex,
+ makejvf, mendexk, m-tx, pdfjam, pmx, xmltex
+
 Architecture: all
 Description: My local installation of TeX Live 2013.
  A full "vanilla" TeX Live 2013

@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+
+# File: findEquivs
+
+# usage
+# ./findEquivs
+
+# description
+# Find Debian packages that a manual installation of TeX Live replaces.
+# These packages can be added to a Debian control file which can then
+# be used with equivs to inform apt that the dependencies are already
+# satisfied. Note that this script must be run on a system that already
+# has a manual installation of TeX Live.
+
+# Copyright 2014, Scott Kostyshak
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# TODO: this did not catch texlive-music in 13.10 because it didn't have
+# a binary. It does catch it in 14.04 (because there are binaries).
+# extend this script to look for equivs of .sty files.
+
+# TODO: another example that is not caught is asymptote-doc. An easy improvement
+# would be to atleast test if ${PACK}-doc is a package, and if so add it.
+
+# get a list of packages that contain at least one of the files in /opt/texbin
+echo "generating list of packages to check \"equivalency\" of..."
+ls /opt/texbin/ | parallel --gnu --jobs $( grep "proc" /proc/cpuinfo | wc -l ) \
+    apt-file find --package-only --regex "\/{}$" > ./packagesWithDupes.txt
+sort -u packagesWithDupes.txt > packagesFound.txt
+
+ubuntuVer="$(lsb_release --release --short)"
+
+# TODO: parallelize
+echo "checking if each package's biaries is a subset of /opt/texbin/..."
+while read PACK
+do
+    # I define binary as a file in a directory whose path contains a folder \
+    # "bin" or "sbin".
+    for binary in $( apt-file list ${PACK} | awk '{ print $2 }' \
+      | grep -P '\/s?bin\/' ); do
+          if [ ! -e "/opt/texbin/$(basename "${binary}")" ]; then
+              continue 2
+          fi
+    done
+    echo "${PACK}" >> "binaryEquivalent_${ubuntuVer}.txt"
+done < packagesFound.txt
+
+echo "done."
+exit 0
