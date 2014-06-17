@@ -5,9 +5,9 @@ Standards-Version: 3.9.2
 Package: texlive-local
 Version: 2013-1~9
 Maintainer: Scott Kostyshak <skostysh@princeton.edu>
-Provides: asymptote, biber, biblatex, biblatex-dw, chktex, cm-super,
- cm-super-minimal, context, dvipng, feynmf, fragmaster, jadetex, lacheck,
- latex-beamer, latex-cjk-all, latex-cjk-chinese,
+Provides: asymptote, asymptote-doc, biber, biblatex, biblatex-dw, chktex,
+ cm-super, cm-super-minimal, context, dvipng, feynmf, fragmaster, jadetex,
+ lacheck, latex-beamer, latex-cjk-all, latex-cjk-chinese,
  latex-cjk-chinese-arphic-bkai00mp, latex-cjk-chinese-arphic-bsmi00lp,
  latex-cjk-chinese-arphic-gbsn00lp, latex-cjk-chinese-arphic-gkai00mp,
  latex-cjk-common, latex-cjk-japanese, latex-cjk-japanese-wadalab,
