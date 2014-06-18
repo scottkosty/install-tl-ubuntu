@@ -188,9 +188,9 @@ if [ "${HELP}" = "1" ]; then
   DESCRIPTION
   Warning: this script has barely been tested except by the author.
 
-  This script uses the TeX Live 2013 installer to install TeX Live so that LaTeX
+  This script uses the TeX Live 2014 installer to install TeX Live so that LaTeX
   packages can be updated through CTAN with tlmgr. To do this, the official TeX
-  Live 2013 installer is downloaded and used and apt is informed that TeX
+  Live 2014 installer is downloaded and used and apt is informed that TeX
   dependencies are satisfied. Thus, when you want to install a program with
   apt-get that depends on TeX Live, apt will not try to install the TeX Live
   packages from the Ubuntu repositories.
@@ -248,7 +248,7 @@ if [ "${HELP}" = "1" ]; then
   -q, --repository REPO      \e[00;36m Use the specified repository to download and run installer.
                                 If this option is not specified, the fastest repo will be determined
                                 automatically. This option can be used to determine which version of
-                                TeX Live is installed (e.g. 2012, 2013, pretest). If it is a pretest
+                                TeX Live is installed (e.g. 2013, 2014, pretest). If it is a pretest
 	                        repository, please also specify the --pretest option.                   \e[00m
   -r, --retry                \e[00;36m Number of times to retry if install-tl fails to install
                                 and for wget (used to download install-tl and if --hebrew or --more-tex
@@ -335,7 +335,7 @@ function checkEnvVars ()
 ### /end function declarations
 
 if [ "${VERSION}" = "1" ]; then
-  echo -e "\\ninstall-tl-ubuntu\\nVersion 0.4.2\\nAuthor: Scott Kostyshak\\nContact: skostysh@princeton.edu\\n"
+  echo -e "\\ninstall-tl-ubuntu\\nVersion 0.5\\nAuthor: Scott Kostyshak\\nContact: skostysh@princeton.edu\\n"
   exit 0
 fi
 
@@ -411,7 +411,7 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
     fi
     ( cd "${CONTROL_OUTD}" && equivs-build "debian-control-texlive-out.txt" ) >&3 2>&1 \
         || echo "${WARNINGPREFIX}equivs-build failed for TeX Live" >&2
-    dpkg -i "${CONTROL_OUTD}/texlive-local_2013-1~9_all.deb" >&3 2>&1 || \
+    dpkg -i "${CONTROL_OUTD}/texlive-local_2014-1~9_all.deb" >&3 2>&1 || \
         echo "${WARNINGPREFIX}dpkg could not install dummy TeX Live package" >&2
     if [ "${ONLY_APT_DPKG}" = 1 ]; then
         clean_up
@@ -609,7 +609,7 @@ while (( timesTried != timesToTry )); do
         if ( grep -i "are not compatible" "${TLlog}" &&
              grep -i "Perhaps you need to use a different CTAN mirror?" "${TLlog}" ) > /dev/null 2>&1; then
                echo -e ${ECHOPREFIX}the installer and repo are mismatched.\
-                       \\nFor example, the installer could be for TeX Live 2013 and the repo for 2012. >&2
+                       \\nFor example, the installer could be for TeX Live 2014 and the repo for 2013. >&2
                clean_error
         fi
         (( timesTried != timesToTry )) && echo "${ECHOPREFIX}we will try to restart the install." >&2

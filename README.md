@@ -17,7 +17,7 @@ wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubunt
 
 ## Features
 
-- installs **TeX Live 2013**
+- installs **TeX Live 2014**
   - automatically finds the fastest repository
   - gives updated progress of the install
   - restarts automatically if install fails
@@ -29,7 +29,7 @@ wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubunt
   - tells AppArmor to allow Evince to access the TeX Live fonts
   - can install TrueType fonts that user provides (--truetype-dir)
   - can install IvriTeX Hebrew fonts (--hebrew)
-- optionally installs additional LaTeX files for common journals that are not included in TeX Live 2013 (--more-tex)
+- optionally installs additional LaTeX files for common journals that are not included in TeX Live 2014 (--more-tex)
 - works non-interactively and thus can be added to a batch install script
 - tlmgr can be run from the desktop menu (if 'gksu' package is installed)
 - install can be done from an ISO file (--iso)
@@ -42,7 +42,7 @@ For more details, see
 
 ## Description
 
-This script uses the TeX Live 2013 installer to install TeX Live so that LaTeX packages can be updated through CTAN with **tlmgr**. To do this, the official TeX Live 2013 installer is downloaded and used and apt is informed that TeX dependencies are satisfied. Thus, when you want to install a program with apt-get that depends on TeX Live, apt will not try to install the TeX Live packages from the Ubuntu repositories.
+This script uses the TeX Live 2014 installer to install TeX Live so that LaTeX packages can be updated through CTAN with **tlmgr**. To do this, the official TeX Live 2014 installer is downloaded and used and apt is informed that TeX dependencies are satisfied. Thus, when you want to install a program with apt-get that depends on TeX Live, apt will not try to install the TeX Live packages from the Ubuntu repositories.
 
 This script automates many of the instructions that were posted in the 25 Jan 2013 answer by Silex [here](http://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu). TeX Live installation documentation can be found in the [Quick install](http://www.tug.org/texlive/quickinstall.html) and the [The TeX Live Guide](http://www.tug.org/texlive/doc/texlive-en/texlive-en.html#installation). Information on TeX Live's install script arguments is [here](http://www.tug.org/texlive/doc/install-tl.html). The `Net::LWP Perl module` (Ubuntu package `libwww-perl`) is recommended, but not necessary. See the "persistent-downloads" section of the install-tl documenation.
 

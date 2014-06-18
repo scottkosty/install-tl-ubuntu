@@ -3,7 +3,7 @@ Priority: optional
 Standards-Version: 3.9.2
 
 Package: texlive-local
-Version: 2013-1~9
+Version: 2014-1~9
 Maintainer: Scott Kostyshak <skostysh@princeton.edu>
 Provides: asymptote, asymptote-doc, biber, biblatex, biblatex-dw, chktex,
  cm-super, cm-super-minimal, context, dvipng, feynmf, fragmaster, jadetex,
@@ -48,6 +48,8 @@ Provides: asymptote, asymptote-doc, biber, biblatex, biblatex-dw, chktex,
  ttf-sil-gentium, xindy, xindy-rules, xmltex
 
 Architecture: all
-Description: My local installation of TeX Live 2013.
- A full "vanilla" TeX Live 2013
+Description: A local installation of TeX Live 2014.
+ A full "vanilla" TeX Live 2014
  http://tug.org/texlive/debian#vanilla
+ installed with
+ https://github.com/scottkosty/install-tl-ubuntu
