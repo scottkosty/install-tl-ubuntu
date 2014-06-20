@@ -33,7 +33,7 @@ wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubunt
 - works non-interactively and thus can be added to a batch install script
 - tlmgr can be run from the desktop menu (if 'gksu' package is installed)
 - install can be done from an ISO file (--iso)
-- optionally installs TeX Live pretest instead, the development version of TeX Live 2014 (--pretest)
+- optionally installs TeX Live pretest instead, when it is available (--pretest)
 
 For more details, see
 ```s
