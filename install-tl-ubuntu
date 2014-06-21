@@ -249,7 +249,7 @@ if [ "${HELP}" = "1" ]; then
                                 If this option is not specified, the fastest repo will be determined
                                 automatically. This option can be used to determine which version of
                                 TeX Live is installed (e.g. 2013, 2014, pretest). If it is a pretest
-	                        repository, please also specify the --pretest option.                   \e[00m
+                                repository, please also specify the --pretest option.                   \e[00m
   -r, --retry                \e[00;36m Number of times to retry if install-tl fails to install
                                 and for wget (used to download install-tl and if --hebrew or --more-tex
                                 is specified). The default is 5.                                        \e[00m
