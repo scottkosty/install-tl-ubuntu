@@ -1,0 +1,12 @@
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: replaceme1919
+Version: 9876
+Maintainer: noone <noone@nowhere.org>
+Architecture: all
+Description: Dummy package part of a local installation of TeX Live 2014.
+ http://tug.org/texlive/debian#vanilla
+ installed with
+ https://github.com/scottkosty/install-tl-ubuntu

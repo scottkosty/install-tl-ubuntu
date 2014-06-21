@@ -403,16 +403,26 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
     #      and upstream bug:
     #      http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=679101
     CONTROL_OUTD=$( mktemp -d )
+    # FIXME work on this
     if [ "${VER_UBUNTU}" != "12.04" ]; then
         sed -r 's/latex-cjk-xcjk,? ?//g' "debian-control-texlive-in.txt" |
             sed -r 's/texlive-lang-ukenglish,? ?//g' > "${CONTROL_OUTD}/debian-control-texlive-out.txt"
     else
             cp "debian-control-texlive-in.txt" "${CONTROL_OUTD}/debian-control-texlive-out.txt"
     fi
-    ( cd "${CONTROL_OUTD}" && equivs-build "debian-control-texlive-out.txt" ) >&3 2>&1 \
-        || echo "${WARNINGPREFIX}equivs-build failed for TeX Live" >&2
-    dpkg -i "${CONTROL_OUTD}/texlive-local_2014-1~9_all.deb" >&3 2>&1 || \
-        echo "${WARNINGPREFIX}dpkg could not install dummy TeX Live package" >&2
+    cp "debian-control-template.txt" "${CONTROL_OUTD}"/
+    (
+        # TODO condition on parallel
+        # TODO eventually make parallel a requirement, when 12.04 reaches end of support.
+        cd "${CONTROL_OUTD}" &&
+        dummyNames=( $(grep -P -o "\S*," debian-control-texlive-out.txt | sed 's/,//') )
+        parallel --gnu 'cat "debian-control-template.txt" | sed -e "s/replaceme1919/{}/g" -e "s/9876/$(apt-cache policy {} | head -n 3 | tail -n 1 | sed "s/.*Candidate: //")/" > "{}" && equivs-build "{}"' ::: ${dummyNames[@]}
+        # FIXME if not in Ubuntu repo no point in equiving it and could be bad (could be listed in replaced or breaks fields of a package)
+        # FIXME remove packages with empty versions
+    ) >&3 2>&1 \
+        || echo "${WARNINGPREFIX}equivs-builds failed for TeX Live dummies" >&2
+    dpkg -i "${CONTROL_OUTD}"/*.deb >&3 2>&1 || \
+        echo "${WARNINGPREFIX}dpkg could not install TeX Live dummies" >&2
     if [ "${ONLY_APT_DPKG}" = 1 ]; then
         clean_up
         exit 0
