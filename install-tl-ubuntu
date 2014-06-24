@@ -416,6 +416,9 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
         # TODO eventually make parallel a requirement, when 12.04 reaches end of support.
         cd "${CONTROL_OUTD}" &&
         dummyNames=( $(grep -P -o "\S*," debian-control-texlive-out.txt | sed 's/,//') )
+        # TODO loop through dummyNames and check whether it is in an Ubuntu repo.
+        # if not, output a message (not warning...). Will make it easy for me to maintain.
+        # also check whether it breaks anything... what if a package conflicts with it? Will that package be removed?
         parallel --gnu 'cat "debian-control-template.txt" | sed -e "s/replaceme1919/{}/g" -e "s/9876/$(apt-cache policy {} | head -n 3 | tail -n 1 | sed "s/.*Candidate: //")/" > "{}" && equivs-build "{}"' ::: ${dummyNames[@]}
         # FIXME if not in Ubuntu repo no point in equiving it and could be bad (could be listed in replaced or breaks fields of a package)
         # FIXME remove packages with empty versions
