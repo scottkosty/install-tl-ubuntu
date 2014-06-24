@@ -4,13 +4,13 @@
 # to edit debian-control-texlive-in.txt to
 # reflect your changes.
 selected_scheme scheme-full
-TEXDIR /usr/local/texlive/2013
-TEXMFCONFIG ~/.texlive2013/texmf-config
+TEXDIR /usr/local/texlive/2014
+TEXMFCONFIG ~/.texlive2014/texmf-config
 TEXMFHOME ~/texmf
 TEXMFLOCAL /usr/local/texlive/texmf-local
-TEXMFSYSCONFIG /usr/local/texlive/2013/texmf-config
-TEXMFSYSVAR /usr/local/texlive/2013/texmf-var
-TEXMFVAR ~/.texlive2013/texmf-var
+TEXMFSYSCONFIG /usr/local/texlive/2014/texmf-config
+TEXMFSYSVAR /usr/local/texlive/2014/texmf-var
+TEXMFVAR ~/.texlive2014/texmf-var
 binary_x86_64-linux 1
 collection-basic 1
 collection-bibtexextra 1
