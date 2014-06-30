@@ -412,18 +412,57 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
     fi
     cp "debian-control-template.txt" "${CONTROL_OUTD}"/
     (
-        # TODO condition on parallel
-        # TODO eventually make parallel a requirement, when 12.04 reaches end of support.
-        cd "${CONTROL_OUTD}" &&
-        dummyNames=( $(grep -P -o "\S*," debian-control-texlive-out.txt | sed 's/,//') )
-        # TODO loop through dummyNames and check whether it is in an Ubuntu repo.
-        # if not, output a message (not warning...). Will make it easy for me to maintain.
-        # also check whether it breaks anything... what if a package conflicts with it? Will that package be removed?
-        parallel --gnu 'cat "debian-control-template.txt" | sed -e "s/replaceme1919/{}/g" -e "s/9876/$(apt-cache policy {} | head -n 3 | tail -n 1 | sed "s/.*Candidate: //")/" > "{}" && equivs-build "{}"' ::: ${dummyNames[@]}
-        # FIXME if not in Ubuntu repo no point in equiving it and could be bad (could be listed in replaced or breaks fields of a package)
-        # FIXME remove packages with empty versions
+      echo "CONTROL_OUTD is: ${CONTROL_OUTD}"
+          # TODO condition on parallel
+          # TODO eventually make parallel a requirement, when 12.04 reaches end of support.
+          cd "${CONTROL_OUTD}" &&
+          packageNames=( $(grep -P -o "\S*," debian-control-texlive-out.txt | sed 's/,//') )
+
+      # note that version could be none or NULL:
+      # ah, but thats only if I installed a dummy with empty version?
+      # scott@scott:~/Desktop/install_tl_DEBUG$ apt-cache policy biblatex
+      # biblatex:
+      #   Installed: (none)
+      #   Candidate: (none)
+      #   Version table:
+      # scott@scott:~/Desktop/install_tl_DEBUG$ apt-cache policy biblatexyz
+      # N: Unable to locate package biblatexyz
+      # scott@scott:~/Desktop/install_tl_DEBUG$
+
+
+
+      dummyNames=()
+      for pack in "${packageNames[@]}"; do
+          # 'apt-cache show' gives non-zero exit code when package does not exist.
+          # 'apt-cache policy' does not
+          # I prefer to use exit codes and not to parse apt-cache policy, although
+          # if I did we would not have to use both 'apt-cache show' and 'dpkg -s'
+          # if package not in ubuntu repos, not installing because higher chance of false conflicts with little gain
+          # We install a dummy if the package is not already installed and if is in at least one repo
+          echo "looking at package ${pack}..."
+          if dpkg -s "${pack}" > /dev/null 2>&1; then
+            echo "NOTE: ${pack} is already installed. This could be duplicated space because TeX Live provides this package."
+          else
+            if ! apt-cache show "${pack}"; then
+              echo "NOTE: ${pack} is not in one of your repositories so no need for equivs to fake it."
+            else
+              dummyNames+=("${pack}")
+              #TODO if not PARALLEL, do equivs here.
+              pack_v="$(apt-cache policy "${pack}" | head -n 3 | tail -n 1 | sed "s/.*Candidate: //")"
+              #TODO sanity check pack_v ? if apt-cache shows it, there should be a version right?
+              cat "debian-control-template.txt" | sed -e "s/replaceme1919/{}/g" -e "s/9876/${pack_v}/" > "${pack}"
+            fi
+          fi
+      done
+          echo "going to install the following dummy packages: ${dummyNames[@]}"
+          parallel --gnu 'equivs-build "{}"' ::: ${dummyNames[@]}
+          # FIXME if not in Ubuntu repo no point in equiving it and could be bad (could be listed in replaced or breaks fields of a package)
+          # FIXME remove packages with empty versions
     ) >&3 2>&1 \
         || echo "${WARNINGPREFIX}equivs-builds failed for TeX Live dummies" >&2
+
+
+
     dpkg -i "${CONTROL_OUTD}"/*.deb >&3 2>&1 || \
         echo "${WARNINGPREFIX}dpkg could not install TeX Live dummies" >&2
     if [ "${ONLY_APT_DPKG}" = 1 ]; then
