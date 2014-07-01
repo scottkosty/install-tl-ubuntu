@@ -449,6 +449,10 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
               dummyNames+=("${pack}")
               #TODO if not PARALLEL, do equivs here.
               pack_v="$(apt-cache policy "${pack}" | head -n 3 | tail -n 1 | sed "s/.*Candidate: //")"
+              if [ "${pack_v}" = "(none)" ]; then
+                # package might be virtual. e.g. texlive-common ttf-gfs-artemisia
+		pack_v=9999
+              fi
               #TODO sanity check pack_v ? if apt-cache shows it, there should be a version right?
               cat "debian-control-template.txt" | sed -e "s/replaceme1919/${pack}/g" -e "s/9876/${pack_v}/" > "${pack}"
             fi
