@@ -443,14 +443,14 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
           if dpkg -s "${pack}" > /dev/null 2>&1; then
             echo "NOTE: ${pack} is already installed. This could be duplicated space because TeX Live provides this package."
           else
-            if ! apt-cache show "${pack}"; then
+            if ! apt-cache show "${pack}" > /dev/null 2>&1; then
               echo "NOTE: ${pack} is not in one of your repositories so no need for equivs to fake it."
             else
               dummyNames+=("${pack}")
               #TODO if not PARALLEL, do equivs here.
               pack_v="$(apt-cache policy "${pack}" | head -n 3 | tail -n 1 | sed "s/.*Candidate: //")"
               #TODO sanity check pack_v ? if apt-cache shows it, there should be a version right?
-              cat "debian-control-template.txt" | sed -e "s/replaceme1919/{}/g" -e "s/9876/${pack_v}/" > "${pack}"
+              cat "debian-control-template.txt" | sed -e "s/replaceme1919/${pack}/g" -e "s/9876/${pack_v}/" > "${pack}"
             fi
           fi
       done
