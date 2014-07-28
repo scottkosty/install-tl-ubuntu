@@ -768,8 +768,11 @@ if [ "${EXTRAS}" = "1" ]; then
     # aa-package.tar.gz contains an old version of natbib that will be used if not removed
     rm "aa-package/bibtex/natbib.sty" ||
       { echo "${WARNINGPREFIX}aa-package's bundled natbib could not be removed"; MAINRET=1; }
+    # TODO contact AA and AEA maintainers and see if they can zip the files differently.
     # aa.cls is not readable when extracted. Might as well do for all.
     chmod -R +r * || { echo "${WARNINGPREFIX}chmod failed to set read permission on files." >&2; MAINRET=1; }
+    # AEA directory has strange permissions. Might as well correct for all directories.
+    find ./ -type d -exec chmod 0755 '{}' \;
 
     # AEA files are all executable. That can't lead to any good. Might as well do for all. (but not folders)
     find ./ -type f -exec chmod -x '{}' \;
