@@ -535,7 +535,9 @@ else
 fi
 
 if [ -z "${ISO_FILE}" ]; then
-    tl_dir=$( ls | grep -P "install-tl-\d{8}$" )
+    # need `head -n 1` because there could be more than one directory, if e.g.
+    # the install resumed across a date change. See #12
+    tl_dir=$( ls | grep -P "install-tl-\d{8}$" | head -n 1 )
     if [ -d "${tl_dir}" ]; then
         cd "${tl_dir}"
     else
