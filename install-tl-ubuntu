@@ -195,6 +195,11 @@ if [ "${HELP}" = "1" ]; then
   apt-get that depends on TeX Live, apt will not try to install the TeX Live
   packages from the Ubuntu repositories.
 
+  If this script detects a previous TeX Live installation installed to the same
+  place (/opt/texbin), the link will be updated to the new installation but the
+  old installation (the place /opt/texbin points to) will not be removed and
+  should be removed manually by the user if desired.
+
   This script must be run with sudo. Many recommend not installing TeX Live with
   sudo, in which case this script must be altered (please send a patch or post
   an enhancement request).
@@ -625,6 +630,13 @@ fi
 MAINTEXDIR=$(grep "TEXDIR:" "${TLlog}" | awk -F'"' '{ print $2 }')
 
 echo "${ECHOPREFIX}linking..."
+if [ -h "/opt/texbin" ]; then
+  echo "${WARNINGPREFIX}previous TeX Live install detected. Link will be updated so
+  that the newer installation is used. However, the old installation will not be removed
+  by this script, so if you are concerned about space, please consider removing the old
+  TeX Live directory. If space if not a concern, no action is needed."
+  rm "/opt/texbin"
+fi
 [ -d "${MAINTEXDIR}/bin" ] && ln -s "${MAINTEXDIR}/bin"/* "/opt/texbin" \
   || { echo "${ERRORPREFIX}could not link." >&2; clean_error; }
 sed -i 's/^PATH="/PATH="\/opt\/texbin:/' /etc/environment || { echo "${ERRORPREFIX}could not sed." >&2; clean_error; }
