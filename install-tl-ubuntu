@@ -255,9 +255,9 @@ if [ "${HELP}" = "1" ]; then
                                 automatically. This option can be used to determine which version of
                                 TeX Live is installed (e.g. 2013, 2014, pretest). If it is a pretest
 	                        repository, please also specify the --pretest option.                   \e[00m
-  -r, --retry                \e[00;36m Number of times to retry if install-tl fails to install
-                                and for wget (used to download install-tl and if --hebrew or --more-tex
-                                is specified). The default is 5.                                        \e[00m
+  -r, --retry     TIMES      \e[00;36m Retry TIMES number of times if install-tl fails to install, or
+                                if wget fails (wget is used to download install-tl and if --hebrew or
+                                --more-tex is specified). The default is 5 retries.                     \e[00m
   -s, --pretest              \e[00;36m Install the TeX Live pretest instead of the stable version.
                                 If --repository is not specified, the fastest pretesting repo will
                                 be detected and used.                                                   \e[00m
@@ -265,7 +265,7 @@ if [ "${HELP}" = "1" ]; then
                                 (e.g. to be used by pdfTeX).                                            \e[00m
   -u DIR, --usr-fonts-dir DIR\e[00;36m Directory containing fonts to be installed in /usr/share/fonts/
                                 (e.g. to be used by XeTeX).                                             \e[00m
-  -v, --version              \e[00;36m Display version and contact info.                                \e[00m
+  -v, --version              \e[00;36m Display version and contact info, then exit.                     \e[00m
 
   AUTHOR
   Please send bug reports and suggestions to Scott Kostyshak at
