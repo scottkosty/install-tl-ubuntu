@@ -340,7 +340,7 @@ function checkEnvVars ()
 ### /end function declarations
 
 if [ "${VERSION}" = "1" ]; then
-  echo -e "\\ninstall-tl-ubuntu\\nVersion 0.5\\nAuthor: Scott Kostyshak\\nContact: skostysh@princeton.edu\\n"
+  echo -e "\\ninstall-tl-ubuntu\\nVersion 0.6\\nAuthor: Scott Kostyshak\\nContact: skostysh@princeton.edu\\n"
   exit 0
 fi
 
