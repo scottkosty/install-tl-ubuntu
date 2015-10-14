@@ -229,7 +229,7 @@ if [ "${HELP}" = "1" ]; then
                                 use FoilTeX and Noweb when installed with the command
                                 'sudo apt-get install foiltex noweb').
                                 Use this option to prevent this linking.                                \e[00m
-  -e, --hebrew               \e[00;36m Install IvriTeX Hebrew fonts.                                    \e[00m
+  -e, --hebrew               \e[00;36m Install the Hebrew font collections IvriTeX and culmus.          \e[00m
   -i, --iso FILE             \e[00;36m Install from a TeX Live ISO file. For how to download, see
                                 http://www.tug.org/texlive/acquire-iso.html                             \e[00m
   -f, --only-apt-and-dpkg    \e[00;36m Run the apt and dpkg commands in this script and then exit.
@@ -400,6 +400,11 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
     PREREQS='libfile-fcntllock-perl gcc equivs libwww-perl fontconfig unzip'
     apt-get -y install --no-install-recommends ${PREREQS} >&3 2>&1 \
         || { echo "${ERRORPREFIX}apt-get failed to install ${PREREQS} in $0" >&2; clean_error; }
+    if [ "${HEBREW}" = "1" ]; then
+        HEBREW_PACKS='culmus'
+        apt-get -y install "${HEBREW_PACKS}" >&3 2>&1 \
+            || { echo "${ERRORPREFIX}apt-get failed to install ${HEBREW_PACKS} in $0" >&2; clean_error; }
+    fi
     # TODO put the -out.txt in a temp dir, or in the log file.
     # newline in a Debian control file is OK right?
 

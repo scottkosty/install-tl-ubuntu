@@ -28,7 +28,7 @@ wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubunt
 - other font-related conveniences
   - tells AppArmor to allow Evince to access the TeX Live fonts
   - can install TrueType fonts that user provides (--truetype-dir)
-  - can install IvriTeX Hebrew fonts (--hebrew)
+  - can install IvriTeX and culmus Hebrew fonts (--hebrew)
 - optionally installs additional LaTeX files for common journals that are not included in TeX Live 2015 (--more-tex)
 - works non-interactively and thus can be added to a batch install script
 - tlmgr can be run from the desktop menu (if 'gksu' package is installed)
