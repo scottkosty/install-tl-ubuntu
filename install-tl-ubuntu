@@ -720,6 +720,12 @@ if [ "${EXTRAS}" = "1" ]; then
     || { echo "${WARNINGPREFIX}failed to download ACM files." >&2; MAINRET=1; }
 
     (
+      mkdir IUCr && cd IURCr &&
+      ${WGET_CMD} ftp://ftp.iucr.org/templates/latex/iucr.{bib,bst,cls} \
+    ) >&3 2>&1 \
+    || { echo "${WARNINGPREFIX}failed to download IUCR files." >&2; MAINRET=1; }
+
+    (
       mkdir RJournal && cd RJournal &&
       ${WGET_CMD} "https://github.com/rjournal/share/raw/master/RJournal.sty" \
     ) >&3 2>&1 \
