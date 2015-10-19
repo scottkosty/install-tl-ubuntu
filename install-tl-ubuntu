@@ -797,8 +797,8 @@ if [ "${EXTRAS}" = "1" ]; then
     find ./ -type f -exec chmod -x '{}' \;
 
     # Otherwise they're not found.
-    # TODO do a 'find' for all bst and copy?
     find ./ -iregex ".*\.bst$" -type f -print0 | xargs -0 cp -t "${dTEXMFLOCAL}/bibtex/bst" >&3 2>&1
+    find ./ -iregex ".*\.bib$" -type f -print0 | xargs -0 cp -t "${dTEXMFLOCAL}/bibtex/bib" >&3 2>&1
 fi
 
 if [ "${LINK_UBUNTU}" = 1 ]; then
