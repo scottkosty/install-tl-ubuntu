@@ -402,7 +402,7 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
         || { echo "${ERRORPREFIX}apt-get failed to install ${PREREQS} in $0" >&2; clean_error; }
     if [ "${HEBREW}" = "1" ]; then
         HEBREW_PACKS='culmus culmus-fancy'
-        apt-get -y install "${HEBREW_PACKS}" >&3 2>&1 \
+        apt-get -y install ${HEBREW_PACKS} >&3 2>&1 \
             || { echo "${ERRORPREFIX}apt-get failed to install ${HEBREW_PACKS} in $0" >&2; clean_error; }
     fi
     # TODO put the -out.txt in a temp dir, or in the log file.
