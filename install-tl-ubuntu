@@ -813,7 +813,7 @@ if [ "${HEBREW}" = 1 ]; then
     (
       mkdir "/tmp/HebrewFonts" &&
       cd "/tmp/HebrewFonts" &&
-      ${WGET_CMD} "http://ftp.us.debian.org/debian/pool/main/i/ivritex/ivritex_1.1.1-6_all.deb" &&
+      ${WGET_CMD} "http://archive.debian.org/debian/pool/main/i/ivritex/ivritex_1.1.1-6_all.deb" &&
       ar x "ivritex_1.1.1-6_all.deb" && tar -xf "data.tar.gz" &&
       rsync -a "usr/share/texmf/" "${dTEXMFLOCAL}"
     ) >&3 2>&1 \
