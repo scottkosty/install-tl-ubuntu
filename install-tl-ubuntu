@@ -790,9 +790,6 @@ if [ "${EXTRAS}" = "1" ]; then
     done
 
     # MORE AA
-    # aa-package.tar.gz contains an old version of natbib that will be used if not removed
-    rm "aa-package/bibtex/natbib.sty" ||
-      { echo "${WARNINGPREFIX}aa-package's bundled natbib could not be removed"; MAINRET=1; }
     # TODO contact AA and AEA maintainers and see if they can zip the files differently.
     # aa.cls is not readable when extracted. Might as well do for all.
     chmod -R +r * || { echo "${WARNINGPREFIX}chmod failed to set read permission on files." >&2; MAINRET=1; }
