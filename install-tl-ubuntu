@@ -608,6 +608,8 @@ while (( timesTried != timesToTry )); do
     else
         INSTALL_ARG="\"${MOUNT_ISO_DIR}/install-tl\""
     fi
+    echo -e "${ECHOPREFIX}going to run the following command:
+        echo \"${option}\" | ${INSTALL_ARG} -v ${TLPROFILE} -logfile \"${TLlog}\""
     if echo "${option}" | eval ${INSTALL_ARG} -v ${TLPROFILE} \
         -logfile \"${TLlog}\" > /dev/null 2>&1; then
         success=1
