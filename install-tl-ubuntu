@@ -485,6 +485,11 @@ if [ -z "${TLREPO:-}" -a -z "${ISO_FILE}" ]; then
       fi
     fi
 
+    if [ "${PRETEST}" = "0" ]; then
+        # needed starting with TL 2016
+        TLREPO="${TLREPO}/systems/texlive/tlnet/"
+    fi
+
     # only for correlations (figuring out how small of a size will give accurate results).
     # sed -e 's/^0 //' -e 's/wget --quiet //' -e 's#'/${testPath}'##' candidates_sorted > forR.txt
     cd "${CURR_DIR}"
@@ -500,11 +505,7 @@ if [ -n "${ISO_FILE}" ]; then
     fi
 else
 (
-    if [ "${PRETEST}" = "0" ]; then
-        TLINSTALLER="${TLREPO}/systems/texlive/tlnet/install-tl-unx.tar.gz"
-    else
-        TLINSTALLER="${TLREPO}/install-tl-unx.tar.gz"
-    fi
+    TLINSTALLER="${TLREPO}/install-tl-unx.tar.gz"
     timesToTry=$(( TIMESRETRY + 1 ))
     timesTried=0
     fail=0
