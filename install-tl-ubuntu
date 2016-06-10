@@ -7,7 +7,7 @@
 # ./install-tl-ubuntu --help
 
 
-# Copyright 2013-2015, Scott Kostyshak
+# Copyright 2013-2016, Scott Kostyshak
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -186,9 +186,9 @@ if [ "${HELP}" = "1" ]; then
   sudo ./install-tl-ubuntu [OPTIONS]
 
   DESCRIPTION
-  This script uses the TeX Live 2015 installer to install TeX Live so that LaTeX
+  This script uses the TeX Live 2016 installer to install TeX Live so that LaTeX
   packages can be updated through CTAN with tlmgr. To do this, the official TeX
-  Live 2015 installer is downloaded and used and apt is informed that TeX
+  Live 2016 installer is downloaded and used and apt is informed that TeX
   dependencies are satisfied. Thus, when you want to install a program with
   apt-get that depends on TeX Live, apt will not try to install the TeX Live
   packages from the Ubuntu repositories.
@@ -251,7 +251,7 @@ if [ "${HELP}" = "1" ]; then
   -q, --repository REPO      \e[00;36m Use the specified repository to download and run installer.
                                 If this option is not specified, the fastest repo will be determined
                                 automatically. This option can be used to determine which version of
-                                TeX Live is installed (e.g. 2013, 2015, pretest). If it is a pretest
+                                TeX Live is installed (e.g. 2013, 2016, pretest). If it is a pretest
 	                        repository, please also specify the --pretest option.                   \e[00m
   -r, --retry     TIMES      \e[00;36m Retry TIMES number of times if install-tl fails to install, or
                                 if wget fails (wget is used to download install-tl and if --hebrew or
@@ -419,7 +419,7 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
     fi
     ( cd "${CONTROL_OUTD}" && equivs-build "debian-control-texlive-out.txt" ) >&3 2>&1 \
         || echo "${WARNINGPREFIX}equivs-build failed for TeX Live" >&2
-    dpkg -i "${CONTROL_OUTD}/texlive-local_2015-1~9_all.deb" >&3 2>&1 || \
+    dpkg -i "${CONTROL_OUTD}/texlive-local_2016-1~9_all.deb" >&3 2>&1 || \
         echo "${WARNINGPREFIX}dpkg could not install dummy TeX Live package" >&2
     if [ "${ONLY_APT_DPKG}" = 1 ]; then
         clean_up
