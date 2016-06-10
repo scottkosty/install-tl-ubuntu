@@ -589,7 +589,7 @@ while (( timesTried != timesToTry )); do
               else
                   # If no progress found from tail-grep, we are at start or end.
                   if [ "${pastStart}" = "1" ]; then
-                      echo -e "\n                   running config scripts (could take up to 15 mins)..."
+                      echo -e "\n                   running config scripts (could take up to 10 mins)..."
                       exit
                   fi
               fi
