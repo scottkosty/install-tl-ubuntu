@@ -186,8 +186,6 @@ if [ "${HELP}" = "1" ]; then
   sudo ./install-tl-ubuntu [OPTIONS]
 
   DESCRIPTION
-  Warning: this script has barely been tested except by the author.
-
   This script uses the TeX Live 2015 installer to install TeX Live so that LaTeX
   packages can be updated through CTAN with tlmgr. To do this, the official TeX
   Live 2015 installer is downloaded and used and apt is informed that TeX
