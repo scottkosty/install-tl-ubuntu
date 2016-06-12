@@ -267,7 +267,7 @@ if [ "${HELP}" = "1" ]; then
 
   AUTHOR
   Please send bug reports and suggestions to Scott Kostyshak at
-  skostysh@princeton.edu.
+  scott.kostyshak@gmail.com.
 "
   exit 0
 fi

@@ -4,7 +4,7 @@ Standards-Version: 3.9.2
 
 Package: texlive-local
 Version: 2016-1~9
-Maintainer: Scott Kostyshak <skostysh@princeton.edu>
+Maintainer: Scott Kostyshak <scott.kostyshak@gmail.com>
 Provides: asymptote, asymptote-doc, biber, biblatex, biblatex-dw, chktex,
  cm-super, cm-super-minimal, context, dvipng, feynmf, fragmaster, jadetex,
  lacheck, latex-beamer, latex-cjk-all, latex-cjk-chinese,
