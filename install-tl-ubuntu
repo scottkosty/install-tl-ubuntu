@@ -387,14 +387,14 @@ checkEnvVars
 
 if [ "${NO_APT_DPKG}" != "1" ]; then
     echo "${ECHOPREFIX}running apt and dpkg commands..."
-    # libfile-fcntllock-perl because otherwise equivs gives:
-    #     "File::FcntlLock not available; using flock which is not NFS-safejo"
-    # gcc because otherwise:
-    #     "Couldn't determine gcc system type, falling back to default (native compilation)"
     # 'parallel' for the automatic repo detection
     PARPREREQ='parallel'
     apt-get -y install --no-install-recommends ${PARPREREQ} >&3 2>&1 \
         || { echo "${ECHOPREFIX}apt-get cannot install ${PARPREREQ} package to look for fastest mirror so we will use the default TeX Live repository."; TLREPO='http://mirror.utexas.edu/ctan/'; }
+    # libfile-fcntllock-perl because otherwise equivs gives:
+    #     "File::FcntlLock not available; using flock which is not NFS-safejo"
+    # gcc because otherwise:
+    #     "Couldn't determine gcc system type, falling back to default (native compilation)"
     PREREQS='libfile-fcntllock-perl gcc equivs libwww-perl fontconfig unzip'
     apt-get -y install --no-install-recommends ${PREREQS} >&3 2>&1 \
         || { echo "${ERRORPREFIX}apt-get failed to install ${PREREQS} in $0" >&2; clean_error; }
