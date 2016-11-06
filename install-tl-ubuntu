@@ -393,7 +393,8 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
       # with an ISO or with a specified directory.
       # If I do use parallel for something else, then make sure that TLREPO is
       # only set when appropriate (e.g. not if --iso option is used).
-      PARPREREQ='parallel' apt-get -y install --no-install-recommends ${PARPREREQ} >&3 2>&1 \
+      PARPREREQ='parallel'
+      apt-get -y install --no-install-recommends ${PARPREREQ} >&3 2>&1 \
         || { echo "${ECHOPREFIX}apt-get cannot install ${PARPREREQ} package to look for fastest mirror so we will use the default TeX Live repository."; TLREPO='http://mirror.utexas.edu/ctan/'; }
     fi
 
