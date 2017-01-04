@@ -763,6 +763,8 @@ if [ "${EXTRAS}" = "1" ]; then
       || { echo "${WARNINGPREFIX}failed to download siggraph files." >&2; MAINRET=1; }
     ${WGET_CMD} "http://www.aeaweb.org/templates/latex_templates.zip" -O AEA.zip >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download AEA files." >&2; MAINRET=1; }
+    ${WGET_CMD} "http://ftp.edpsciences.org/pub/aa/aa-package.zip" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download AA files." >&2; MAINRET=1; }
 
     for zipfile in *.zip; do
         folder_=$( basename "${zipfile}" .zip ) &&
@@ -780,9 +782,6 @@ if [ "${EXTRAS}" = "1" ]; then
     find ./ -iname *.sty -exec rm "{}" \;
     cd ..
 
-    # This is part of aa. See "MORE AA" below for more commands regarding the aa-package.
-    ${WGET_CMD} "http://ftp.edpsciences.org/pub/aa/aa-package.tar.gz" >&3 2>&1 \
-      || { echo "${WARNINGPREFIX}failed to download aa-package." >&2; MAINRET=1; }
     ${WGET_CMD} "ftp://ftp.iop.org/pub/journals/ioplatexguidelines.tar.gz" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download ioplatex files." >&2; MAINRET=1; }
 
@@ -797,10 +796,6 @@ if [ "${EXTRAS}" = "1" ]; then
         || { echo "${WARNINGPREFIX}problem while untarring" >&2; MAINRET=1; }
     done
 
-    # MORE AA
-    # TODO contact AA and AEA maintainers and see if they can zip the files differently.
-    # aa.cls is not readable when extracted. Might as well do for all.
-    chmod -R +r * || { echo "${WARNINGPREFIX}chmod failed to set read permission on files." >&2; MAINRET=1; }
     # AEA directory has strange permissions. Might as well correct for all directories.
     find ./ -type d -exec chmod 0755 '{}' \;
 
