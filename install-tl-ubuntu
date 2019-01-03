@@ -790,7 +790,7 @@ if [ "${EXTRAS}" = "1" ]; then
     find ./ -iname *.sty -exec rm "{}" \;
     cd ..
 
-    ${WGET_CMD} "ftp://ftp.iop.org/pub/journals/ioplatexguidelines.tar.gz" >&3 2>&1 \
+    ${WGET_CMD} "http://publishingsupport.iopscience.iop.org/wp-content/uploads/2017/10/ioplatexguidelines.tar.gz" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download ioplatex files." >&2; MAINRET=1; }
 
     for targz in *tar.gz; do
