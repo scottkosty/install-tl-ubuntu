@@ -745,6 +745,12 @@ if [ "${EXTRAS}" = "1" ]; then
     ) >&3 2>&1 \
     || { echo "${WARNINGPREFIX}failed to download sigplan files." >&2; MAINRET=1; }
 
+    (
+      mkdir maa-monthly && cd maa-monthly &&
+      ${WGET_CMD} "https://www.maa.org/sites/default/files/pdf/pubs/maa-monthly.sty" \
+    ) >&3 2>&1 \
+    || { echo "${WARNINGPREFIX}failed to download maa-monthly files." >&2; MAINRET=1; }
+
     ${WGET_CMD} "http://publications.agu.org/files/2013/08/AGU-LaTeX.zip" >&3 2>&1 \
       || { echo -e "${WARNINGPREFIX}failed to download AGU files. Look here for the updated download link:\n" \
                    "  http://publications.agu.org/author-resource-center/author-guide/latex-formatting-toolkit/" \
