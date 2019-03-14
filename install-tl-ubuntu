@@ -760,8 +760,6 @@ if [ "${EXTRAS}" = "1" ]; then
       || { echo "${WARNINGPREFIX}failed to download IJMPC files." >&2; MAINRET=1; }
     ${WGET_CMD} "http://www.worldscientific.com/sda/1037/ijmpd-2e.zip" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download IJMPD files." >&2; MAINRET=1; }
-    ${WGET_CMD} "http://www.siggraph.org/sites/default/files/acmsiggraph.zip" >&3 2>&1 \
-      || { echo "${WARNINGPREFIX}failed to download siggraph files." >&2; MAINRET=1; }
     ${WGET_CMD} "http://www.aeaweb.org/templates/latex_templates.zip" -O AEA.zip >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download AEA files." >&2; MAINRET=1; }
     ${WGET_CMD} "http://ftp.edpsciences.org/pub/aa/aa-package.zip" >&3 2>&1 \
