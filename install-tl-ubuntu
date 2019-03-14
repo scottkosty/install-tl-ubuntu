@@ -788,6 +788,10 @@ if [ "${EXTRAS}" = "1" ]; then
         || { echo "${WARNINGPREFIX}problem while untarring" >&2; MAINRET=1; }
     done
 
+    # TODO: problem if install-tl-ubuntu is called from outside the directory.
+    #       create a new var that is where install-tl-ubuntu is located?
+    cp -r "${MAINDIR}/archive" ./
+
     # AEA directory has strange permissions. Might as well correct for all directories.
     find ./ -type d -exec chmod 0755 '{}' \;
 
