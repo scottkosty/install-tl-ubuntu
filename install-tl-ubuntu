@@ -716,11 +716,6 @@ if [ "${EXTRAS}" = "1" ]; then
     echo "${ECHOPREFIX}installing LaTeX files that are not in TeX Live..."
     cd "${dTEXMFLOCAL}/tex/latex"
 
-    ${WGET_CMD} "ftp://ftp.springer.de/pub/tex/latex/svjour3/global.zip" \
-      "ftp://ftp.springer.de/pub/tex/latex/svmonot1.zip" \
-      "ftp://ftp.springer.de/pub/tex/latex/svmultt1.zip" >&3 2>&1 \
-      || { echo "${WARNINGPREFIX}failed to download Springer files." >&2; MAINRET=1; }
-
     (
       mkdir ACM && cd ACM &&
       ${WGET_CMD} "http://www.acm.org/sigs/publications/acm_proc_article-sp.cls" \
