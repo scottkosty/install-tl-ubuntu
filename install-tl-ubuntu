@@ -813,6 +813,29 @@ if [ "${EXTRAS}" = "1" ]; then
     # Otherwise they're not found.
     find ./ -iregex ".*\.bst$" -type f -print0 | xargs -0 cp -t "${dTEXMFLOCAL}/bibtex/bst" >&3 2>&1
     find ./ -iregex ".*\.bib$" -type f -print0 | xargs -0 cp -t "${dTEXMFLOCAL}/bibtex/bib" >&3 2>&1
+
+    # Some LaTeX packages bundle external LaTeX files. If we detect this, we
+    # remove the bundled version, to make sure that the upstream version is
+    # used. The detection will not be triggered in some cases, for example if a
+    # non-full TL installation is chosen (e.g., using a profile).
+    find ./ -iregex ".*\.\(sty\|cls\|bst\)$" -type f | while read fname; do
+        fname_base="$(basename "${fname}")"
+        # If instead of 'fname_base', we used 'fname', kpsewhich would always
+        # have a match.
+        if kpsewhich "${fname_base}" >/dev/null; then
+            if [ "$( dirname "${fname}" )" = "." ]; then
+                # kpsewhich searches the current directory by default, so it is
+                # important that this command is run outside the directories
+                # containing the files. We could probably use a kpsewhich
+                # option to avoid the problem, but better to have the files in
+                # directories anyways.
+                echo "${WARNINGPREFIX}The file ${fname} should be in a directory." >&2; MAINRET=1
+            else
+                echo "Removing possibly bundled file $fname."
+                rm "${fname}"
+            fi
+        fi
+    done
 fi
 
 if [ "${LINK_UBUNTU}" = 1 ]; then
