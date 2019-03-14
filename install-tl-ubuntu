@@ -717,12 +717,6 @@ if [ "${EXTRAS}" = "1" ]; then
     cd "${dTEXMFLOCAL}/tex/latex"
 
     (
-      mkdir ACM && cd ACM &&
-      ${WGET_CMD} "http://www.acm.org/sigs/publications/acm_proc_article-sp.cls" \
-    ) >&3 2>&1 \
-    || { echo "${WARNINGPREFIX}failed to download ACM files." >&2; MAINRET=1; }
-
-    (
       mkdir IUCr && cd IUCr &&
       ${WGET_CMD} ftp://ftp.iucr.org/templates/latex/iucr.{bib,bst,cls} \
     ) >&3 2>&1 \
