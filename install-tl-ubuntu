@@ -787,11 +787,6 @@ if [ "${EXTRAS}" = "1" ]; then
         || { echo "${WARNINGPREFIX}problem while unzipping" >&2; MAINRET=1; }
     done
 
-    # removing .sty files so they don't conflict with TeX Live files
-    cd AEA
-    find ./ -iname *.sty -exec rm "{}" \;
-    cd ..
-
     ${WGET_CMD} "http://publishingsupport.iopscience.iop.org/wp-content/uploads/2017/10/ioplatexguidelines.tar.gz" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download ioplatex files." >&2; MAINRET=1; }
 
