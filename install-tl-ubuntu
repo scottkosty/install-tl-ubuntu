@@ -227,7 +227,7 @@ if [ "${HELP}" = "1" ]; then
                                 use FoilTeX and Noweb when installed with the command
                                 'sudo apt-get install foiltex noweb').
                                 Use this option to prevent this linking.                                \e[00m
-  -e, --hebrew               \e[00;36m Install the Hebrew font collections IvriTeX and culmus.          \e[00m
+  -e, --hebrew               \e[00;36m Install the Hebrew font collection culmus.                       \e[00m
   -i, --iso FILE             \e[00;36m Install from a TeX Live ISO file. For how to download, see
                                 http://www.tug.org/texlive/acquire-iso.html                             \e[00m
   -f, --only-apt-and-dpkg    \e[00;36m Run the apt and dpkg commands in this script and then exit.
@@ -835,15 +835,25 @@ if [ "${HEBREW}" = 1 ]; then
     (
       mkdir "/tmp/HebrewFonts" &&
       cd "/tmp/HebrewFonts" &&
-      ${WGET_CMD} "http://archive.debian.org/debian/pool/main/i/ivritex/ivritex_1.1.1-6_all.deb" &&
-      ar x "ivritex_1.1.1-6_all.deb" && tar -xf "data.tar.gz" &&
-      rsync -a "usr/share/texmf/" "${dTEXMFLOCAL}"
+      # install-tl-ubuntu used to install the ivritex deb. Instead, we now install culmus directly.
+      #${WGET_CMD} "http://archive.debian.org/debian/pool/main/i/ivritex/ivritex_1.1.1-6_all.deb" &&
+      #ar x "ivritex_1.1.1-6_all.deb" && tar -xf "data.tar.gz" &&
+      #rsync -a "usr/share/texmf/" "${dTEXMFLOCAL}"
+      ${WGET_CMD} -O culmus-latex-0.7-r1.tar.gz "https://sourceforge.net/projects/ivritex/files/culmus-latex/culmus-latex-0.7/culmus-latex-0.7-r1.tar.gz/download" &&
+      tar -xvzf culmus-latex-0.7-r1.tar.gz &&
+      cd culmus-latex-0.7-r1 &&
+      sudo mkdir -p "${dTEXMFLOCAL}" &&
+      sudo rsync -a "usr/share/texmf/fonts" "${dTEXMFLOCAL}/"
     ) >&3 2>&1 \
     || { echo "${WARNINGPREFIX}Hebrew font was not installed correctly." >&2; MAINRET=1; }
 fi
 
 echo "${ECHOPREFIX}running texhash..."
 texhash >&3 2>&1 && echo "${ECHOPREFIX}texhash was successful." || { echo "${WARNINGPREFIX}texhash exited with error." >&2; MAINRET=1; }
+if [ "${HEBREW}" = 1 ]; then
+  updmap-sys --enable Map=culmus.map || { echo "${WARNINGPREFIX}updmap-sys exited with error (--hebrew)." >&2; MAINRET=1; }
+fi
+
 
 if [ "${MAINRET}" = "0" ]; then
     echo "${ECHOPREFIX}`date`: Finished (all successful)."
