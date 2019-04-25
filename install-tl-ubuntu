@@ -354,10 +354,13 @@ if (( $(stat -f --format="%a*%S" .) < 4000000000 )); then
 fi
 
 VER_UBUNTU=$( lsb_release -rs )
-[[ "${VER_UBUNTU}" = "12.04" || "${VER_UBUNTU}" = "12.10" || "${VER_UBUNTU}" = "13.04" || "${VER_UBUNTU}" = "13.10" || "${VER_UBUNTU}" = "14.04" ]] \
-    || echo -e "${WARNINGPREFIX}this script currently supports Ubuntu 12.04, 12.10, 13.04, 13.10, and 14.04."\
-               "\nFor other versions, one would probably want to use a different"\
-               "\ndebian-control-texlive-in.txt file." >&2
+# Disable warning since this script seems to cause fewer problems than I
+# anticipated.
+#
+#[[ "${VER_UBUNTU}" = "12.04" || "${VER_UBUNTU}" = "12.10" || "${VER_UBUNTU}" = "13.04" || "${VER_UBUNTU}" = "13.10" || "${VER_UBUNTU}" = "14.04" ]] \
+#    || echo -e "${WARNINGPREFIX}this script currently supports Ubuntu 12.04, 12.10, 13.04, 13.10, and 14.04."\
+#               "\nFor other versions, one would probably want to use a different"\
+#               "\ndebian-control-texlive-in.txt file." >&2
 
 # default of wget is --tries=20. Can take an hour. This makes the default --tries=5.
 WGET_CMD="wget --tries=${TIMESRETRY}"
