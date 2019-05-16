@@ -17,7 +17,7 @@ wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubunt
 
 ## Features
 
-- installs the latest version of TeX Live (currently **TeX Live 2016**)
+- installs the latest version of TeX Live (as of writing, **TeX Live 2019**)
   - automatically finds the fastest repository
   - gives updated progress of the install
   - restarts automatically if install fails
