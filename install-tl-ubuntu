@@ -780,6 +780,9 @@ if [ "${EXTRAS}" = "1" ]; then
     ${WGET_CMD} "http://publishingsupport.iopscience.iop.org/wp-content/uploads/2017/10/ioplatexguidelines.tar.gz" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download ioplatex files." >&2; MAINRET=1; }
 
+    ${WGET_CMD} "https://2modf33kux3n19iucb17y5dj-wpengine.netdna-ssl.com/wp-content/uploads/2018/08/aastexv6.2.tar.gz" >&3 2>&1 \
+      || { echo "${WARNINGPREFIX}failed to download v6.2 (old) of AASTeX files." >&2; MAINRET=1; }
+
     for targz in *tar.gz; do
         folder_=$( basename "${targz}" .tar.gz ) &&
         mkdir "${folder_}" &&
