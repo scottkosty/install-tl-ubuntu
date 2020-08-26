@@ -1,0 +1,884 @@
+% agu-ps.sty 
+\def\pscurrentversion{October 1, 2001}
+
+% May be used with either LaTeX2.09 or LaTeX2e.
+
+% You may need to rename these fonts to match the
+% names of the .tfm files on your system. If you look at
+% the directory where the .tfm files are stored you should
+% be able to make the appropriate substitution.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                               %
+%   PostScript fonts for                                        %
+%                                                               %
+%   American Geophysical Union Journals                         %
+%                                                               %
+%   Prepared by Amy Hendrickson, TeXnology Inc.                 %          
+%   amyh@texnology.com                                          %
+%   www.texnology.com                                           %
+%   (617) 738-8029                                              %
+%                                                               %
+%   Use: LaTeX2.09 \documentstyle[agu-ps]{agu2001}              %
+%                or                                             %
+%        LaTeX2e   \documentclass{agu2001}                      %
+%                  \usepackage{agu-ps}                          %
+%                                                               %
+%                                                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\typeout{^^J^^J
+Using PostScript Fonts^^J^^J
+\pscurrentversion^^J
+Use: \string\documentstyle[agu-ps]{agu}^^J or^^J
+\space\space\space\space\space \string\documentclass{agu2001}^^J
+\space\space\space\space\space \string\usepackage{agu-ps}^^J
+^^J}
+
+%% You may need to rename these fonts to match the
+%% names of the .tfm files on your system. If you look at
+%% the directory where the .tfm files are stored you should
+%% be able to make the appropriate substitution.
+%%
+%% The comment lists the name of the font on a PostScript printer
+%% to help you find the correct font.
+
+%%  Change these definitions, if necessary ====>
+
+%% Times-Roman
+%------------------
+%% Berry Names:
+%\def\timesroman{ptmr}
+%\def\timesbold{ptmb}
+%\def\timesitalic{ptmri}
+%\def\timesbolditalic{ptmbi}
+
+%% Y&Y Names:
+\def\timesroman{tir}
+\def\timesbold{tib}
+\def\timesitalic{tii}
+\def\timesbolditalic{tibi}
+
+
+%% Helvetica
+%------------------
+%% Berry Names:
+%\def\helvetica{phvr}
+%\def\helveticaoblique{phvro}
+%\def\helveticabold{phvb}
+%\def\helveticaboldoblique{phvbo}
+
+%% Y&Y Names:
+\def\helvetica{hv}
+\def\helveticaoblique{hvo}
+\def\helveticabold{hvb}
+\def\helveticaboldoblique{hvbo}
+
+%% (Only used by Reviews of Geophysics,
+%% so you can ignore this if you are using
+%% other journal styles)
+%% Optima
+\def\optima{op}
+\def\optimaoblique{opo}
+\def\optimabold{opb}
+\def\optimaboldoblique{opbo}
+
+%% Courier
+%% Berry Name:
+%\def\courier{pcrr}
+
+%% Y&Y Name:
+\def\courier{com}
+
+%% Computer Modern Name:
+%\def\courier{cmtt10}
+
+%% <==== End of changes needed. Please do not make changes below this point.
+%% !!!!!!!!!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% default definitions, since these fonts 
+%% will not be used:
+
+\def\courieroblique{pcrro}
+\def\courierbold{pcrb}
+\def\courierboldoblique{pcrbo}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% switch used in documentation:
+\def\psfonts{true}
+
+%% These are use by LaTeX2e, but won't hurt anything if used in
+%% LaTeX2.09.
+\expandafter\ifx\csname sfdefault\endcsname\relax
+\else
+\renewcommand{\sfdefault}{hv}
+\renewcommand{\rmdefault}{tir}
+\renewcommand{\ttdefault}{com}
+\fi
+
+%% The following switch will turn off the rest of this file if we are using
+%% LaTeX2e. Otherwise it is included, to be used by LaTeX2.09.
+
+\expandafter\ifx\csname LaTeXe\endcsname\relax\let\go\relax
+\else
+%Filename: (\encodingdefault)tir.fd
+\ProvidesFile{\encodingdefault tir.fd}
+
+\DeclareFontFamily{\encodingdefault}{tir}{}
+
+\DeclareFontShape{\encodingdefault}{tir}{b}{n}{
+   <-> \timesbold
+}{}
+
+\DeclareFontShape{\encodingdefault}{tir}{b}{sc}{
+   <-> cmcsc10
+}{}
+
+\DeclareFontShape{\encodingdefault}{tir}{b}{sl}{
+   <-> \timesbolditalic
+}{}
+
+\DeclareFontShape{\encodingdefault}{tir}{b}{it}{
+   <-> \timesbolditalic
+}{}
+
+\DeclareFontShape{\encodingdefault}{tir}{m}{n}{
+   <-> \timesroman
+}{}
+
+\DeclareFontShape{\encodingdefault}{tir}{m}{sc}{
+   <-> cmcsc10
+}{}
+
+\DeclareFontShape{\encodingdefault}{tir}{m}{sl}{
+   <-> \timesitalic
+}{}
+
+\DeclareFontShape{\encodingdefault}{tir}{m}{it}{
+   <-> \timesitalic
+}{}
+
+
+\DeclareFontShape{\encodingdefault}{tir}{bx}{n}{<->ssub * tir/b/n}{}
+\DeclareFontShape{\encodingdefault}{tir}{bx}{sc}{<->ssub * tir/b/sc}{}
+\DeclareFontShape{\encodingdefault}{tir}{bx}{sl}{<->ssub * tir/b/sl}{}
+\DeclareFontShape{\encodingdefault}{tir}{bx}{it}{<->ssub * tir/b/it}{}
+\DeclareFontShape{\encodingdefault}{tir}{l}{n}{<->ssub * tir/m/n}{}
+\DeclareFontShape{\encodingdefault}{tir}{l}{sc}{<->ssub * tir/m/sc}{}
+\DeclareFontShape{\encodingdefault}{tir}{l}{sl}{<->ssub * tir/m/sl}{}
+\DeclareFontShape{\encodingdefault}{tir}{l}{it}{<->ssub * tir/m/it}{}
+
+\ProvidesFile{OMStir.fd}
+%        [1994/12/02 v2.3e Standard LaTeX font definitions]
+%%
+\DeclareFontFamily{OMS}{tir}{\skewchar\font'60}
+\DeclareFontShape{OMS}{tir}{m}{n}{%
+      <5> <6> <7> <8> <9> <10> gen * cmsy
+      <10.95> <12> <14.4> <17.28> <20.74> <24.88> cmsy10
+      }{}
+\DeclareFontShape{OMS}{tir}{b}{n}{%
+      <5> <6> <7> <8> <9> gen * cmbsy
+      <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88>cmbsy10
+      }{}
+%% 
+\ProvidesFile{\encodingdefault com.fd}
+%        [1996/02/19 v2.3e Standard LaTeX font definitions]
+
+\DeclareFontFamily{\encodingdefault}{com}{\hyphenchar \font\m@ne}
+
+\DeclareFontShape{\encodingdefault}{com}{b}{n}{
+   <-> \courierbold
+}{}
+
+\DeclareFontShape{\encodingdefault}{com}{b}{sc}{
+   <-> cmcsc10
+}{}
+
+\DeclareFontShape{\encodingdefault}{com}{b}{sl}{
+   <-> \courierboldoblique
+}{}
+
+\DeclareFontShape{\encodingdefault}{com}{b}{it}{
+   <-> \courierboldoblique
+}{}
+
+
+\DeclareFontShape{\encodingdefault}{com}{m}{n}
+     {<-> \courier
+      }{}
+
+\DeclareFontShape{\encodingdefault}{com}{m}{n}
+     {<-> \courier
+      }{}
+%%%%%% make sure subst shapes are available
+\DeclareFontShape{\encodingdefault}{com}{m}{it}
+     {<-> \courieroblique
+      }{}
+\DeclareFontShape{\encodingdefault}{com}{m}{sl}
+     {<-> \courieroblique
+      }{}
+\DeclareFontShape{\encodingdefault}{com}{m}{sc}
+     {<-> \courier
+      }{}
+\DeclareFontShape{\encodingdefault}{com}{m}{ui}
+  {<->sub * cmtt/m/it}{}
+\DeclareFontShape{\encodingdefault}{com}{bx}{n}
+  {<->sub * cmtt/m/n}{}
+\DeclareFontShape{\encodingdefault}{com}{bx}{it}
+  {<->sub * cmtt/m/it}{}
+\DeclareFontShape{\encodingdefault}{com}{bx}{ui}
+  {<->sub * cmtt/m/it}{}
+%% 
+%% End of file `\encodingdefaultcom.fd'.
+
+%Filename: \encodingdefaulthv.fd
+
+%\ProvidesFile{\encodingdefaulthv.fd}
+%   [1996/02/19 Fontinst v1.504 font definitions for \encodingdefault/hv.]
+
+\DeclareFontFamily{\encodingdefault}{hv}{}
+
+\DeclareFontShape{\encodingdefault}{hv}{b}{n}{
+   <-> \helveticabold
+}{}
+
+\DeclareFontShape{\encodingdefault}{hv}{b}{sc}{
+   <-> cmcsc10
+}{}
+
+\DeclareFontShape{\encodingdefault}{hv}{b}{sl}{
+   <-> \helveticaboldoblique
+}{}
+
+\DeclareFontShape{\encodingdefault}{hv}{b}{it}{
+   <-> \helveticaboldoblique
+}{}
+
+\DeclareFontShape{\encodingdefault}{hv}{m}{n}{
+   <-> \helvetica
+}{}
+
+\DeclareFontShape{\encodingdefault}{hv}{m}{sc}{
+   <-> cmcsc10
+}{}
+
+\DeclareFontShape{\encodingdefault}{hv}{m}{sl}{
+   <-> \helveticaoblique
+}{}
+
+\DeclareFontShape{\encodingdefault}{hv}{m}{it}{
+   <-> \helveticaoblique
+}{}
+
+\DeclareFontShape{\encodingdefault}{hv}{bx}{n}{<->ssub * hv/b/n}{}
+\DeclareFontShape{\encodingdefault}{hv}{bx}{sc}{<->ssub * hv/b/sc}{}
+\DeclareFontShape{\encodingdefault}{hv}{bx}{sl}{<->ssub * hv/b/sl}{}
+\DeclareFontShape{\encodingdefault}{hv}{bx}{it}{<->ssub * hv/b/it}{}
+\DeclareFontShape{\encodingdefault}{hv}{l}{n}{<->ssub * hv/m/n}{}
+\DeclareFontShape{\encodingdefault}{hv}{l}{sc}{<->ssub * hv/m/sc}{}
+\DeclareFontShape{\encodingdefault}{hv}{l}{sl}{<->ssub * hv/m/sl}{}
+\DeclareFontShape{\encodingdefault}{hv}{l}{it}{<->ssub * hv/m/it}{}
+%
+\let\go\endinput\fi
+
+%% Times-Roman
+\xdef\timesroman{\timesroman\space}
+\xdef\timesbold{\timesbold\space}
+\xdef\timesitalic{\timesitalic\space}
+\xdef\timesbolditalic{\timesbolditalic\space}
+
+%% Helvetica
+\xdef\helvetica{\helvetica\space}
+\xdef\helveticaoblique{\helveticaoblique\space}
+\xdef\helveticabold{\helveticabold\space}
+\xdef\helveticaboldoblique{\helveticaboldoblique\space}
+
+%% Courier
+\xdef\courier{\courier\space}
+\xdef\courieroblique{\courieroblique\space}
+\xdef\courierbold{\courierbold\space}
+\xdef\courierboldoblique{\courierboldoblique\space}
+
+%% Optima
+\xdef\optima{\optima\space}
+\xdef\optimaoblique{\optimaoblique\space}
+\xdef\optimabold{\optimabold\space}
+\xdef\optimaboldoblique{\optimaboldoblique\space}
+
+%%  Fonts For Particular Use:+++
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%
+
+%%%% Journal Styles
+% jgrga JOURNAL OF GEOPHYSICAL RESEARCH
+% gbc   GLOBAL BIOCHEMICAL CYCLES
+% grl   GEOPHYSICAL RESEARCH LETTERS
+% pal   PALEOCEANOGRAPHY
+% ras   RADIO SCIENCE
+% rog   REVIEWS OF GEOPHYSICS
+% tec   TECTONICS
+% wrr   WATER RESOURSE RESEARCH
+
+\font\tenbit= \timesbolditalic at 10pt
+\font\ninebit=\timesbolditalic at 9pt
+\font\eightbit=\timesbolditalic at 8pt
+
+%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%
+\ifrog %% Reviews of Geophysics
+%% headline
+\def\headlinesize{\small}
+\font\foliofont= \optima at 9pt
+\font\headtextfont= \optima at 9pt %running head text
+\font\titlepageheadlinefont=\optima at 9pt
+\font\cccfont=\optima at 10pt
+
+%% footline
+\font\footlinefont=\optima at 9pt
+\font\footlineitalic=\optimaoblique at 9pt
+\font\foliofootfont= \optima at 9pt
+
+\let\footnotefont\rm 
+
+%% titlepage
+\def\titlebaseline{21pt}
+\newdimen\titlesize
+\titlesize=20pt %% for boldmath in title
+\font\titlefont=\optima at 18pt
+\font\titleitalicfont=\optimaoblique at 18pt
+\font\subtitlefont=\optima at 14pt
+\font\specialsectionfont=\optimabold at 16pt
+\font\authorfont=\optima at 10pt
+
+\def\affilsize{\footnotesize}
+\font\affilfont=\optimaoblique at 10pt
+\font\communicatedfont=\optimaoblique at 8pt
+\font\receivedfont=\timesroman at 8pt
+\font\dedicationfont=cmcsc10 at 8pt
+\font\titlethanksfont=\helvetica at 10pt
+\font\subtitlethanksfont=\helvetica at 8pt
+
+
+\def\abstractsize{\bignormalsize}
+\font\abstractfont=tir at 10.5pt
+\font\xabstractnamefont=\optimabold at 10pt
+\def\abstractnamefont{\ifjdraft\large\bf\else\xabstractnamefont\fi}
+
+%% section heads
+\font\xsectionfont=\optimabold at 10pt % 
+\font\xsubsectionfont=\optimabold at 11pt
+\font\xsubsubsectionfont=\optimabold at 11pt %
+\font\xparagraphfont=\optimabold at 11pt
+
+\def\sectionfont{\ifjdraft\large\unskip\bf\else\xsectionfont\fi}
+\def\subsectionfont{\ifjdraft\large\unskip\bf\else\xsubsectionfont\fi}
+\def\subsubsectionfont{\ifjdraft\large\unskip\bf\else\xsubsubsectionfont\fi}
+\def\paragraphfont{\ifjdraft\large\unskip\bf\else\xparagraphfont\fi}
+
+%% caption fonts
+\gdef\captionnamefont{\ifjdraft\large\bf\else\small\bf\fi}
+\gdef\captiontextfont{\ifjdraft\large\else\small\baselineskip=10pt\fi\rm}
+\gdef\tablenamefont{\ifjdraft\large\bf\else\small\bf\fi}
+\gdef\tabletextfont{\ifjdraft\large\baselineskip=24pt\else\small\baselineskip=10pt\fi\bf}
+\gdef\tabletextsize{\ifjdraft\large\baselineskip=24pt
+\def\arraystretch{2}
+\else\footnotesize\fi\rm}
+\gdef\tablenotefont{\ifjdraft\large\else\footnotesize\fi\rm}
+
+%%
+\font\acknowledgfont=\optimabold at 9pt
+\font\acknowledgtextfont=\optima at 9pt
+%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%
+\else %% Not Reviews of Geophysics, all other styles
+
+
+%% headline
+\def\headlinesize{\small}
+\font\foliofont= \timesroman at 10pt
+\ifwrr
+\font\headtextfont=\timesroman at 8pt
+\else
+\font\headtextfont= \timesroman at 9pt %running head text
+\fi
+\font\titlepageheadlinefont=\timesroman at 9pt
+\font\cccfont=\timesroman at 7pt
+
+%% footline
+\font\footlinefont=\helvetica at 8pt
+\font\foliofootfont= \timesroman at 10pt
+
+\let\footnotefont\rm 
+
+%% titlepage
+\def\titlebaseline{18pt}
+\newdimen\titlesize
+\titlesize=18pt %% for boldmath in title
+\font\titlefont=\timesbold at 14pt
+\font\subtitlefont=\helvetica at 12pt
+\font\specialsectionfont=\helvetica at 16pt
+\font\authorfont=\timesroman at 11pt
+
+\def\affilsize{\footnotesize}
+\font\affilfont=\timesroman at 8pt
+\font\communicatedfont=\timesitalic at 8pt
+\font\receivedfont=\timesroman at 8pt
+\font\dedicationfont=cmcsc10 at 8pt
+\font\titlethanksfont=\helvetica at 10pt
+\font\subtitlethanksfont=\helvetica at 8pt
+
+\iftec
+\font\rmreferencefont=\timesroman at 7.5pt
+\font\itreferencefont=\timesitalic at 7.5pt
+\font\bfreferencefont=\timesbold at 7.5pt
+\font\titlepageheadlinefont= \timesroman at 9pt %running head text
+\def\headlinesize{\small}
+\font\headtextfont= \timesroman at 9pt %running head text
+\def\abstractsize{\normalsize\ifjdraft\large\baselineskip=22pt\fi\relax}
+\def\abstractfont{\normalsize\ifjdraft\large\baselineskip=22pt\fi\relax}
+\def\abstractnamefont{\ifjdraft\large\bf\else\normalsize\bf\fi}
+
+\else
+\ifgrl
+
+\def\abstractsize{\small\ifjdraft\large\baselineskip=22pt
+\else\baselineskip=11pt\fi\relax}
+\def\abstractfont{\small\ifjdraft\large\baselineskip=22pt
+\else\baselineskip=11pt\fi\relax}
+\font\xabstractnamefont=\timesbold at 9.5pt
+\def\abstractnamefont{\ifjdraft\large\bf\else\xabstractnamefont\fi}
+
+\else
+\def\abstractsize{\normalsize\ifjdraft\large\baselineskip=22pt
+\else\baselineskip=11pt\fi\relax}
+\def\abstractfont{\normalsize\ifjdraft\large\baselineskip=22pt
+\else\baselineskip=11pt\fi\relax}
+\font\xabstractnamefont=\timesbold at 9.5pt
+\def\abstractnamefont{\ifjdraft\large\bf\else\xabstractnamefont\fi}
+
+\fi
+
+\fi%end iftec
+
+\ifpal
+\font\rmreferencefont=\timesroman at 7.5pt
+\font\itreferencefont=\timesitalic at 7.5pt
+\font\bfreferencefont=\timesbold at 7.5pt
+\fi
+
+%% section heads
+\ifras %% 
+\font\xsectionfont=\timesbold at 12pt % 
+\else
+\font\xsectionfont=\timesbold at 11pt % 
+\fi
+\font\xsubsectionfont=\timesbold at 9pt
+\font\xsubsubsectionfont=\timesbold at 9pt %
+\font\xparagraphfont=\timesbold at 9pt
+
+\def\sectionfont{\ifjdraft\large\unskip\bf\else\xsectionfont\fi}
+\def\subsectionfont{\ifjdraft\large\unskip\bf\else\xsubsectionfont\fi}
+\def\subsubsectionfont{\ifjdraft\large\unskip\bf\else\xsubsubsectionfont\fi}
+\def\paragraphfont{\ifjdraft\large\unskip\bf\else\xparagraphfont\fi}
+
+%% caption fonts
+\gdef\captionnamefont{\ifjdraft\large\bf\else\small\bf\fi}
+\gdef\captiontextfont{\ifjdraft\large\else\small\baselineskip=10pt\fi\rm}
+\gdef\tablenamefont{\ifjdraft\large\bf\else\small\bf\fi}
+\gdef\tabletextfont{\ifjdraft\large\baselineskip=24pt\else\small\fi\rm}
+\gdef\tabletextsize{\ifjdraft\large\baselineskip=24pt
+\def\arraystretch{2}
+\else\footnotesize\fi\rm}
+\gdef\tablenotefont{\ifjdraft\large\else\footnotesize\fi\rm}
+
+
+\fi %% end test, is Review of Geophysics, or All other styles
+
+%% appendix
+\let\appendixfont\sectionfont
+
+%% Uppercase appendix caption?
+\global\upperappendfalse
+
+%% documentation
+\font\elevenbit=\timesbolditalic at 11pt
+%%% end of special use fonts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\go
+%% this is for LaTeX 2.09
+\normalsize
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Text fonts
+
+\font\psfiverm=\timesroman at 5pt
+\font\psfivebf=\timesbold at 5pt
+\font\psfiveit=\timesitalic at 5pt
+\font\psfivesf=\helvetica at 5pt
+
+\font\pssixrm=\timesroman at 6pt
+\font\pssixbf=\timesbold at 6pt
+\font\pssixit=\timesitalic at 6pt
+\font\pssixsf=\helvetica at 6pt
+
+\font\pssevenrm=\timesroman at 7pt
+\font\pssevenbf=\timesbold at 7pt
+\font\pssevenit=\timesitalic at 7pt
+\font\pssevensf=\helvetica at 7pt
+
+\font\pseightrm=\timesroman at 8pt
+\font\pseightbf=\timesbold at 8pt
+\font\pseightit=\timesitalic at 8pt
+\font\pseightsf=\helvetica at 8pt
+
+\font\psninerm=\timesroman at 9pt
+\font\psninebf=\timesbold at 9pt
+\font\psnineit=\timesitalic at 9pt
+\font\psninesf=\helvetica at 9pt
+
+
+\font\pstenrm=\timesroman at 10pt
+\font\pstenbf=\timesbold at 10pt
+\font\pstenit=\timesitalic at 10pt
+\font\pstensf=\helvetica at 10pt
+
+
+
+\font\pselevenrm=\timesroman at 11pt
+\font\pselevenbf=\timesbold at 11pt
+\font\pselevenit=\timesitalic at 11pt
+\font\pselevensf=\helvetica at 11pt
+
+
+
+\font\pstwelverm=\timesroman at 12pt
+\font\pstwelvebf=\timesbold at 12pt
+\font\pstwelveit=\timesitalic at 12pt
+\font\pstwelvesf=\helvetica at 12pt
+
+
+\def\psfourteen{%
+\font\psfourteenrm=\timesroman at 14pt
+\font\psfourteenbf=\timesbold at 14pt
+\font\psfourteenit=\timesitalic at 14pt
+\font\psfourteensf=\helvetica at 14pt
+}
+
+\def\psseventeen{%
+\font\psseventeenrm=\timesroman at 17pt
+\font\psseventeenbf=\timesbold at 17pt
+\font\psseventeenit=\timesitalic at 17pt
+}
+
+\def\pstwenty{%
+\font\pstwentyrm=\timesroman at 20pt
+\font\pstwentybf=\timesbold at 20pt
+}
+
+
+\def\pstwentyfive{%
+\font\pstwentyfiverm=\timesroman at 25pt
+\font\pstwentyfivebf=\timesbold at 25pt
+}
+
+
+\def\vpt{\textfont\z@\fivrm 
+  \scriptfont\z@\fivrm \scriptscriptfont\z@\fivrm
+\textfont\@ne\fivmi \scriptfont\@ne\fivmi \scriptscriptfont\@ne\fivmi
+\textfont\tw@\fivsy \scriptfont\tw@\fivsy \scriptscriptfont\tw@\fivsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\prm{\fam\z@\psfiverm}%
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath
+  \unboldmath\fam\@ne\@boldfalse}\@boldfalse
+\def\boldmath{\@subfont\boldmath\unboldmath}%
+\def\pit{\fam\itfam\psfiveit}% 
+\def\psl{\@subfont\sl\rm}%
+\def\pbf{\fam\bffam\psfivebf}%
+\def\ptt{\@subfont\tt\rm}%
+\def\psf{\fam\sffam\psfivesf}%
+\def\psc{\@subfont\sc\rm}%
+\def\ly{\fam\lyfam\fivly}\textfont\lyfam\fivly 
+    \scriptfont\lyfam\fivly \scriptscriptfont\lyfam\fivly 
+\@setstrut\rm}
+
+
+\def\vipt{\textfont\z@\sixrm 
+  \scriptfont\z@\sixrm \scriptscriptfont\z@\sixrm
+\textfont\@ne\sixmi \scriptfont\@ne\sixmi \scriptscriptfont\@ne\sixmi
+\textfont\tw@\sixsy \scriptfont\tw@\sixsy \scriptscriptfont\tw@\sixsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\prm{\fam\z@\pssixrm}%
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath
+  \unboldmath\@boldfalse}\@boldfalse
+\def\boldmath{\@subfont\boldmath\unboldmath}%
+\def\pit{\fam\itfam\pssixit}% 
+\def\psl{\@subfont\sl\rm}%
+\def\pbf{\fam\bffam\pssixbf}%
+\def\ptt{\@subfont\tt\rm}%
+\def\psf{\fam\sffam\pssixsf}%
+\def\psc{\@subfont\sc\rm}%
+\def\ly{\fam\lyfam\sixly}\textfont\lyfam\sixly 
+    \scriptfont\lyfam\sixly \scriptscriptfont\lyfam\sixly 
+\@setstrut\rm}
+
+
+\def\viipt{\textfont\z@\sevrm 
+  \scriptfont\z@\sixrm \scriptscriptfont\z@\fivrm
+\textfont\@ne\sevmi \scriptfont\@ne\fivmi \scriptscriptfont\@ne\fivmi
+\textfont\tw@\sevsy \scriptfont\tw@\fivsy \scriptscriptfont\tw@\fivsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\prm{\fam\z@\pssevenrm}%
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath
+\unboldmath\@boldfalse}\@boldfalse
+\def\boldmath{\@subfont\boldmath\unboldmath}%
+\def\pit{\fam\itfam\pssevenit}\textfont\itfam\sevit 
+   \scriptfont\itfam\sevit \scriptscriptfont\itfam\sevit 
+\def\psl{\@subfont\sl\it}%
+\def\pbf{\fam\bffam\pssevenbf}%
+\def\ptt{\@subfont\tt\rm}%
+\def\psf{\fam\sffam\pssevensf}%
+\def\psc{\@subfont\sc\rm}%
+\def\ly{\fam\lyfam\sevly}\textfont\lyfam\sevly 
+    \scriptfont\lyfam\fivly \scriptscriptfont\lyfam\fivly 
+\@setstrut \rm}
+
+
+\def\viiipt{\textfont\z@\egtrm 
+  \scriptfont\z@\sixrm \scriptscriptfont\z@\fivrm
+\textfont\@ne\egtmi \scriptfont\@ne\sixmi \scriptscriptfont\@ne\fivmi
+\textfont\tw@\egtsy \scriptfont\tw@\sixsy \scriptscriptfont\tw@\fivsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\prm{\fam\z@\pseightrm}%
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath
+\unboldmath\@boldfalse}\@boldfalse
+\def\boldmath{\@subfont\boldmath\unboldmath}%
+\def\pit{\fam\itfam\pseightit}\textfont\itfam\egtit 
+   \scriptfont\itfam\sevit \scriptscriptfont\itfam\sevit 
+\def\psl{\@subfont\sl\it}%
+\def\pbf{\fam\bffam\pseightbf}%
+\def\ptt{\@getfont\ptt\ttfam\@viiipt{cmtt8}\@nohyphens\ptt\@viiipt}%
+\def\psf{\fam\sffam\pseightsf}%
+\def\psc{\@getfont\psc\scfam\@viiipt{\@mcsc \@ptscale8}}% 
+\def\ly{\fam\lyfam\egtly}\textfont\lyfam\egtly 
+    \scriptfont\lyfam\sixly \scriptscriptfont\lyfam\fivly 
+\@setstrut \rm}
+
+
+\def\ixpt{\textfont\z@\ninrm 
+  \scriptfont\z@\sixrm \scriptscriptfont\z@\fivrm
+\textfont\@ne\ninmi \scriptfont\@ne\sixmi \scriptscriptfont\@ne\fivmi
+\textfont\tw@\ninsy \scriptfont\tw@\sixsy \scriptscriptfont\tw@\fivsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\prm{\fam\z@\psninerm}%
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath\unboldmath
+    \@boldfalse}\@boldfalse
+\def\boldmath{\@subfont\boldmath\unboldmath}%
+\def\pit{\fam\itfam\psnineit}\textfont\itfam\ninit 
+   \scriptfont\itfam\sevit \scriptscriptfont\itfam\sevit 
+\def\psl{\@getfont\psl\slfam\@ixpt{cmsl9}}%
+\def\pbf{\fam\bffam\psninebf}\textfont\bffam\ninbf 
+   \scriptfont\bffam\ninbf \scriptscriptfont\bffam\ninbf 
+\def\ptt{\fam\ttfam\nintt}%
+\textfont\ttfam\nintt\scriptfont\ttfam\nintt \scriptscriptfont\ttfam\nintt 
+\def\psf{\fam\sffam\psninesf}%
+\def\psc{\@getfont\psc\scfam\@ixpt{\@mcsc \@ptscale9}}%  
+\def\ly{\fam\lyfam\ninly}\textfont\lyfam\ninly 
+   \scriptfont\lyfam\sixly \scriptscriptfont\lyfam\fivly 
+\@setstrut \rm}
+
+
+\def\xpt{\textfont\z@\tenrm 
+  \scriptfont\z@\sevrm \scriptscriptfont\z@\fivrm
+\textfont\@ne\tenmi \scriptfont\@ne\sevmi \scriptscriptfont\@ne\fivmi
+\textfont\tw@\tensy \scriptfont\tw@\sevsy \scriptscriptfont\tw@\fivsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath\unboldmath
+          \textfont\@ne\tenmi 
+          \textfont\tw@\tensy \textfont\lyfam\tenly
+          \@boldfalse}\@boldfalse
+\def\boldmath{\@ifundefined{tenmib}{\global\font\tenmib\@mbi 
+   \global\font\tensyb\@mbsy 
+   \global\font\tenlyb\@lasyb\relax\@addfontinfo\@xpt
+   {\def\boldmath{\everymath{\mit}\everydisplay{\mit}\@prtct\@nomathbold
+        \textfont\@ne\tenmib \textfont\tw@\tensyb 
+        \textfont\lyfam\tenlyb \@prtct\@boldtrue}}}{}\@xpt\boldmath}%
+\def\prm{\fam\z@\pstenrm}%
+\def\pit{\fam\itfam\pstenit}\textfont\itfam\tenit \scriptfont\itfam\sevit
+    \scriptscriptfont\itfam\sevit
+\def\psl{\fam\slfam\tensl}\textfont\slfam\tensl 
+     \scriptfont\slfam\tensl \scriptscriptfont\slfam\tensl
+\def\pbf{\fam\bffam\pstenbf}\textfont\bffam\tenbf 
+    \scriptfont\bffam\sevbf \scriptscriptfont\bffam\fivbf 
+\def\ptt{\fam\ttfam\tentt}\textfont\ttfam\tentt
+    \scriptfont\ttfam\tentt \scriptscriptfont\ttfam\tentt
+\def\psf{\fam\sffam\pstensf}\textfont\sffam\tensf
+    \scriptfont\sffam\tensf \scriptscriptfont\sffam\tensf
+\def\psc{\@getfont\psc\scfam\@xpt{\@mcsc}}%
+\def\ly{\fam\lyfam\tenly}\textfont\lyfam\tenly 
+   \scriptfont\lyfam\sevly \scriptscriptfont\lyfam\fivly 
+\@setstrut \rm}
+
+
+\def\xipt{\textfont\z@\elvrm 
+  \scriptfont\z@\egtrm \scriptscriptfont\z@\sixrm
+\textfont\@ne\elvmi \scriptfont\@ne\egtmi \scriptscriptfont\@ne\sixmi
+\textfont\tw@\elvsy \scriptfont\tw@\egtsy \scriptscriptfont\tw@\sixsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath\unboldmath
+          \textfont\@ne\elvmi \textfont\tw@\elvsy 
+          \textfont\lyfam\elvly \@boldfalse}\@boldfalse
+\def\boldmath{\@ifundefined{elvmib}{\global\font\elvmib\@mbi\@halfmag 
+         \global\font\elvsyb\@mbsy\@halfmag
+         \global\font\elvlyb\@lasyb\@halfmag\relax\@addfontinfo\@xipt
+         {\def\boldmath{\everymath{\mit}\everydisplay{\mit}\@prtct\@nomathbold
+                \textfont\@ne\elvmib \textfont\tw@\elvsyb 
+                \textfont\lyfam\elvlyb\@prtct\@boldtrue}}}{}\@xipt\boldmath}%
+\def\prm{\fam\z@\pselevenrm}%
+\def\pit{\fam\itfam\pselevenit}\textfont\itfam\elvit 
+   \scriptfont\itfam\egtit \scriptscriptfont\itfam\sevit
+\def\psl{\fam\slfam\elvsl}\textfont\slfam\elvsl 
+    \scriptfont\slfam\tensl \scriptscriptfont\slfam\tensl 
+\def\pbf{\fam\bffam\pselevenbf}\textfont\bffam\elvbf 
+   \scriptfont\bffam\ninbf \scriptscriptfont\bffam\ninbf 
+\def\ptt{\fam\ttfam\elvtt}\textfont\ttfam\elvtt
+   \scriptfont\ttfam\nintt \scriptscriptfont\ttfam\nintt 
+\def\psf{\fam\sffam\pselevensf}\textfont\sffam\elvsf
+    \scriptfont\sffam\tensf \scriptscriptfont\sffam\tensf
+\def\psc{\@getfont\psc\scfam\@xipt{\@mcsc\@halfmag}}%
+\def\ly{\fam\lyfam\elvly}\textfont\lyfam\elvly 
+   \scriptfont\lyfam\egtly \scriptscriptfont\lyfam\sixly 
+\@setstrut \rm}
+
+
+\def\xiipt{\textfont\z@\twlrm 
+  \scriptfont\z@\egtrm \scriptscriptfont\z@\sixrm
+\textfont\@ne\twlmi \scriptfont\@ne\egtmi \scriptscriptfont\@ne\sixmi
+\textfont\tw@\twlsy \scriptfont\tw@\egtsy \scriptscriptfont\tw@\sixsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath\unboldmath
+          \textfont\@ne\twlmi 
+          \textfont\tw@\twlsy \textfont\lyfam\twlly
+          \@boldfalse}\@boldfalse
+\def\boldmath{\@ifundefined{twlmib}{\global\font\twlmib\@mbi\@magscale1\global
+        \font\twlsyb\@mbsy \@magscale1\global\font
+         \twllyb\@lasyb\@magscale1\relax\@addfontinfo\@xiipt
+              {\def\boldmath{\everymath
+                {\mit}\everydisplay{\mit}\@prtct\@nomathbold
+                \textfont\@ne\twlmib \textfont\tw@\twlsyb 
+                \textfont\lyfam\twllyb\@prtct\@boldtrue}}}{}\@xiipt\boldmath}%
+\def\prm{\fam\z@\pstwelverm}%
+\def\pit{\fam\itfam\pstwelveit}\textfont\itfam\twlit \scriptfont\itfam\egtit
+   \scriptscriptfont\itfam\sevit
+\def\psl{\fam\slfam\twlsl}\textfont\slfam\twlsl 
+     \scriptfont\slfam\tensl \scriptscriptfont\slfam\tensl
+\def\pbf{\fam\bffam\pstwelvebf}\textfont\bffam\twlbf 
+   \scriptfont\bffam\ninbf \scriptscriptfont\bffam\ninbf 
+\def\ptt{\fam\ttfam\twltt}\textfont\ttfam\twltt
+   \scriptfont\ttfam\nintt \scriptscriptfont\ttfam\nintt 
+\def\psf{\fam\sffam\pstwelvesf}\textfont\sffam\twlsf
+    \scriptfont\sffam\tensf \scriptscriptfont\sffam\tensf
+\def\psc{\@getfont\psc\scfam\@xiipt{\@mcsc\@magscale1}}%
+\def\ly{\fam\lyfam\twlly}\textfont\lyfam\twlly 
+   \scriptfont\lyfam\egtly \scriptscriptfont\lyfam\sixly
+ \@setstrut \rm}
+
+\def\xivpt{\psfourteen\def\psfourteen{}%
+\textfont\z@\frtnrm 
+  \scriptfont\z@\tenrm \scriptscriptfont\z@\sevrm
+\textfont\@ne\frtnmi \scriptfont\@ne\tenmi \scriptscriptfont\@ne\sevmi
+\textfont\tw@\frtnsy \scriptfont\tw@\tensy \scriptscriptfont\tw@\sevsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath\unboldmath 
+          \textfont\@ne\frtnmi \textfont\tw@\frtnsy 
+          \textfont\lyfam\frtnly \@boldfalse}\@boldfalse
+\def\boldmath{\@ifundefined{frtnmib}{\global\font
+        \frtnmib\@mbi\@magscale2\global\font\frtnsyb\@mbsy\@magscale2
+         \global\font\frtnlyb\@lasyb\@magscale2\relax\@addfontinfo\@xivpt
+               {\def\boldmath{\everymath
+                {\mit}\everydisplay{\mit}\@prtct\@nomathbold
+              \textfont\@ne\frtnmib \textfont\tw@\frtnsyb 
+              \textfont\lyfam\frtnlyb\@prtct\@boldtrue}}}{}\@xivpt\boldmath}%
+\def\prm{\fam\z@\psfourteenrm}%
+\def\pit{\fam\itfam\psfourteenit}%
+\def\psl{\@getfont\psl\slfam\@xivpt{cmsl10\@magscale2}}%
+\def\pbf{\fam\bffam\psfourteenbf}\textfont\bffam\frtnbf 
+   \scriptfont\bffam\tenbf \scriptscriptfont\bffam\ninbf 
+\def\ptt{\@getfont\ptt\ttfam\@xivpt{cmtt10\@magscale2}\@nohyphens\ptt\@xivpt}%
+\def\psf{\fam\sffam\psfourteensf}%
+\def\psc{\@getfont\psc\scfam\@xivpt{\@mcsc\@magscale2}}%
+\def\ly{\fam\lyfam\frtnly}\textfont\lyfam\frtnly 
+   \scriptfont\lyfam\tenly \scriptscriptfont\lyfam\sevly 
+\@setstrut \rm}
+
+\def\xviipt{\psseventeen\def\psseventeen{}%
+\textfont\z@\svtnrm 
+  \scriptfont\z@\twlrm \scriptscriptfont\z@\tenrm
+\textfont\@ne\svtnmi \scriptfont\@ne\twlmi \scriptscriptfont\@ne\tenmi
+\textfont\tw@\svtnsy \scriptfont\tw@\twlsy \scriptscriptfont\tw@\tensy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath\unboldmath
+          \textfont\@ne\svtnmi \textfont\tw@\svtnsy \textfont\lyfam\svtnly
+          \@boldfalse}\@boldfalse
+\def\boldmath{\@subfont\boldmath\unboldmath}%
+\def\prm{\fam\z@\psseventeenrm}%
+\def\pit{\fam\itfam\psseventeenit}%
+\def\psl{\@getfont\psl\slfam\@xviipt{cmsl10\@magscale3}}%
+\def\pbf{\fam\bffam\psseventeenbf}\textfont\bffam\svtnbf 
+    \scriptfont\bffam\twlbf \scriptscriptfont\bffam\tenbf 
+\def\ptt{\@getfont\ptt\ttfam\@xviipt{cmtt10\@magscale3}\@nohyphens
+   \ptt\@xviipt}%
+\def\psf{\@getfont\psf\sffam\@xviipt{cmss17}}%
+\def\psc{\@getfont\psc\scfam\@xviipt{\@mcsc\@magscale3}}%
+\def\ly{\fam\lyfam\svtnly}\textfont\lyfam\svtnly 
+   \scriptfont\lyfam\twlly   \scriptscriptfont\lyfam\tenly
+\@setstrut \rm}
+
+\def\xxpt{\pstwenty\def\pstwenty{}%
+\textfont\z@\twtyrm 
+  \scriptfont\z@\frtnrm \scriptscriptfont\z@\twlrm
+\textfont\@ne\twtymi \scriptfont\@ne\frtnmi \scriptscriptfont\@ne\twlmi
+\textfont\tw@\twtysy \scriptfont\tw@\frtnsy \scriptscriptfont\tw@\twlsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath\unboldmath
+        \textfont\@ne\twtymi \textfont\tw@\twtysy \textfont\lyfam\twtyly
+        \@boldfalse}\@boldfalse
+\def\boldmath{\@subfont\boldmath\unboldmath}%
+\def\prm{\fam\z@\pstwentyrm}%
+\def\pit{\@getfont\pit\itfam\@xxpt{cmti10\@magscale4}}%
+\def\psl{\@getfont\psl\slfam\@xxpt{cmsl10\@magscale4}}%
+\def\pbf{\fam\bffam\pstwentybf}%
+\def\ptt{\@getfont\ptt\ttfam\@xxpt{cmtt10\@magscale4}\@nohyphens\ptt\@xxpt}%
+\def\psf{\@getfont\psf\sffam\@xxpt{\@mss\@magscale4}}%
+\def\psc{\@getfont\psc\scfam\@xxpt{\@mcsc\@magscale4}}%
+\def\ly{\fam\lyfam\twtyly}\textfont\lyfam\twtyly 
+   \scriptfont\lyfam\frtnly \scriptscriptfont\lyfam\twlly 
+\@setstrut \rm}
+
+\def\xxvpt{\pstwentyfive\def\pstwentyfive{}%
+\textfont\z@\twfvrm 
+  \scriptfont\z@\twtyrm \scriptscriptfont\z@\svtnrm
+\textfont\@ne\twtymi \scriptfont\@ne\twtymi \scriptscriptfont\@ne\svtnmi
+\textfont\tw@\twtysy \scriptfont\tw@\twtysy \scriptscriptfont\tw@\svtnsy
+\textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+\def\unboldmath{\everymath{}\everydisplay{}\@nomath\unboldmath
+        \textfont\@ne\twtymi \textfont\tw@\twtysy \textfont\lyfam\twtyly
+        \@boldfalse}\@boldfalse
+\def\boldmath{\@subfont\boldmath\unboldmath}%
+\def\prm{\fam\z@\pstwentyfiverm}%
+\def\pit{\@subfont\it\rm}%
+\def\psl{\@subfont\sl\rm}%
+\def\pbf{\fam\bffam\pstwentyfivebf}%
+\def\ptt{\@subfont\tt\rm}%
+\def\psf{\@subfont\sf\rm}%
+\def\psc{\@subfont\sc\rm}%
+\def\ly{\fam\lyfam\twtyly}\textfont\lyfam\twtyly 
+   \scriptfont\lyfam\twtyly \scriptscriptfont\lyfam\svtnly 
+\@setstrut \rm}
+
+
+\@normalsize
+
+\endinput
+
