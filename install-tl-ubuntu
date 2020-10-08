@@ -652,7 +652,7 @@ if [ -h "/opt/texbin" ]; then
   echo "${WARNINGPREFIX}previous TeX Live install detected. Link will be updated so
   that the newer installation is used. However, the old installation will not be removed
   by this script, so if you are concerned about space, please consider removing the old
-  TeX Live directory. If space if not a concern, no action is needed."
+  TeX Live directory. If space is not a concern, no action is needed."
   rm "/opt/texbin"
 fi
 [ -d "${MAINTEXDIR}/bin" ] && ln -s "${MAINTEXDIR}/bin"/* "/opt/texbin" \
