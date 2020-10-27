@@ -5,8 +5,8 @@ Standards-Version: 3.9.2
 Package: texlive-local
 Version: 2016-1~9
 Maintainer: Scott Kostyshak <scott.kostyshak@gmail.com>
-Provides: asymptote, asymptote-doc, biber, biblatex, biblatex-dw, chktex,
- cm-super, cm-super-minimal, context, dvipng, feynmf, fragmaster, jadetex,
+Provides: asymptote, asymptote-x11, asymptote-doc, biber, biblatex, biblatex-dw, chktex,
+ cm-super, cm-super-minimal, context, dvipng, dvisvgm, feynmf, fragmaster, jadetex,
  lacheck, latex-beamer, latex-cjk-all, latex-cjk-chinese,
  latex-cjk-chinese-arphic-bkai00mp, latex-cjk-chinese-arphic-bsmi00lp,
  latex-cjk-chinese-arphic-gbsn00lp, latex-cjk-chinese-arphic-gkai00mp,
@@ -30,7 +30,7 @@ Provides: asymptote, asymptote-doc, biber, biblatex, biblatex-dw, chktex,
  texlive-lang-danish, texlive-lang-dutch, texlive-lang-finnish,
  texlive-lang-french, texlive-lang-german, texlive-lang-greek,
  texlive-lang-hebrew, texlive-lang-hungarian, texlive-lang-indic,
- texlive-lang-italian, texlive-lang-latin, texlive-lang-latvian,
+ texlive-lang-italian, texlive-lang-japanese, texlive-lang-korean, texlive-lang-latin, texlive-lang-latvian,
  texlive-lang-lithuanian, texlive-lang-mongolian, texlive-lang-norwegian,
  texlive-lang-other, texlive-lang-polish, texlive-lang-portuguese,
  texlive-lang-spanish, texlive-lang-swedish, texlive-lang-tibetan,
