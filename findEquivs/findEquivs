@@ -52,13 +52,19 @@ do
     # "bin" or "sbin". We exclude results with "texmf-dist" in the path. Before
     # excluding, package like texlive-plain-generic went undetected because of
     # "/usr/share/texlive/texmf-dist/tex4ht/bin/tex4ht.jar"
+    #
+    # Only include packages for which at least one binary exists.
+    atleast_one=0
     for binary in $( apt-file list ${PACK} | awk '{ print $2 }' \
         | grep -P '\/s?bin\/' | grep -v "texmf-dist" ); do
           if [ ! -e "/opt/texbin/$(basename "${binary}")" ]; then
               continue 2
           fi
+          atleast_one=1
     done
-    echo "${PACK}" >> "binaryEquivalent_${ubuntuVer}.txt"
+    if [ "${atleast_one}" = "1" ]; then
+      echo "${PACK}" >> "binaryEquivalent_${ubuntuVer}.txt"
+    fi
 done < packagesFound.txt
 
 echo "done."
