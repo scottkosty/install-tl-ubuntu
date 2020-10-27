@@ -49,9 +49,11 @@ echo "checking if each package's binaries is a subset of /opt/texbin/..."
 while read PACK
 do
     # I define binary as a file in a directory whose path contains a folder \
-    # "bin" or "sbin".
+    # "bin" or "sbin". We exclude results with "texmf-dist" in the path. Before
+    # excluding, package like texlive-plain-generic went undetected because of
+    # "/usr/share/texlive/texmf-dist/tex4ht/bin/tex4ht.jar"
     for binary in $( apt-file list ${PACK} | awk '{ print $2 }' \
-      | grep -P '\/s?bin\/' ); do
+        | grep -P '\/s?bin\/' | grep -v "texmf-dist" ); do
           if [ ! -e "/opt/texbin/$(basename "${binary}")" ]; then
               continue 2
           fi
