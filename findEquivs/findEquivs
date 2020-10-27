@@ -45,7 +45,7 @@ sort -u packagesWithDupes.txt > packagesFound.txt
 ubuntuVer="$(lsb_release --release --short)"
 
 # TODO: parallelize
-echo "checking if each package's biaries is a subset of /opt/texbin/..."
+echo "checking if each package's binaries is a subset of /opt/texbin/..."
 while read PACK
 do
     # I define binary as a file in a directory whose path contains a folder \
