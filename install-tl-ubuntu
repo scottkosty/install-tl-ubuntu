@@ -745,6 +745,7 @@ if [ "${EXTRAS}" = "1" ]; then
 
     ${WGET_CMD} "ftp://ftp.aip.org/asa/JasaTeX-0.1tc7.zip" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download JasaTeX files." >&2; MAINRET=1; }
+    # econometrica
     ${WGET_CMD} "http://www.e-publications.org/ecta/support/download/ectaart.zip" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download ectaart files." >&2; MAINRET=1; }
     ${WGET_CMD} "http://www.jstatsoft.org/public/journals/1/jss-style.zip" >&3 2>&1 \
