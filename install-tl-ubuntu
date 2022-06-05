@@ -856,8 +856,8 @@ texhash >&3 2>&1 && echo "${ECHOPREFIX}texhash was successful." || { echo "${WAR
 
 if [ "${HEBREW}" = 1 ]; then
   # remove ivritex:
-  sudo rm -rf /usr/local/texlive/texmf-local/tex/generic/ivritex &&
-  sudo rm -rf /usr/local/texlive/texmf-local/bibtex/ivritex &&
+  rm -rf /usr/local/texlive/texmf-local/tex/generic/ivritex &&
+  rm -rf /usr/local/texlive/texmf-local/bibtex/ivritex &&
   mkdir "/tmp/HebrewFonts2" &&
   cd "/tmp/HebrewFonts2" &&
   ${WGET_CMD} -O culmus-latex-0.7-r1.tar.gz "https://sourceforge.net/projects/ivritex/files/culmus-latex/culmus-latex-0.7/culmus-latex-0.7-r1.tar.gz/download" &&
