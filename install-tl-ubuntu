@@ -52,6 +52,8 @@ fi
 ERRORPREFIX="${ECHOPREFIX}ERROR: "
 WARNINGPREFIX="${ECHOPREFIX}WARNING: "
 
+FALLBACK_TL_REPO="http://mirror.utexas.edu/ctan/"
+
 ARGS=$( getopt -o "r:mt:u:hvaebo:fgq:p:i:s" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository:,profile:,iso:,pretest" \
       -n "$( basename "$0" )" -- "$@" )
 # If bad arguments, exit (getopt will have already written the error to STDERR).
@@ -398,7 +400,7 @@ if [ "${NO_APT_DPKG}" != "1" ]; then
       # only set when appropriate (e.g. not if --iso option is used).
       PARPREREQ='parallel'
       apt-get -y install --no-install-recommends ${PARPREREQ} >&3 2>&1 \
-        || { echo "${ECHOPREFIX}apt-get cannot install ${PARPREREQ} package to look for fastest mirror so we will use the default TeX Live repository."; TLREPO='http://mirror.utexas.edu/ctan/'; }
+        || { echo "${ECHOPREFIX}apt-get cannot install ${PARPREREQ} package to look for fastest mirror so we will use the hardcoded fallback TeX Live repository."; TLREPO="${FALLBACK_TL_REPO}"; }
     fi
 
     # libfile-fcntllock-perl because otherwise equivs gives:
@@ -485,11 +487,11 @@ if [ -z "${TLREPO:-}" -a -z "${ISO_FILE}" ]; then
         echo "${ECHOPREFIX}the fastest repo is: ${TLREPO}"
       else
         if [ "${PRETEST}" = "0" ]; then
-          TLREPO='http://mirror.utexas.edu/ctan/'
+          TLREPO="${FALLBACK_TL_REPO}"
         else
           TLREPO='http://mirror.hmc.edu/tlpretest/'
         fi
-        echo -e "${WARNINGPREFIX}automatic repo detection failed. We will use the default repo:\n  ${TLREPO}" >&2
+        echo -e "${WARNINGPREFIX}automatic repo detection failed. We will use the hardcoded fallback repo:\n  ${TLREPO}" >&2
       fi
     fi
 
