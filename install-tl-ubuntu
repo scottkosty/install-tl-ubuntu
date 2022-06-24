@@ -52,7 +52,7 @@ fi
 ERRORPREFIX="${ECHOPREFIX}ERROR: "
 WARNINGPREFIX="${ECHOPREFIX}WARNING: "
 
-FALLBACK_TL_REPO="https://mirrors.rit.edu/CTAN/"
+FALLBACK_TL_REPO="https://mirrors.mit.edu/CTAN/"
 
 ARGS=$( getopt -o "r:mt:u:hvaebo:fgq:p:i:s" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository:,profile:,iso:,pretest" \
       -n "$( basename "$0" )" -- "$@" )
