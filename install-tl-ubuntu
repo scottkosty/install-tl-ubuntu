@@ -54,7 +54,7 @@ WARNINGPREFIX="${ECHOPREFIX}WARNING: "
 
 FALLBACK_TL_REPO="https://mirrors.mit.edu/CTAN/"
 
-ARGS=$( getopt -o "r:mt:u:hvaebo:fgq:p:i:s" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository:,profile:,iso:,pretest" \
+ARGS=$( getopt -o "r:mt:u:hvaebo:fgq:p:i:sd" -l "retry:,more-tex,truetype-dir:,usr-fonts-dir:,help,version,allow-small,hebrew,no-link-ubuntu,log-dir:,only-apt-and-dpkg,no-apt-or-dpkg,repository:,profile:,iso:,pretest,no-safety-checks" \
       -n "$( basename "$0" )" -- "$@" )
 # If bad arguments, exit (getopt will have already written the error to STDERR).
 [ "$?" = "0" ] || clean_error
@@ -78,6 +78,7 @@ ONLY_APT_DPKG=0
 NO_APT_DPKG=0
 LOG_DIR="${MAINDIR}"
 PRETEST=0
+SAFETY_CHECKS=1
 
 while true
 do
@@ -86,6 +87,9 @@ do
       shift 1
       ;;
   -b|--no-link-ubuntu)  LINK_UBUNTU=0
+      shift 1
+      ;;
+  -d|--no-safety-checks)  SAFETY_CHECKS=0
       shift 1
       ;;
   -e|--hebrew)  HEBREW=1
@@ -384,8 +388,16 @@ if [ ! -e "debian-control-texlive-in.txt" ]; then
     fi
 fi
 
-# Check to see if TeX Live environment variables are set (which might cause conflicts)
-checkEnvVars
+
+# https://github.com/scottkosty/install-tl-ubuntu/issues/39#issuecomment-1159571308
+# checkEnvVars relies on "sudo -u <USER>", because this script is expected to be
+# be run with "sudo". As we move away from "sudo", we'll have to adapt the check.
+# For now, we just allow the user to disable it.
+if [ "${SAFETY_CHECKS}" == "1" ]; then
+    # Check to see if TeX Live environment variables are set (which might cause conflicts)
+    checkEnvVars
+fi
+
 
 # /end sanity checks
 # /begin main processing
