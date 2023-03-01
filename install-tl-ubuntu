@@ -845,6 +845,11 @@ if [ "${LINK_UBUNTU}" = 1 ]; then
     ln -s "/usr/share/texmf/tex/" "UbuntuTexDir"
 fi
 
+# uncomment for it to be self-contained (i.e., can copy/paste)
+# Also need to remove '>&3' below.
+# WGET_CMD="wget"
+# HEBREW=1
+# dTEXMFLOCAL="$(kpsewhich -var-value TEXMFLOCAL)"
 if [ "${HEBREW}" = 1 ]; then
     (
       mkdir "/tmp/HebrewFonts" &&
