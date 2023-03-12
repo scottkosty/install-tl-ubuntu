@@ -608,6 +608,12 @@ while (( timesTried != timesToTry )); do
     ) &
     pid_progress=$!
 
+    # This will be passed to the -texdir option of install-tl.
+    # By default, it is set to '/usr/local/texlive/YYYY', but we do not want
+    # the year in the path so we can switch among different TL versions by
+    # repointing the symlink.
+    TEXDIR="/usr/local/texlive/tl"
+
     # Redirect to /dev/null because it is mostly a copy of what's logged to
     # install-tl.log
     # The eval is used to get around a quoting issue with TLPROFILE and TLlog.
@@ -615,9 +621,9 @@ while (( timesTried != timesToTry )); do
     # TLPROFILE contains both --profile and the argument. ALTERNATIVE: could use
     # two variables for TLPROFILE and have both be empty if no argument.
     if [ -z "${ISO_FILE}" ]; then
-        INSTALL_ARG="./install-tl -repository \"${TLREPO}\""
+        INSTALL_ARG="./install-tl -repository \"${TLREPO}\" -texdir \"${TEXDIR}\""
     else
-        INSTALL_ARG="\"${MOUNT_ISO_DIR}/install-tl\""
+        INSTALL_ARG="\"${MOUNT_ISO_DIR}/install-tl\" -texdir \"${TEXDIR}\""
     fi
     echo -e "${ECHOPREFIX}going to run the following command:
         echo \"${option}\" | ${INSTALL_ARG} -v ${TLPROFILE} -logfile \"${TLlog}\""
@@ -647,7 +653,28 @@ else
     clean_error
 fi
 
-MAINTEXDIR=$(grep "TEXDIR:" "${TLlog}" | awk -F'"' '{ print $2 }')
+
+# Now going to set up the basic link structure. e.g., 'tl' will point to '2023'.
+
+TEXDIR2=$(grep "TEXDIR:" "${TLlog}" | awk -F'"' '{ print $2 }')
+if [ "${TEXDIR}" != "${TEXDIR2}" ]; then
+    echo "${ERRORPREFIX}The following two should be equal: ${TEXDIR} and ${TEXDIR2}. Fix this." >&2
+    exit 1
+fi
+
+TL_VER="$( grep -oP '(?<=version )\d{4}(?=$)' "${TEXDIR}/release-texlive.txt" )"
+# this is the "resolved" dir, i.e., where the link will point
+TL_BASE_DIR="$( dirname "${TEXDIR}" )"
+TL_REAL_DIR="${TL_BASE_DIR}/${TL_VER}"
+while [ -e "${TL_REAL_DIR}" ]; do
+    echo "${WARNINGPREFIX}following dir already exists: ${TL_REAL_DIR}"
+    TL_REAL_DIR="${TL_REAL_DIR}_1"
+done
+mv "${TEXDIR}" "${TL_REAL_DIR}"
+# This relative link is just easier to read. Could instead have an absolute link
+# by replacing "${TL_VER}" with "${TL_REAL_DIR}"
+ln -s "${TL_VER}" "${TEXDIR}"
+
 
 echo "${ECHOPREFIX}linking..."
 if [ -h "/opt/texbin" ]; then
@@ -657,7 +684,7 @@ if [ -h "/opt/texbin" ]; then
   TeX Live directory. If space is not a concern, no action is needed."
   rm "/opt/texbin"
 fi
-[ -d "${MAINTEXDIR}/bin" ] && ln -s "${MAINTEXDIR}/bin"/* "/opt/texbin" \
+[ -d "${TEXDIR}/bin" ] && ln -s "${TEXDIR}/bin"/* "/opt/texbin" \
   || { echo "${ERRORPREFIX}could not link." >&2; clean_error; }
 sed -i 's/^PATH="/PATH="\/opt\/texbin:/' /etc/environment || { echo "${ERRORPREFIX}could not sed." >&2; clean_error; }
 source /etc/environment
@@ -867,8 +894,8 @@ texhash >&3 2>&1 && echo "${ECHOPREFIX}texhash was successful." || { echo "${WAR
 
 if [ "${HEBREW}" = 1 ]; then
   # remove ivritex:
-  rm -rf /usr/local/texlive/texmf-local/tex/generic/ivritex &&
-  rm -rf /usr/local/texlive/texmf-local/bibtex/ivritex &&
+  rm -rf "${dTEXMFLOCAL}/tex/generic/ivritex" &&
+  rm -rf "${dTEXMFLOCAL}/bibtex/ivritex" &&
   mkdir "/tmp/HebrewFonts2" &&
   cd "/tmp/HebrewFonts2" &&
   ${WGET_CMD} -O culmus-latex-0.7-r1.tar.gz "https://sourceforge.net/projects/ivritex/files/culmus-latex/culmus-latex-0.7/culmus-latex-0.7-r1.tar.gz/download" &&
