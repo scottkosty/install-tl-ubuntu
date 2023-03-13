@@ -600,6 +600,7 @@ while (( timesTried != timesToTry )); do
                   # If no progress found from tail-grep, we are at start or end.
                   if [ "${pastStart}" = "1" ]; then
                       echo -e "\n                   running config scripts (could take up to 10 mins)..."
+                      # this just exits this subprocess of the progress display.
                       exit
                   fi
               fi
