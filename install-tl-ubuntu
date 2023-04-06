@@ -693,6 +693,9 @@ source /etc/environment
 dTEXMFLOCAL="$(kpsewhich -var-value TEXMFLOCAL)"
 dTEXMFDIST="$(kpsewhich -var-value TEXMFDIST)"
 
+echo "${ECHOPREFIX}dTEXMFLOCAL is: ${dTEXMFLOCAL}."
+echo "${ECHOPREFIX}dTEXMFDIST is: ${dTEXMFDIST}."
+
 # see "System font configuration for XeTEX and LuaTEX"
 # http://www.tug.org/texlive/doc/texlive-en/texlive-en.html#x1-350003.4.4
 
