@@ -890,7 +890,7 @@ if [ "${HEBREW}" = 1 ]; then
       ar x "ivritex_1.1.1-6_all.deb" && tar -xf "data.tar.gz" &&
       rsync -a "usr/share/texmf/" "${dTEXMFLOCAL}"
     ) >&3 2>&1 \
-    || { echo "${WARNINGPREFIX}Hebrew font was not installed correctly." >&2; MAINRET=1; }
+    || { echo "${WARNINGPREFIX}Hebrew fonts were not installed correctly." >&2; MAINRET=1; }
 fi
 
 echo "${ECHOPREFIX}running texhash..."
@@ -909,6 +909,11 @@ if [ "${HEBREW}" = 1 ]; then
   rsync -a "usr/share/texmf/fonts" "${dTEXMFLOCAL}/"
   /opt/texbin/mktexlsr &&
   /opt/texbin/updmap-sys --enable Map=culmus.map || { echo "${WARNINGPREFIX}updmap-sys exited with error (--hebrew)." >&2; MAINRET=1; }
+
+  # This script fixes compilation with pdf3.
+  echo "${ECHOPREFIX}going to run Hebrew_pdf3" &&
+  cd "${MAINDIR}/helper_scripts" && sudo ./Hebrew_pdf3.sh &&
+  echo "${ECHOPREFIX}done running Hebrew_pdf3"
 fi
 
 
