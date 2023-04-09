@@ -673,8 +673,8 @@ while [ -e "${TL_REAL_DIR}" ]; do
 done
 mv "${TEXDIR}" "${TL_REAL_DIR}"
 # This relative link is just easier to read. Could instead have an absolute link
-# by replacing "${TL_VER}" with "${TL_REAL_DIR}"
-ln -s "${TL_VER}" "${TEXDIR}"
+# by using "${TL_REAL_DIR}" directly.
+ln -s "$( basename "${TL_REAL_DIR}")" "${TEXDIR}"
 
 
 echo "${ECHOPREFIX}linking..."
