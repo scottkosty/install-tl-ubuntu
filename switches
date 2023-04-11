@@ -1,0 +1,30 @@
+function switch-tl-to ()
+{
+  # I think that all other TL-related files symlink through here.
+  # e.g.,
+  # /opt/texbin: symbolic link to /usr/local/texlive/2022/bin/x86_64-linux
+  #
+  # To check for more such symlinks, can use the following command:
+  # (https://unix.stackexchange.com/q/301717/197212)
+  # find / -type l -exec readlink -nf {} ';' -exec echo " -> {}" ';' | grep "/usr/local/texlive"
+  main_tl_dir="/usr/local/texlive/tl"
+
+  if [ ! -L "${main_tl_dir}" ]; then
+    echo "Error: Not a symbolic link. Needs setup." >&2
+    return 1
+  fi
+
+  sudo rm "${main_tl_dir}"
+  sudo ln -s "$1" "${main_tl_dir}"
+}
+_switch_tl_to()
+{
+  local cur
+
+  cur=${COMP_WORDS[COMP_CWORD]}
+
+  if [ "$COMP_CWORD" == "1" ]; then
+    COMPREPLY=( $( compgen -W '`ls /usr/local/texlive`' -- $cur ) )
+  fi
+}
+complete -F _switch_tl_to ${filenames:-} switch-tl-to

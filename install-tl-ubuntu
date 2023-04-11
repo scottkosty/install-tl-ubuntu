@@ -390,6 +390,31 @@ checkEnvVars
 # /end sanity checks
 # /begin main processing
 
+
+
+# We will auto-detect whether install-tl-ubuntu was previously run. If so,
+# the old installation can still be used by using 'switch-tl-to'.
+#
+# Currently I don't actually use this variable. But it might be useful
+# for later.
+overinstall=0
+
+# This will be passed to the -texdir option of install-tl.
+# By default, it is set to '/usr/local/texlive/YYYY', but we do not want
+# the year in the path so we can switch among different TL versions by
+# repointing the symlink.
+TEXDIR="/usr/local/texlive/tl"
+
+if [ -L "${TEXDIR}" ]; then
+    if [ -L "/opt/texbin" ]; then
+        overinstall=1
+        old_target="$( readlink -f "${TEXDIR}" )"
+        echo -e "${ECHOPREFIX}Previous installation from install-tl-ubuntu detected.\n install-tl-ubuntu will set things up so that the new installation is used.\n You will be able to switch back to the old installation using 'switch-tl-to'.\n  To get the 'switch-tl-to' command you must source (or copy) the file 'switches' into your .bashrc. \n Alternatively, after testing the new installation you can remove the old one to free up space.\n The old installation is here: ${old_target}.\n But do not change anything until this script has completed and the new installation is in place."
+        sudo rm "${TEXDIR}"
+    fi
+fi
+
+
 if [ "${NO_APT_DPKG}" != "1" ]; then
     echo "${ECHOPREFIX}running apt and dpkg commands..."
 
@@ -609,12 +634,6 @@ while (( timesTried != timesToTry )); do
     ) &
     pid_progress=$!
 
-    # This will be passed to the -texdir option of install-tl.
-    # By default, it is set to '/usr/local/texlive/YYYY', but we do not want
-    # the year in the path so we can switch among different TL versions by
-    # repointing the symlink.
-    TEXDIR="/usr/local/texlive/tl"
-
     # Redirect to /dev/null because it is mostly a copy of what's logged to
     # install-tl.log
     # The eval is used to get around a quoting issue with TLPROFILE and TLlog.
@@ -679,10 +698,8 @@ ln -s "$( basename "${TL_REAL_DIR}")" "${TEXDIR}"
 
 echo "${ECHOPREFIX}linking..."
 if [ -h "/opt/texbin" ]; then
-  echo "${WARNINGPREFIX}previous TeX Live install detected. Link will be updated so
-  that the newer installation is used. However, the old installation will not be removed
-  by this script, so if you are concerned about space, please consider removing the old
-  TeX Live directory. If space is not a concern, no action is needed."
+  echo "${WARNINGPREFIX}previous link detected. Link will be updated so
+  that the newer installation is used."
   rm "/opt/texbin"
 fi
 [ -d "${TEXDIR}/bin" ] && ln -s "${TEXDIR}/bin"/* "/opt/texbin" \
