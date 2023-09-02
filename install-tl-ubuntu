@@ -816,6 +816,7 @@ if [ "${EXTRAS}" = "1" ]; then
     #   https://www.worldscientific.com/page/ijmpc/submission-guidelines
     #   Contact:
     #      editor@wspc.com
+    # TODO: also test if "https" works now.
     ${WGET_CMD} "http://www.worldscientific.com/sda/1037/ijmpc-2e.zip" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download IJMPC files." >&2; MAINRET=1; }
     ${WGET_CMD} "http://www.worldscientific.com/sda/1037/ijmpd-2e.zip" >&3 2>&1 \
