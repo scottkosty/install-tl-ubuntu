@@ -7,10 +7,16 @@ function switch-tl-to ()
   # To check for more such symlinks, can use the following command:
   # (https://unix.stackexchange.com/q/301717/197212)
   # find / -type l -exec readlink -nf {} ';' -exec echo " -> {}" ';' | grep "/usr/local/texlive"
-  main_tl_dir="/usr/local/texlive/tl"
+  main_tl_dir_parent="/usr/local/texlive"
+  main_tl_dir="${main_tl_dir_parent}/tl"
 
   if [ ! -L "${main_tl_dir}" ]; then
     echo "Error: Not a symbolic link. Needs setup." >&2
+    return 1
+  fi
+
+  if [ ! -d "${main_tl_dir_parent}/$1" ]; then
+    echo "Error: the directory ${main_tl_dir_parent}/$1 does not exist."
     return 1
   fi
 
