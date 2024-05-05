@@ -785,8 +785,14 @@ if [ "${EXTRAS}" = "1" ]; then
     || { echo "${WARNINGPREFIX}failed to download RJournal files." >&2; MAINRET=1; }
 
     (
+      # (https://www.sigplan.org/Resources/LaTeXClassFile/)
+      #
+      # "The sigplanconf format was used for SIGPLAN events occuring before
+      # August 2017. It has been superceded by the acmart format. This page
+      # archives older versions of the LaTeX class file for historical
+      # reference only."
       mkdir sigplan && cd sigplan &&
-      ${WGET_CMD} "http://drupal.sigplan.org/sites/default/files/sigplanconf.cls" \
+      ${WGET_CMD} "https://www.sigplan.org/sites/default/files/sigplanconf/3.6/sigplanconf.cls" \
     ) >&3 2>&1 \
     || { echo "${WARNINGPREFIX}failed to download sigplan files." >&2; MAINRET=1; }
 
