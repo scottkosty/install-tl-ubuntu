@@ -809,22 +809,6 @@ if [ "${EXTRAS}" = "1" ]; then
     ${WGET_CMD} "http://www.jstatsoft.org/public/journals/1/jss-style.zip" >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download JSSstyle files." >&2; MAINRET=1; }
 
-    # These links currently don't work when downloaded with "wget" or "curl".
-    # They do work if pasted into a browser.
-    # TODO: use the contact below to ask if this is intended? If necessary, might need
-    #       to use "./archive" of install-tl-ubuntu.
-    #
-    # Needed for:
-    #   International Journal of Modern Physics C and D.
-    #   https://www.worldscientific.com/page/ijmpc/submission-guidelines
-    #   Contact:
-    #      editor@wspc.com
-    # TODO: also test if "https" works now.
-    ${WGET_CMD} "http://www.worldscientific.com/sda/1037/ijmpc-2e.zip" >&3 2>&1 \
-      || { echo "${WARNINGPREFIX}failed to download IJMPC files." >&2; MAINRET=1; }
-    ${WGET_CMD} "http://www.worldscientific.com/sda/1037/ijmpd-2e.zip" >&3 2>&1 \
-      || { echo "${WARNINGPREFIX}failed to download IJMPD files." >&2; MAINRET=1; }
-
     ${WGET_CMD} "http://www.aeaweb.org/templates/latex_templates.zip" -O AEA.zip >&3 2>&1 \
       || { echo "${WARNINGPREFIX}failed to download AEA files." >&2; MAINRET=1; }
     # American Astronomical Society (AAS)

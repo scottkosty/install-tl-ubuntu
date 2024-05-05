@@ -1,0 +1,77 @@
+\documentclass{ws-ijmpc}
+\usepackage[super]{cite}
+\usepackage[breaklinks]{hyperref}
+\hypersetup{colorlinks,urlcolor=black,citecolor=black,linkcolor=black,filecolor=black}
+\usepackage{breakurl}
+\begin{document}
+
+
+
+
+
+\title{Instructions for typesetting manuscript\\
+using BiB\TeX}
+
+\markboth{WSPC}{Instructions for typesetting manuscript}
+
+\maketitle
+
+\section{Usage}
+
+\begin{verbatim}
+\documentclass{ws-ijmpc}
+\usepackage[super]{cite}
+\begin{document}
+Sample output using ws-ijmpc bibliography style file ...
+...text.\cite{best,pier,jame} ...
+\bibliographystyle{ws-ijmpc}
+\bibliography{sample}
+\end{document}
+\end{verbatim}
+
+\section{Output}
+Sample output using ws-ijmpc bibliography style file
+
+\begin{center}
+\tablefont
+\begin{tabular}{@{}ll@{}}\toprule
+\multicolumn{1}{c}{BiB\TeX}\\
+\multicolumn{1}{c}{Database}  & \multicolumn{1}{c}{Sample citation}\\
+\multicolumn{1}{c}{entry type}\\\colrule
+
+article & ...text.\cite{best03,pier02,jame02}\\
+
+proceedings & ...text.\cite{weis94}\\
+
+inproceedings & ...text.\cite{gupt97}\\
+
+book & ...text.\cite{rich60,jarl88}\\
+
+edition & ...text.\cite{chur90}\\
+
+editor & ...text.\cite{benh93}\\
+
+series & ...text.\cite{bake72}\\
+
+tech report & ...text\cite{hobb92} and ...text.\cite{bria84}\\
+
+unpublished & ...text.\cite{hear94}\\
+
+phd thesis & ...text.\cite{brow88}\\
+
+masters thesis & ...text.\cite{lodh74}\\
+
+incollection & ...text.\cite{dani73}\\
+
+misc & ...text.\cite{davi93}\\
+\botrule
+\end{tabular}
+\end{center}
+
+When the reference forms part of the sentence, it should not be
+typed in superscripts, e.g.: ``One can show from Ref.~\refcite{davi93} that $\ldots$''
+
+\bibliographystyle{ws-ijmpc}
+\bibliography{ws-sample}
+
+\end{document} 
