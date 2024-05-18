@@ -789,7 +789,7 @@ if [ "${EXTRAS}" = "1" ]; then
       mkdir maa-monthly && cd maa-monthly &&
       # zip file is linked to from here:
       #   https://maa.org/press/periodicals/american-mathematical-monthly
-      ${WGET_CMD} "https://maa.org/sites/default/files/pdf/pubs/Monthly_Templates_2_2024.zip" &&
+      ${WGET_CMD} "https://maa.org/sites/default/files/pdf/pubs/AmericanMathMonthlyTemplates.zip" &&
       unzip *\.zip &&
       rm *\.zip \
     ) >&3 2>&1 \
