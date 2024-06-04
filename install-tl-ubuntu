@@ -716,7 +716,7 @@ dTEXMFDIST="$(kpsewhich -var-value TEXMFDIST)"
 echo "${ECHOPREFIX}dTEXMFLOCAL is: ${dTEXMFLOCAL}."
 echo "${ECHOPREFIX}dTEXMFDIST is: ${dTEXMFDIST}."
 
-# see "System font configuration for XeTEX and LuaTEX"
+# see "System font configuration for XeTeX and LuaTeX"
 # http://www.tug.org/texlive/doc/texlive-en/texlive-en.html#x1-350003.4.4
 
 if [ -n "${TT_FONTS}" ]; then
