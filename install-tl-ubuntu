@@ -365,7 +365,7 @@ VER_UBUNTU=$( lsb_release -rs )
 #               "\ndebian-control-texlive-in.txt file." >&2
 
 # default of wget is --tries=20. Can take an hour. This makes the default --tries=5.
-WGET_CMD="wget --tries=${TIMESRETRY}"
+WGET_CMD="wget --no-verbose --tries=${TIMESRETRY}"
 
 exec 3>> "${LOG_DIR}/install-tl-ubuntu_EXTRAS.log"
 
@@ -925,7 +925,7 @@ if [ "${HEBREW}" = 1 ]; then
   mkdir "/tmp/HebrewFonts2" &&
   cd "/tmp/HebrewFonts2" &&
   ${WGET_CMD} -O culmus-latex-0.7-r1.tar.gz "https://sourceforge.net/projects/ivritex/files/culmus-latex/culmus-latex-0.7/culmus-latex-0.7-r1.tar.gz/download" &&
-  tar -xvzf culmus-latex-0.7-r1.tar.gz &&
+  tar -xzf culmus-latex-0.7-r1.tar.gz &&
   cd culmus-latex-0.7-r1 &&
   mkdir -p "${dTEXMFLOCAL}" &&
   rsync -a "usr/share/texmf/fonts" "${dTEXMFLOCAL}/"
@@ -934,7 +934,7 @@ if [ "${HEBREW}" = 1 ]; then
 
   # This script fixes compilation with pdf3.
   echo "${ECHOPREFIX}going to run Hebrew_pdf3" &&
-  cd "${MAINDIR}/helper_scripts" && sudo ./Hebrew_pdf3.sh &&
+  cd "${MAINDIR}/helper_scripts" && sudo ./Hebrew_pdf3.sh > Hebrew_pdf3.log 2>&1 &&
   echo "${ECHOPREFIX}done running Hebrew_pdf3"
 fi
 
