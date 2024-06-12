@@ -685,10 +685,16 @@ if [ "${TEXDIR}" != "${TEXDIR2}" ]; then
     exit 1
 fi
 
-TL_VER="$( grep -oP '(?<=version )\d{4}(?=$)' "${TEXDIR}/release-texlive.txt" )"
+# e.g., 2024
+TL_VER_YEAR="$( grep -oP '(?<=version )\d{4}(?=$)' "${TEXDIR}/release-texlive.txt" )"
+# e.g., TL24
+TL_AND_YEAR="TL${TL_VER_YEAR:2:2}"
+# e.g., TL24_2025-02-15
+TL_VER_AND_DATE="${TL_AND_YEAR}_$( date "+%Y-%m-%d" )"
+
 # this is the "resolved" dir, i.e., where the link will point
 TL_BASE_DIR="$( dirname "${TEXDIR}" )"
-TL_REAL_DIR="${TL_BASE_DIR}/${TL_VER}"
+TL_REAL_DIR="${TL_BASE_DIR}/${TL_VER_AND_DATE}"
 while [ -e "${TL_REAL_DIR}" ]; do
     echo "${WARNINGPREFIX}following dir already exists: ${TL_REAL_DIR}"
     TL_REAL_DIR="${TL_REAL_DIR}_1"
