@@ -20,6 +20,15 @@ function switch-tl-to ()
     return 1
   fi
 
+  # This is just an optimization to get an early return so we don't need to
+  # rerun fc-cache.
+  #
+  current_target="$( readlink "${main_tl_dir}")"
+  if [ "${current_target}" = "$1" ]; then
+    # nothing to be done
+    return 0
+  fi
+
   sudo rm "${main_tl_dir}"
   sudo ln -s "$1" "${main_tl_dir}"
 
