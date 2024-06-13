@@ -22,6 +22,22 @@ function switch-tl-to ()
 
   sudo rm "${main_tl_dir}"
   sudo ln -s "$1" "${main_tl_dir}"
+
+  # This is because we set up the *system* fonts to be able to use TeX Live fonts.
+  # See this file: /etc/fonts/conf.d/09-texlive.conf
+  # You can see that the fonts are being used by looking at "sudo lsof".
+  # For example, search for NotoSans-Regular.ttf.
+  #
+  # Although in the file 09-texlive.conf it is a path through the 'tl' link, I
+  # think when those paths are processed the *absolute* path is what is
+  # stored/cached, so we have to update those paths when we change the symlink.
+  echo "Running fc-cache to update system font reference..."
+  sudo fc-cache -fsv >/dev/null 2>&1
+  fc_cache_ret=$?
+  if [ "${fc_cache_ret}" != "0" ]; then
+    echo "ERROR: fc-cache -fsv exited with error." >&2
+  fi
+  echo "Running fc-cache to update system font reference...Done."
 }
 _switch_tl_to()
 {
