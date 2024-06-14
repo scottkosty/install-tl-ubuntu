@@ -55,7 +55,8 @@ _switch_tl_to()
   cur=${COMP_WORDS[COMP_CWORD]}
 
   if [ "$COMP_CWORD" == "1" ]; then
-    COMPREPLY=( $( compgen -W '`ls /usr/local/texlive`' -- $cur ) )
+    # the "--hide=tl" hides the "tl" symlink.
+    COMPREPLY=( $( compgen -W '`ls --hide=tl /usr/local/texlive/`' -- $cur ) )
   fi
 }
 complete -F _switch_tl_to ${filenames:-} switch-tl-to
