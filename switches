@@ -64,3 +64,28 @@ _switch_tl_to()
   fi
 }
 complete -F _switch_tl_to ${filenames:-} switch-tl-to
+
+
+function switch-sys-fonts-to-tl ()
+{
+  SYSFONT='/etc/fonts/conf.d/09-texlive.conf'
+  if sudo cp "$(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf" "${SYSFONT}" \
+    > /dev/null 2>&1; then
+    echo "finished copying."
+  else
+    echo "Error: could not copy the font config to the system font directory."
+  fi
+  sudo fc-cache -fsv
+}
+
+
+function switch-sys-fonts-to-ubuntu ()
+{
+  # These LyX ctests are still expected to fail because of missing fonts.
+  #         434 - export/export/latex/languages/en-th_utf8_pdf4_systemF (Failed)
+  #         485 - DEFAULTOUTPUT_export/export/latex/languages/supported-languages_polyglossia-XeTeX_pdf4_systemF (Failed)
+
+  SYSFONT='/etc/fonts/conf.d/09-texlive.conf'
+  sudo rm "${SYSFONT}"
+  sudo fc-cache -fsv
+}
