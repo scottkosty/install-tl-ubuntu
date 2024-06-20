@@ -1,0 +1,799 @@
+%%
+%% This is file `maa-monthly.sty', macros for the American Mathematical Monthly
+%%
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesClass{maa-monthly} %[last revised 2013/08/08]
+
+\usepackage{times}
+\renewcommand{\ttdefault}{cmtt}
+
+\DeclareFontShape{OT1}{cmtt}{m}{n}
+     {%
+      <5-8.99>cmtt8<9-9.99>cmtt9%
+      <10-11.99>cmtt10%
+      <12-25>cmtt12%
+      }{}
+\DeclareMathAlphabet{\mathtt}{OT1}{cmtt}{m}{n}
+
+\RequirePackage{graphicx}
+\RequirePackage{color}
+\definecolor{gray}{gray}{.8}
+
+\RequirePackage[hyphens]{url}
+\def\doi#1{\url{http://dx.doi.org/#1}}
+
+
+%% AMS packages; see below for styling
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+
+\renewcommand\qedsymbol{\vrule height6pt width6pt depth0pt\relax }
+\allowdisplaybreaks
+
+%% Need to change styling of theorem, definition, remark styles
+\def\th@plain{%
+%%  \let\thm@indent\noindent % no indent
+  \thm@headfont{\rmfamily\bfseries}% heading font is bold
+  \thm@notefont{\rmfamily\bfseries}% same as heading font
+%  \thm@headpunct{.}% add period after heading
+%%  \let\thm@swap\@gobble
+%%  \thm@preskip\topsep
+%%  \thm@postskip\theorempreskipamount
+  \itshape % body font
+}
+\def\th@definition{%
+  \thm@headfont{\bfseries}%
+  \thm@notefont{\bfseries}%
+  \normalfont % body font
+}
+
+
+%%
+%% GENERAL PARAMS
+%%
+
+\hsize30pc\textwidth30pc
+\vsize51pc\textheight51pc
+\setlength\parindent{12pt}
+\newif\iftrimmarks  \trimmarksfalse \trimmarkstrue
+
+%%
+%% PAGE DIMENS for crops and tagline; use \final for trimmed pages
+%%
+\setlength\paperheight{11in}
+\setlength\paperwidth{8.5in}
+\newdimen\papertrimheight
+\newdimen\papertrimwidth
+\setlength\papertrimheight{10in}
+\setlength\papertrimwidth{7in}
+
+\setlength\oddsidemargin  {73.5pt}
+\setlength\evensidemargin {73.5pt}
+\setlength\topmargin{31pt}
+\setlength\headsep   {0pt}
+\setlength\headheight{0\p@}
+\setlength\footskip{28pt}
+\parskip0pt
+\frenchspacing
+\emergencystretch10pt
+\setcounter{topnumber}{3}
+\renewcommand\topfraction{.9}
+\setcounter{bottomnumber}{3}
+\renewcommand\bottomfraction{.9}
+\setcounter{totalnumber}{4}
+\renewcommand\textfraction{.1}
+\renewcommand\floatpagefraction{.99}
+\setcounter{dbltopnumber}{2}
+\renewcommand\dbltopfraction{.7}
+\renewcommand\dblfloatpagefraction{.5}
+
+\setlength\floatsep    {20\p@ \@plus 8\p@ \@minus 8\p@}
+\setlength\textfloatsep{20\p@ \@plus 8\p@ \@minus 8\p@}
+\setlength\intextsep   {20\p@ \@plus 8\p@ \@minus 8\p@}
+\setlength\dblfloatsep    {20\p@ \@plus 8\p@ \@minus 8\p@}
+\@twosidetrue
+
+\def\rightmark{\expandafter\@rightmark\botmark{}{}}
+
+\newcommand\journalname{American Mathematical Monthly}
+\newcounter{volume}	\def\thevolume{\arabic{volume}} \setcounter{volume}{121}
+\newcounter{issue}	\def\theissue{\arabic{issue}} \setcounter{issue}{1}
+\newcounter{annual}	\def\theannual{\arabic{annual}}\setcounter{annual}{2014}
+%% NOTE: American Mathematical Monthly skips June and August
+\def\themonth{\ifcase\theissue\or
+	January\or February\or March\or April\or May\or June--July\or 	
+	August--September\or October\or November\or December\fi}
+
+%%
+%% FONTS
+%%
+
+\def\@listi{\leftmargin0\p@
+		\itemindent0\p@
+		\partopsep0\p@
+		\listparindent\parindent
+            \parsep0\p@
+            \topsep12\p@ \@plus2\p@ \@minus2\p@
+            \itemsep0\p@}
+\let\@listI\@listi
+\renewcommand\normalsize{%
+   \@setfontsize\normalsize{10.5}{12}%
+   \abovedisplayskip 11\p@ \@plus3\p@ \@minus3\p@
+   \abovedisplayshortskip\abovedisplayskip
+   \belowdisplayshortskip\abovedisplayskip
+   \belowdisplayskip \abovedisplayskip
+   \let\@listi\@listI}
+\DeclareMathSizes{10.5}     {10.5}   {7}{6}
+
+\normalsize
+\renewcommand\small{%
+   \@setfontsize\small\@ixpt{11}%
+   \abovedisplayskip 8.5\p@ \@plus2\p@ \@minus2\p@
+   \abovedisplayshortskip\abovedisplayskip
+   \belowdisplayshortskip\abovedisplayskip
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 4\p@ \@plus2\p@ \@minus2\p@
+               \parsep 2\p@ \@plus\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\DeclareMathSizes{9}     {9}   {6}{5}
+\renewcommand\footnotesize{%
+   \@setfontsize\footnotesize{8.2}{10}%
+   \abovedisplayskip 6\p@ \@plus2\p@ \@minus2\p@
+   \abovedisplayshortskip\abovedisplayskip
+   \belowdisplayshortskip\abovedisplayskip
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 3\p@ \@plus\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\DeclareMathSizes{8}     {8}   {6}{5}
+\renewcommand\scriptsize{\@setfontsize\scriptsize\@viiipt{9.5}}
+\renewcommand\tiny{\@setfontsize\tiny{6}{6}}
+\newcommand\copysize{\@setfontsize\copysize{7.5}{8}}
+\renewcommand\large{\@setfontsize\large{12.5}{13}}
+\DeclareMathSizes{12.5}     {11}   {9}{9}
+\renewcommand\Large{\@setfontsize\Large{14}{16}}
+\renewcommand\LARGE{\@setfontsize\LARGE{18.5}{20}}
+\renewcommand\huge{\@setfontsize\huge{20}{24}}
+\renewcommand\Huge{\@setfontsize\Huge{20}{24}}
+
+%%
+%% ARTICLE OPENER
+%%
+
+\renewcommand\maketitle{\par
+  \begingroup
+    \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
+    \def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
+    \long\def\@makefntext##1{\parindent 1em\noindent
+            \hb@xt@1.8em{%
+                \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
+      \@maketitle
+	\@thanks
+  \endgroup
+  \setcounter{footnote}{0}%
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+\setcounter{section}{0}
+  \global\let\thanks\relax
+%  \global\let\maketitle\relax
+%  \global\let\@maketitle\relax
+  \global\let\@thanks\@empty
+%  \global\let\@author\@empty
+  \global\let\@date\@empty
+%  \global\let\@title\@empty
+%  \global\let\title\relax
+%  \global\let\author\relax
+  \global\let\date\relax
+  \global\let\and\relax
+	\@afterindentfalse
+}
+\def\@maketitle{%
+  \null
+  \vspace*{-17pt}%
+  \begin{center}%
+  \let \footnote \thanks
+\hrule height2pt
+\vskip10pt
+    {\LARGE\bfseries \@title \par}%
+    \vskip10pt%
+\hrule height.5pt
+\vskip5pt
+    {\large\bfseries
+      \lineskip 0pt%
+      \begin{tabular}[t]{c}%
+        \@author\strut
+      \end{tabular}\par}%
+    \vskip 3.5pt%
+\hrule height2pt
+  \end{center}%
+  \par
+  \vskip 3pt plus4pt
+	}
+\if@titlepage
+  \renewenvironment{abstract}{%
+      \titlepage
+      \null\vfil
+      \@beginparpenalty\@lowpenalty
+      \noindent
+        \bfseries \abstractname
+        \@endparpenalty\@M
+      }%
+     {\par\vfil\null\endtitlepage}
+\else
+  \renewenvironment{abstract}{%
+      \if@twocolumn
+        \section*{\abstractname}%
+      \else
+        \small
+        \quotation\noindent\textbf{Abstract.}\space\ignorespaces
+      \fi}
+      {\if@twocolumn\else\endquotation\fi}
+\fi
+
+%% RUNNING HEADS
+
+\def\ps@headings{%
+	\def\@evenfoot{\rlap{\thepage}\hfill\hbox to0pt{\hss{\copyright\ \normalsize\textsc{the mathematical association of america}}\hss}\hfill
+	\llap{[Monthly\ \thevolume}}%
+      \def\@oddfoot{\rlap{\themonth\ \theannual]}\hfill\hbox to0pt{\hss\footnotesize\MakeUppercase{\rightmark}\hss}\hfill
+	\llap{\thepage}}%
+      \let\@evenhead\@empty%
+      \let\@oddhead\@empty%
+      \let\@mkboth\markboth
+    \def\chaptermark##1{%
+      \markright {\MakeLowercase{##1}}}%
+    \def\sectionmark##1{}}%
+\pagestyle{headings}
+
+\def\ps@copyright{%
+	\def\@evenfoot{\hfill\hbox to0pt{\hss{\copyright\ \normalsize\textsc{the mathematical association of america}}\hss}\hfill}%
+      \let\@oddfoot\@evenfoot
+      \let\@evenhead\@empty%
+      \let\@oddhead\@empty%
+      \let\@mkboth\markboth
+    \def\chaptermark##1{}%
+    \def\sectionmark##1{}}%
+
+\renewcommand\part{\clearpage
+   \addvspace{0pt}%
+   \@afterindentfalse
+   \secdef\@part\@spart}
+
+\def\@part[#1]#2{%
+    \ifnum \c@secnumdepth >\m@ne
+      \refstepcounter{part}%
+      \addcontentsline{toc}{part}{\thepart\hspace{1em}#1}%
+    \else
+      \addcontentsline{toc}{part}{#1}%
+    \fi
+    {\parindent \z@ \raggedright
+     \interlinepenalty \@M
+     \normalfont
+     \ifnum \c@secnumdepth >\m@ne
+       \Large\bfseries \partname~\thepart
+       \par\nobreak
+     \fi
+     \huge \bfseries #2%
+     \markboth{}{}\par}%
+    \nobreak
+    \vskip 3ex
+    \@afterheading}
+\def\@spart#1{%
+    {\parindent \z@ \raggedright
+     \interlinepenalty \@M
+     \centering\normalfont
+     \LARGE\bfseries \MakeUppercase{#1}\par}%
+     \nobreak
+     \vskip 0pt
+     \@afterheading}
+
+\def\editor{\@ifnextchar [{\editoraddress}{\editornoaddress}}
+\def\editoraddress[#1]#2{\vskip5pt\bgroup\large\centering
+	Edited by \textbf{#2}\\
+	\normalsize\itshape#1\par\egroup
+	\vskip18pt
+	}
+\def\editornoaddress#1{\vskip5pt\bgroup\large\centering
+	Edited by \textbf{#1}\par\egroup
+	\vskip18pt
+	}
+\def\nomaketitle{\hrule height2pt\vskip20pt}
+
+\fboxsep11pt\fboxrule1pt
+\def\filler{\@ifnextchar [{\opargboxed}{\regboxed}}
+\def\opargboxed[#1]{\list{}{\topsep13pt plus5pt minus2.5pt
+	\leftmargin0pt\labelwidth0pt\labelsep0pt
+	}
+   \fboxsep11.5pt\fboxrule.5pt
+	\item[]\setbox\@tempboxa=\vbox\bgroup\hsize28pc\textwidth28pc
+		\linewidth28pc\boxhead{#1}}
+\def\regboxed{\list{}{\topsep13pt plus5pt minus2.5pt
+	\leftmargin0pt\labelwidth0pt\labelsep0pt
+	}
+   \fboxsep11.5pt\fboxrule.5pt
+	\item[]\setbox\@tempboxa=\vbox\bgroup\hsize28pc\textwidth28pc
+		\linewidth28pc}
+\def\endfiller{\egroup\fbox{\begin{minipage}{28pc}\unvbox\@tempboxa\end{minipage}}\endlist}
+
+\def\reviewer#1{\vspace*{6pt}\list{}{\topsep10pt plus4pt minus2pt
+	\leftmargin0pt\labelwidth0pt\labelsep0pt
+	}
+	\item[\large\textit{Reviewed by} \textbf{#1}]\strut
+	\endlist}
+
+
+%%
+%% SECTIONING COMMANDS
+%%
+\setcounter{secnumdepth}{1}
+\def\@seccntformat#1{\csname the#1\endcsname.\hskip .5em}
+\newif\ifuppercase	\global\uppercasefalse
+\def\@sect#1#2#3#4#5#6[#7]#8{%
+     \ifnum #2>\c@secnumdepth
+       \let\@svsec\@empty\else
+       \refstepcounter{#1}%
+       \protected@edef\@svsec{\@seccntformat{#1}}%
+     \fi
+     \@tempskipa #5\relax
+      \ifdim \@tempskipa>\z@
+        \begingroup #6\relax
+          \@hangfrom{\hskip #3\relax\@svsec}%
+                    {\interlinepenalty \@M \ifuppercase\global\uppercasefalse
+			\MakeUppercase{#8}\else#8\fi\par}%
+        \endgroup
+       \csname #1mark\endcsname{#7}\addcontentsline
+         {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                      \protect\numberline{\csname the#1\endcsname}\fi
+                    #7}\else
+        \def\@svsechd{#6\hskip #3\relax
+                   \@svsec \ifuppercase\global\uppercasefalse
+			\MakeUppercase{#8}\else#8\fi\csname #1mark\endcsname
+                      {#7}\addcontentsline
+                           {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                           \protect\numberline{\csname the#1\endcsname}%
+                                     \fi
+                       #7}}\fi
+     \@xsect{#5}}
+
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+	{-12pt \@plus -2pt \@minus -2pt}%
+	{-.5em}%
+	{\normalsize\bfseries\global\uppercasetrue}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+	{-12pt \@plus -2pt \@minus -2pt}%
+	{-.5em}%
+	{\normalsize\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+                                     {-12pt \@plus -2pt \@minus -2pt}%
+                                     {-.5em}%
+                                     {\normalfont\normalsize\itshape}}
+\renewcommand\paragraph{\@startsection{paragraph}{3}{\z@}%
+                                     {-12pt \@plus -2pt \@minus -2pt}%
+                                     {-.5em}%
+                                     {\normalfont\normalsize\bfseries}}
+
+\newcommand\fillerhead{\@startsection {section}{3}{\z@}%
+	{-0.001pt}%
+	{\medskipamount}%
+	{\normalsize\global\uppercasefalse\sffamily\bfseries}}
+\newcommand\fillerheadmark[1]{\relax}
+
+
+
+
+%%
+%% LISTS
+%%
+
+\def\itemize{\ifnum \@itemdepth >3 \@toodeep\else \advance\@itemdepth \@ne
+\def\labelitemi{\raise.2em\hbox{$\scriptstyle\bullet$}}%
+\def\labelitemii{\raise.2em\hbox{$\scriptstyle\circ$}}%
+\edef\@itemitem{labelitem\romannumeral\the\@itemdepth}%
+\list{\csname\@itemitem\endcsname}{%
+	\leftmargin12pt\labelsep.5em
+		\ifcase\@enumdepth
+			\topsep6pt plus1pt minus1pt
+			\settowidth\labelwidth{$\scriptstyle\bullet$}%
+		\or
+			\topsep 2pt plus.5pt minus.5pt
+			\settowidth\labelwidth{$\scriptstyle\circ$}%
+		\or
+			\topsep 2pt plus.5pt minus.5pt
+			\settowidth\labelwidth{$\scriptstyle\circ$}%
+		\fi
+	\itemsep2pt plus.5pt minus.5pt
+	\listparindent\parindent
+	\parsep0pt
+	\def\makelabel##1{\hss\llap{##1}}}\fi}
+ 
+\let\enditemize =\endlist
+ 
+\def\enumerate{\@ifnextchar [{\opargenumerate}{\regenumerate}}
+
+\def\opargenumerate[#1]{\ifnum \@enumdepth >3 \@toodeep\else
+      \advance\@enumdepth \@ne
+      \edef\@enumctr{enum\romannumeral\the\@enumdepth}\list
+      {\csname label\@enumctr\endcsname}{%
+		\usecounter{\@enumctr}%
+		\ifcase\@enumdepth\or
+				\topsep6pt plus1pt minus1pt\leftmargin12pt\or
+				\topsep 2pt plus.5pt minus.5pt\leftmargin0pt\or
+				\topsep 2pt plus.5pt minus.5pt\leftmargin0pt\fi
+		\settowidth\labelwidth{\upshape#1}%
+		\labelsep.5em
+		\advance\leftmargin by\labelwidth\advance\leftmargin by\labelsep
+		\parsep0pt
+		\listparindent\parindent
+		\itemsep2.5pt plus.5pt minus.5pt
+		\def\makelabel##1{\hss\llap{\upshape##1}}}\fi}
+\def\regenumerate{\ifnum \@enumdepth >3 \@toodeep\else
+      \advance\@enumdepth \@ne
+      \edef\@enumctr{enum\romannumeral\the\@enumdepth}\list
+      {\csname label\@enumctr\endcsname}{%
+		\usecounter{\@enumctr}%
+		\ifcase\@enumdepth\or
+				\topsep6pt plus1pt minus1pt
+				\settowidth\labelwidth{\upshape1.}\leftmargin12pt\or
+				\topsep 2pt plus.5pt minus.5pt
+				\settowidth\labelwidth{\upshape(b)}\leftmargin0pt\or
+				\topsep 2pt plus.5pt minus.5pt
+				\settowidth\labelwidth{\upshape(ii)}\leftmargin0pt\fi
+		\labelsep.5em
+		\parsep0pt
+		\listparindent\parindent
+		\itemsep2.5pt plus.5pt minus.5pt
+		\advance\leftmargin by\labelwidth\advance\leftmargin by\labelsep
+		\def\makelabel##1{\hss\llap{\upshape##1}}}\fi}
+\let\endenumerate =\endlist
+
+\def\quote{\list{}{\topsep12pt plus2pt minus2pt
+	\leftmargin\parindent\rightmargin\parindent
+	\labelwidth0pt\labelsep0pt
+	\listparindent\parindent
+	\parsep0pt}\small
+	\item[]}
+\def\endquote{\endlist}
+
+\renewenvironment{quotation}
+               {\list{}{\topsep 12pt plus2pt minus2pt
+		\leftmargin\parindent
+                        \rightmargin   \leftmargin
+		\listparindent\parindent
+                        \itemindent    \listparindent
+                        \parsep        \z@}%
+                \item\relax}
+               {\endlist}
+
+ 
+
+\def\auq#1{\marginpar{\small\raggedright#1}}
+
+
+\newcommand\acknowledge[1]{\list{}{\topsep18pt plus2pt minus2pt
+	\leftmargin0pt\labelwidth0pt\labelsep.3em
+	\parsep0pt\listparindent\parindent
+	\itemsep18pt plus2pt minus2pt
+	\def\makelabel##1{\hskip\labelsep\bfseries\MakeUppercase{##1}}}%
+	\footnotesize
+	\item[#1]}
+\def\endacknowledge{\endlist}
+\let\acknowledgment\acknowledge
+\let\endacknowledgment\endacknowledge
+
+\newcommand\biog{\list{}{\topsep18pt plus2pt minus2pt
+	\leftmargin0pt\labelwidth0pt\labelsep.3em
+	\parsep0pt\listparindent\parindent
+	\itemsep18pt plus2pt minus2pt
+	\def\makelabel##1{\hskip\labelsep\bfseries\MakeUppercase{##1}}}%
+	\let\affil\biogaffil\let\endaffil\endbiogaffil\footnotesize}
+\def\endbiog{\endlist}
+
+\def\affil{\list{}{\partopsep0pt\topsep12pt plus2pt minus2pt
+	\leftmargin0pt\labelwidth0pt\labelsep0pt
+	\parsep0pt\listparindent0pt
+	\itemsep\medskipamount
+	\parsep0pt
+	}\footnotesize
+	\item[]\itshape}
+\let\endaffil\endlist
+
+\def\biogaffil{\list{}{\partopsep0pt\topsep0pt
+	\leftmargin0pt\labelwidth0pt\labelsep0pt
+	\parsep0pt\listparindent0pt
+	\itemsep\medskipamount
+	\parsep0pt
+	}\footnotesize
+	\item[]\itshape}
+\let\endbiogaffil\endlist
+
+%%
+%% OUTPUT ROUTINE
+%%
+
+%% TRIM MARKS
+%% Trim marks added here.  The default is to have the trim
+%% marks on, to turn them off call \trimmarksfalse somewhere
+
+\newdimen\fudgetrimdown		\fudgetrimdown=-6pt
+\newdimen\fudgetrimright	\fudgetrimright=0pt
+\newif\iftrimmarks  \trimmarksfalse \trimmarkstrue
+
+\def\tlmark{\hbox{\vrule height .5pt depth 0pt width 18pt%
+		\hskip 5.5pt%
+		\vrule height 24pt depth -6pt width .5pt}}
+
+\def\trmark{\hbox{\vrule height 24pt depth -6pt width .5pt
+		\hskip 5.5pt%
+		\vrule height .5pt depth 0pt width 18pt}}%
+
+\def\brmark{\hbox{\vrule height -6pt depth 24pt width .5pt
+		\hskip 5.5pt%
+		\vrule height .5pt depth 0pt width 18pt}}%
+
+\def\blmark{\hbox{\vrule height .5pt depth 0pt width 18pt%
+		\hskip 5.5pt%
+		\vrule height -6pt depth 24pt width .5pt}}
+
+\def\imagemarks{\vbox to 0pt{%
+    \advance\papertrimwidth by 48pt\advance\papertrimheight by 48pt%
+    \advance\papertrimwidth by -1pt%
+    \advance\papertrimheight by -26pt%
+    \hbox{\hskip-24pt\hskip\fudgetrimright%
+    \vbox to 0pt{\vskip -24pt\vskip\fudgetrimdown%
+        \vbox to \papertrimheight{%
+        \hbox to \papertrimwidth{\tlmark\hss\trmark}%
+        \vss%
+        \hbox to \papertrimwidth{\blmark\hss\brmark}%
+        }%
+    \vss}}}}
+
+\def\timestring{\begingroup
+	\count0 = \time \divide\count0 by 60
+	\count2 = \count 0 %The hour.
+	\count4 = \time \multiply\count0 by 60
+	\advance\count4 by -\count0 %The minute.
+	\ifnum\count4<10 \toks1 = {0}% Get a leading zero.
+	\else            \toks1 = {}%
+	\fi
+	\ifnum\count2<12 \toks0 = {a.m.}%
+	\else            \toks0 = {p.m.}%
+		\advance\count2 by -12
+	\fi
+	\ifnum\count2=0 \global\count2=12\relax\fi % Make noon and midnight `12'.
+	\number\count2:\the\toks1 \number\count4
+	\thinspace \the\toks0
+\endgroup}
+\def\timestamp{\number\day\space\monthname\space\number\year\quad\timestring}
+
+\newdimen\dffudge	\global\dffudge0pt
+\def\@outputpage{%
+  \let \protect \noexpand
+  \shipout \vbox{%
+    \set@typeset@protect
+    \aftergroup\set@typeset@protect
+    \@shipoutsetup
+    \@begindvi
+	\iftrimmarks\vbox to0pt{\vskip-29pt\hbox to\hsize{\footnotesize
+		Mathematical Assoc. of America\qquad
+			\journalname\ \thevolume:\theissue
+			\qquad\today\quad\timestring
+			\qquad \jobname.tex\qquad page \thepage\hss}\vss}
+	   \imagemarks
+            \global\voffset=-30pt
+            \global\hoffset=-35pt
+			\else
+			\global\voffset=-67pt
+			\global\hoffset=-72.4pt
+			\vbox to 0pt{}\fi%
+    \vskip \topmargin
+    \moveright\@themargin \vbox {%
+      \setbox\@tempboxa \vbox to\headheight{%
+        \vfil
+        \color@hbox
+          \normalcolor
+          \hbox to\textwidth {%
+            \let \label \@gobble
+            \let \index \@gobble
+            \let \glossary \@gobble
+            \@thehead
+            }%
+        \color@endbox
+        }%
+      \dp\@tempboxa \z@
+      \box\@tempboxa
+      \vskip \headsep
+      \box\@outputbox
+      \baselineskip \footskip
+      \color@hbox
+        \normalcolor
+        \hbox to\textwidth{%
+          \let \label \@gobble
+          \let \index \@gobble
+          \let \glossary \@gobble
+          \@thefoot
+          }%
+      \color@endbox
+      }%
+    }%
+  \global \@colht \textheight
+  \stepcounter{page}\global\dffudge0pt%
+  \let\firstmark\botmark
+}
+\def \@shipoutsetup {%
+     \@resetactivechars
+     \let\-\@dischyph
+     \let\'\@acci\let\`\@accii\let\=\@acciii
+     \if@specialpage
+       \global\@specialpagefalse\@nameuse{ps@\@specialstyle}%
+     \fi
+     \if@twoside
+       \ifodd\count\z@ \let\@thehead\@oddhead \let\@thefoot\@oddfoot
+            \let\@themargin\oddsidemargin
+       \else \let\@thehead\@evenhead
+          \let\@thefoot\@evenfoot \let\@themargin\evensidemargin
+       \fi
+     \fi
+     \reset@font
+     \normalsize
+     \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
+     \let\par\@@par
+}
+\def \@begindvi{%
+  \unvbox \@begindvibox
+  \global\let \@begindvi \@empty
+}
+
+
+%%
+%% MATH ENVIRONMENTS
+%%
+
+% minimize stretch and shrink around operators
+\thinmuskip=3mu
+\medmuskip=4mu plus .5mu minus .5mu
+\thickmuskip=5mu plus 1mu
+
+\def\lefteqn#1{\hbox to2em{$\displaystyle #1$\hss}}
+
+\newskip\jotskip
+\jotskip=6pt plus2pt minus1pt
+\jot=\jotskip
+
+\def\eqnarray{\stepcounter{equation}\let\@currentlabel\theequation
+\global\@eqnswtrue\m@th
+\global\@eqcnt\z@\tabskip\@centering\let\\\@eqncr
+\jot\medskipamount
+$$\halign to\displaywidth\bgroup\@eqnsel\hskip\@centering
+  $\displaystyle\tabskip\z@{##}$&\global\@eqcnt\@ne
+  \hfil${\displaystyle {}##{}}$\hfil
+  &\global\@eqcnt\tw@ $\displaystyle\tabskip\z@{##}$\hfil
+   \tabskip\@centering&\llap{##}\tabskip\z@\cr}
+ 
+\def\endeqnarray{\@@eqncr\egroup
+      \global\advance\c@equation\m@ne$$\global\@ignoretrue}
+
+\frenchspacing
+
+%%%%%%...used to put text within an eqnarray environment without leaving the environment.%%%kmc 1-22-03
+\def\nnoalign#1{\noalign{\vspace{.5\abovedisplayskip}
+\noindent
+#1\vspace{\abovedisplayskip}}}
+
+%%
+%% BIBLIOGRAPHY AND CITATIONS
+%%
+
+\def\@cite#1#2{[{\bfseries#1}\if@tempswa , #2\fi]}
+
+%%
+%% FIGURE MACROS
+%%
+
+\renewenvironment{figure}
+               {\let\@makecaption\@makefigcaption\@float{figure}}
+               {\end@float}
+
+\long\def\@makefigcaption#1#2{%
+  \vskip4pt
+  \sbox\@tempboxa{\footnotesize\textbf{#1.}\enspace #2}%
+  \ifdim \wd\@tempboxa >\hsize
+    \footnotesize\textbf{#1.}\enspace #2\par
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  }
+
+
+%%
+%% TABLE MACROS
+%%
+
+\renewenvironment{table}
+               {\let\@makecaption\@maketablecaption\@float{table}}
+               {\end@float}
+\long\def\@maketablecaption#1#2{%
+    \footnotesize\textbf{#1.}\enspace #2\strut\par
+  \vskip2pt}
+
+%% various struts to adjust spacing to table rules
+\def\abrule{\vrule height11.5pt width0pt depth5.5pt}
+\def\arule{\vrule height11.5pt width0pt depth0pt}
+\def\brule{\vrule height0pt width0pt depth5.5pt}
+%% make tilde active character equivalent to width of "1",
+%% for use within tables only
+\def\settildes{\catcode`\~=\active
+	\def~{\hphantom{1}}}
+
+%% BOXED ENVIRONMENTS
+\def\filler{\@ifnextchar [{\opargboxed}{\regboxed}}
+\def\opargboxed[#1]{\edef\theboxcolor{#1}\setbox0=\vbox\bgroup\hsize=28pc\textwidth28pc\linewidth28pc}
+\def\regboxed{\edef\theboxcolor{fillergray}\setbox0=\vbox\bgroup\hsize=28pc\textwidth28pc\linewidth28pc}
+\def\endfiller{\egroup\trivlist\setlength\fboxrule{.5pt}\setlength\fboxsep{11.5pt}%
+	\item[]\fcolorbox{black}{\theboxcolor}{\begin{minipage}{28pc}\unvbox0\end{minipage}}}
+
+\newskip\figskipamount \figskipamount=18pt plus 12pt minus 6pt
+\def\figskip{\vspace\figskipamount}
+
+
+\def\newpage{\par\relax\vskip-\lastskip\penalty -\@M}
+
+\hyphenation{Table Tables ex-ample ex-amples double doubles tri-angle triangles angle angles science sample samples rect-angle rect-angles pos-sible im-pos-sible circle circles}
+
+\def\threeem{\vrule height.3em width3em depth-.25em\,}
+\let\bysame\threeem
+
+
+
+
+
+%NEED TO MOVE RULE INTO THEBIBLIOGRAPHY TO AVOID
+%PROBLEMS WITH HYPERREF
+
+\newcommand\refsection{\@startsection{refsection}{3}{\z@}%
+	{-12pt \@plus -2pt \@minus -2pt}%
+	{8pt}%
+	{\normalsize\scshape}}
+\newcommand\refsectionmark[1]{\relax}
+
+\def\@biblabel#1{#1.}
+\renewenvironment{thebibliography}[1]
+     {\refsection*{\rlap{\vrule depth4pt width\linewidth height-3.5pt}\MakeLowercase{\refname}}%
+      \list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{\footnotesize#1}}%
+            \labelsep8pt\leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+		\itemsep0pt\parsep0pt
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \footnotesize\sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+\renewcommand\newblock{\relax}
+
+
+\def\final{\trimmarksfalse
+\setlength\paperheight{10in}%
+\setlength\paperwidth{7in}%
+\pdfpagewidth7in
+\pdfpageheight10in
+\relax
+}
+
+
+\endinput
+
+%%
+%% End of file `maamonthly.sty'.
