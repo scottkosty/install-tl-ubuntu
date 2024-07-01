@@ -51,6 +51,8 @@ function switch-tl-to ()
     fi
     echo "Running fc-cache to update system font reference...Done."
   fi
+
+  \sudo -k
 }
 _switch_tl_to()
 {
@@ -76,6 +78,8 @@ function switch-sys-fonts-to-tl ()
     echo "Error: could not copy the font config to the system font directory."
   fi
   sudo fc-cache -fsv
+
+  \sudo -k
 }
 
 
@@ -88,4 +92,6 @@ function switch-sys-fonts-to-ubuntu ()
   SYSFONT='/etc/fonts/conf.d/09-texlive.conf'
   sudo rm "${SYSFONT}"
   sudo fc-cache -fsv
+
+  \sudo -k
 }
