@@ -1,5 +1,7 @@
 function switch-tl-to ()
 {
+  new_target="$1"
+
   # I think that all other TL-related files symlink through here.
   # e.g.,
   # /opt/texbin: symbolic link to /usr/local/texlive/2022/bin/x86_64-linux
@@ -15,8 +17,8 @@ function switch-tl-to ()
     return 1
   fi
 
-  if [ ! -d "${main_tl_dir_parent}/$1" ]; then
-    echo "Error: the directory ${main_tl_dir_parent}/$1 does not exist."
+  if [ ! -d "${main_tl_dir_parent}/${new_target}" ]; then
+    echo "Error: the directory ${main_tl_dir_parent}/${new_target} does not exist."
     return 1
   fi
 
@@ -24,13 +26,13 @@ function switch-tl-to ()
   # rerun fc-cache.
   #
   current_target="$( readlink "${main_tl_dir}")"
-  if [ "${current_target}" = "$1" ]; then
+  if [ "${current_target}" = "${new_target}" ]; then
     # nothing to be done
     return 0
   fi
 
   sudo rm "${main_tl_dir}"
-  sudo ln -s "$1" "${main_tl_dir}"
+  sudo ln -s "${new_target}" "${main_tl_dir}"
 
   # TODO: tell users they can remove this file and run "sudo fc-cache -fsv"
   # and then this command won't be run anymore.
