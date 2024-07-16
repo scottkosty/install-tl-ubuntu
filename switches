@@ -31,6 +31,14 @@ function switch-tl-to ()
     return 0
   fi
 
+  # sanity check that the target dir is a valid TL dir
+  expected_tlmgr="${main_tl_dir_parent}/${new_target}/bin/x86_64-linux/tlmgr"
+  # use '*' to match "x86_64-linux"
+  if [ ! -e "${expected_tlmgr}"  ]; then
+    echo "Error: In the new target, ${new_target}, tlmgr is not found in the expected location: ${expected_tlmgr}." >&2
+    return 1
+  fi
+
   sudo rm "${main_tl_dir}"
   sudo ln -s "${new_target}" "${main_tl_dir}"
 
