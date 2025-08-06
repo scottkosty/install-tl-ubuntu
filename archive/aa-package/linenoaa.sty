@@ -1,0 +1,142 @@
+\NeedsTeXFormat{LaTeX2e}[2003/12/01]
+\ProvidesPackage{linenoaa}[2023/03/12 v0.02]
+
+\providecommand{\addto}[2]{%
+  \ifx#1\@undefined
+    \def#1{#2}%
+  \else
+    \ifx#1\relax
+      \def#1{#2}%
+    \else
+      {\toks@\expandafter{#1#2}%
+        \xdef#1{\the\toks@}}%
+    \fi
+  \fi
+}
+
+\newif\ifGPL@lineno@desactivate
+\GPL@lineno@desactivatefalse
+
+\DeclareOption{desactivate}{
+	\providecommand{\@LN}{\@gobbletwo}
+	\providecommand{\@LN@col}{\@gobble}
+	\GPL@lineno@desactivatetrue	
+}
+\DeclareOption*{
+	\PassOptionsToPackage{\CurrentOption}{lineno}
+}
+\ProcessOptions\relax
+
+\ifGPL@lineno@desactivate
+	\endinput
+\fi
+
+\RequirePackage[mathlines,switch]{lineno}[2005/11/02 v4.41]
+
+\addto\maketitle{\linenumbers\relax}
+
+\def\linenumberfont{\normalfont\scriptsize\sffamily}
+
+\@namedef{eqnarray*}{\def\@eqncr{\nonumber\@seqncr}\linenomath\eqnarray}
+\@namedef{endeqnarray*}{\nonumber\endeqnarray\endlinenomath}
+
+\@ifpackageloaded{amsmath}{%
+\renewenvironment{multline}{\linenomathNonumbers\start@multline\st@rredfalse}{%
+	\iftagsleft@ \@xp\lendmultline@ \else \@xp\rendmultline@ \fi
+	\endlinenomath\ignorespacesafterend}
+
+\renewenvironment{multline*}{\linenomath\start@multline\st@rredtrue}{\endmultline\endlinenomath}
+
+
+\renewenvironment{gather}{\linenomathNonumbers\start@gather\st@rredfalse}{%
+  \math@cr \black@\totwidth@ \egroup
+  $$\endlinenomath\ignorespacesafterend}
+
+\renewenvironment{gather*}{\linenomath\start@gather\st@rredtrue}{\endgather\endlinenomath}
+
+\renewenvironment{alignat}{\linenomathNonumbers\start@align\z@\st@rredfalse}{%
+\endalign\endlinenomath}
+
+\renewenvironment{alignat*}{\linenomath\start@align\z@\st@rredtrue}{\endalign\endlinenomath}
+
+\renewenvironment{xalignat}{\linenomathNonumbers\start@align\@ne\st@rredfalse}{%
+\endalign\endlinenomath}
+
+\renewenvironment{xalignat*}{\linenomath\start@align\@ne\st@rredtrue}{\endalign\endlinenomath}
+
+\renewenvironment{xxalignat}{\linenomath\start@align\tw@\st@rredtrue}{\endalign\endlinenomath}
+
+\renewenvironment{align}{\linenomathNonumbers\start@align\@ne\st@rredfalse\m@ne}{%
+  \math@cr \black@\totwidth@
+  \egroup
+  \ifingather@
+    \restorealignstate@
+    \egroup
+    \nonumber
+    \ifnum0=`{\fi\iffalse}\fi
+  \else
+    $$%
+  \fi
+  \endlinenomath
+  \ignorespacesafterend}
+  
+\renewenvironment{align*}{\linenomath\start@align\@ne\st@rredtrue\m@ne}{\endalign\endlinenomath}
+
+\renewenvironment{flalign}{\linenomathNonumbers\start@align\tw@\st@rredfalse\m@ne}{%
+\endalign\endlinenomath}
+
+\renewenvironment{flalign*}{\linenomath\start@align\tw@\st@rredtrue\m@ne}{\endalign\endlinenomath}
+
+\renewenvironment{equation}{%
+  \linenomathNonumbers\incr@eqnum
+  \mathdisplay@push
+  \st@rredfalse \global\@eqnswtrue
+  \mathdisplay{equation}%
+}{%
+  \endmathdisplay{equation}%
+  \mathdisplay@pop
+  \endlinenomath
+  \ignorespacesafterend}
+    
+\renewenvironment{equation*}{%
+  \linenomath\mathdisplay@push
+  \st@rredtrue \global\@eqnswfalse
+  \mathdisplay{equation*}%
+}{%
+  \endmathdisplay{equation*}%
+  \mathdisplay@pop
+  \endlinenomath
+  \ignorespacesafterend}}{%
+\def\equation{\linenomathNonumbers$$\refstepcounter{equation}}
+\def\endequation{\eqno \hbox{\@eqnnum}$$\endlinenomath\@ignoretrue}}
+
+\@ifpackagewith{amsmath}{fleqn}{%
+\renewenvironment{eqnarray}{%
+    \stepcounter{equation}%
+    \def\@currentlabel{\p@equation\theequation}%
+    \global\@eqnswtrue\m@th
+    \global\@eqcnt\z@
+    \tabskip\mathindent
+    \let\\=\@eqncr
+    \setlength\abovedisplayskip{\topsep}%
+    \ifvmode
+      \addtolength\abovedisplayskip{\partopsep}%
+    \fi
+    \addtolength\abovedisplayskip{\parskip}%
+    \setlength\belowdisplayskip{\abovedisplayskip}%
+    \setlength\belowdisplayshortskip{\abovedisplayskip}%
+    \setlength\abovedisplayshortskip{\abovedisplayskip}%
+    \linenomathNonumbers$$\everycr{}\halign to\linewidth% $$
+    \bgroup
+      \hskip\@centering
+      $\displaystyle\tabskip\z@skip{##}$\@eqnsel&%
+      \global\@eqcnt\@ne \hskip \tw@\arraycolsep \hfil${##}$\hfil&%
+      \global\@eqcnt\tw@ \hskip \tw@\arraycolsep
+        $\displaystyle{##}$\hfil \tabskip\@centering&%
+      \global\@eqcnt\thr@@
+        \hb@xt@\z@\bgroup\hss##\egroup\tabskip\z@skip\cr}%
+      {\@@eqncr
+    \egroup
+    \global\advance\c@equation\m@ne$$% $$
+    \endlinenomath
+    \@ignoretrue}}{}

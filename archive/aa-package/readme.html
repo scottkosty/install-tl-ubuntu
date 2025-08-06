@@ -1,0 +1,160 @@
+<TITLE>LaTeX2e class for A&amp;A</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<HR>
+<FONT SIZE=+2 FACE="ARIAL"><B>LaTeX2e class for Astronomy &amp; Astrophysics</A></B></FONT>
+<BR> (c) EDP Sciences, 2016 <P>
+<HR>
+The following files are part of the macro package AA
+<UL>
+<P><LI><a href="http://ftp.edpsciences.org/pub/aa/readme.txt">readme.txt</a>: Information (equivalent to this page)
+<P><LI><a href="http://ftp.edpsciences.org/pub/aa/aa.cls">aa.cls</a>: The document class file
+<P><LI><a href="http://ftp.edpsciences.org/pub/aa/aadoc.pdf">aadoc.pdf</a>: User's Guide (pdf)
+<P><LI><a href="http://ftp.edpsciences.org/pub/aa/aa.dem">aa.dem</a>: Example of an article (LaTeX source)
+<P><LI><a href="http://ftp.edpsciences.org/pub/aa/linenoaa.sty">linenoaa.sty</a>: Style file for line numbering
+<UL>
+<P><LI>Directory for BIBTeX style
+<P><LI><a href="http://ftp.edpsciences.org/pub/aa/bibtex/aa.bst">aa.bst</a>: Bibliography style file
+<P><LI><a href="http://ftp.edpsciences.org/pub/aa/bibtex/natnotes.pdf">natnotes.pdf</a>: Brief reference sheet for Natbib (pdf)
+</UL>
+</UL>
+Remember to transfer dvi and pdf files as binaries!
+<P>
+All files are compressed in a single archive:<BR>
+<a href="http://ftp.edpsciences.org/pub/aa/aa-package.zip">aa-package.zip</a>
+<P>
+<FONT SIZE=+2><EM>Main changes in the  8.x versions</EM></FONT>
+</P>
+A&A accepts TeX files designed for LaTeX  as well as PDFLaTeX.
+<BR>
+Depending on your preferred LaTeX engine (LaTeX or pdfLaTeX), figures
+should be sent as encapsulated PostScript files or in any other format
+as PDF, JPG, TIF, BMP, and GIF (compatible with pdfLaTeX).<BR>
+The new macro does not include the classes traditabstract and structabstract anymore. 
+They are replaced by the command \abstract. See new instructions for details.
+<P>
+The aa class supports now the "e-prints" command with BibTeX.<BR>
+Two new LaTeX commands, \LEm{a note in the margin} and \LEt{note within the text}
+have been added.<BR>
+See the A&A Author's guide on the Web site for more information.
+<P>
+To enable compatibility with 7.x versions, an option has been            
+added. 
+If you don't write structured references (according to
+to the author-year natbib style), use this option:<BR>
+\documentclass[bibyear]{aa} 
+<P>
+<HR>
+<FONT SIZE=+2 FACE="ARIAL"><B>Tips</A></B></FONT>
+<HR>
+<FONT SIZE=+2><EM>How to add in-text citation clickers that link to the corresponding
+ADS abstract pages.</EM></FONT>
+<BR>
+Contributed by Robert J. Rutten of Utrecht University.
+<P>
+This is a latex recipe to turn the in-text citations into clickers (in
+xdvi and the pdf or html output file) that link into ADS, opening the
+corresponding abstract page in the browser.  In this manner, an
+on-screen reader of your paper may open the cited abstract or download
+the cited paper in parallel to reading your paper, without jumping to
+the reference list of the latter.
+<P>
+Insert the following commands into the preamble of your latex file:
+<P>
+<code style="background-color:#cfdbec; display:block">
+\usepackage{natbib,twoopt}<BR>
+\usepackage[breaklinks=true]{hyperref} %% to avoid \citeads line fills<BR>
+\bibpunct{(}{)}{;}{a}{}{,}             %% natbib format for A&A and ApJ<BR>
+\makeatletter<BR>
+  \newcommandtwoopt{\citeads}[3][][]{\href{http://adsabs.harvard.edu/abs/#3}%<BR>
+    {\def\hyper@linkstart##1##2{}%<BR>
+     \let\hyper@linkend\@empty\citealp[#1][#2]{#3}}}<BR>
+  \newcommandtwoopt{\citepads}[3][][]{\href{http://adsabs.harvard.edu/abs/#3}%<BR>
+    {\def\hyper@linkstart##1##2{}%<BR>
+     \let\hyper@linkend\@empty\citep[#1][#2]{#3}}}<BR>
+  \newcommandtwoopt{\citetads}[3][][]{\href{http://adsabs.harvard.edu/abs/#3}%<BR>
+    {\def\hyper@linkstart##1##2{}%<BR>
+     \let\hyper@linkend\@empty\citet[#1][#2]{#3}}}<BR>
+  \newcommandtwoopt{\citeyearads}[3][][]%<BR>
+    {\href{http://adsabs.harvard.edu/abs/#3}<BR>
+    {\def\hyper@linkstart##1##2{}%<BR>
+     \let\hyper@linkend\@empty\citeyear[#1][#2]{#3}}}<BR>
+\makeatother<BR>
+</code>
+<P>
+Usage: use ADS biblabels and enter one per \citeads command, as in:
+<P>
+<code style="background-color:#cfdbec; display:block">
+The existence of two emission features in the solar spectrum near<BR>
+12~$\mu$m was announced by<BR>
+\citetads{1981ApJ...247L..97M}. %% Murcray+others, MgI features<BR>
+We explained them long ago<BR>
+\citepads[see][]{1992A&A...253..567C}, %% Carlsson+Rutten+Shchukina MgI<BR>	
+using the standard model of the solar atmosphere formulated in the<BR>
+monumental papers by Vernazza et al.\ <BR>
+(\citeyearads{1973ApJ...184..605V}, % VALI <BR>
+ \citeyearads{1976ApJS...30....1V}, % VALII <BR>
+ \citeyearads{1981ApJS...45..635V}). % VALIII <BR>
+</code>
+<P>
+This trick was contributed by Robert J. Rutten of Utrecht University.
+The above example of its usage is taken from his latex manual and template
+for students at 
+<a href="http://www.staff.science.uu.nl/~rutte101/Report_recipe.html">http://www.staff.science.uu.nl/~rutte101/Report_recipe.html</a>
+<BR>
+<HR>
+History
+<HR>
+The new 2001 Astronomy and Astrophysics journal.
+<BR>
+
+In order to ensure the smoothest transition for both authors and publishers,
+Springer-Verlag has kindly granted EDP Sciences the permission to use the
+LaTeX macro package that they developed for A&A Main journal.
+<BR>
+
+Only  minor changes have been incorporated between the Springer class (1999)
+and the EDP Sciences class for the new journal.
+<BR>
+Please, note:
+<BR>
+- that the abstract is now a command (\abstract{...}) and not an environment,  
+so the \maketitle command has to be placed after the abstract and the keywords
+<BR>
+- and that the command \thesaurus does no longer exist.
+<BR>
+
+The journal is now printing using the Postscript TX Times-fonts. 
+<BR>
+The TX fonts consist of virtual text roman fonts using Adobe Times with some 
+modified and additional text symbols. 
+<BR>
+The TX fonts are distributed under the GNU public license and are available 
+in the LaTeX distributions since December 2000.
+<BR>
+In any case, these fonts and the installation guide are also available in 
+every public TeX archive server, i.e.:
+<BR>
+
+http://www.tug.org/tex-archive/fonts/txfonts/
+<BR>
+ftp://ftp.dante.de/tex-archive/fonts/txfonts/
+<BR>
+ftp://ftp.tex.ac.uk/tex-archive/fonts/txfonts/
+<BR>
+
+Please contact your system administrator to install it. 
+<BR>
+
+Since this change of fonts results in a slightly different page make-up from 
+CM fonts, we encourage you to use TX fonts.
+To proceed, all you need is: 
+<BR>
+\documentclass{aa}
+<BR>
+\usepackage{txfonts}
+<BR>
+... 
+<BR>
+</BODY>
+
