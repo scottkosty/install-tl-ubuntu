@@ -803,8 +803,6 @@ if [ "${EXTRAS}" = "1" ]; then
     # ) >&3 2>&1 \
     # || { echo "${WARNINGPREFIX}failed to download or process maa-monthly files." >&2; MAINRET=1; }
 
-    ${WGET_CMD} "ftp://ftp.aip.org/asa/JasaTeX-0.1tc7.zip" >&3 2>&1 \
-      || { echo "${WARNINGPREFIX}failed to download JasaTeX files." >&2; MAINRET=1; }
     # Econometrica.
     # The previous ectaart URL is broken and it seems a new class file is being
     # proposed. There is a GitHub issue where we will get more information
